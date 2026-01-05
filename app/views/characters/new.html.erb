@@ -4,14 +4,99 @@
     color: #ffffff;
   }
 
-  .form-control,
-  .form-select {
+  .form-control {
     background-color: #2d2d2d;
     border-color: #404040;
     color: #ffffff;
+    max-width: 400px;
+    margin: 0 auto;
   }
 
-  /* Container du cercle - plus grand */
+  .form-control:focus {
+    background-color: #333333;
+    border-color: #ffc107;
+    color: #ffffff;
+    box-shadow: none;
+  }
+
+  /* ===== HEADER CLASSE ===== */
+  .class-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 10px;
+  }
+
+  .class-header-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+  }
+
+  /* ===== SPECS ===== */
+  .spec-card {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid #404040;
+    overflow: hidden;
+    margin: 0 auto;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .spec-card:hover {
+    border-color: #ffc107;
+    box-shadow: 0 0 20px #ffc107;
+  }
+
+  .spec-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .spec-name {
+    color: #cccccc;
+    font-size: 13px;
+    margin-top: 8px;
+  }
+
+  .spec-radio {
+    display: none;
+  }
+
+  .spec-radio:checked + label .spec-card {
+    border-color: #ffc107;
+    box-shadow: 0 0 25px #ffc107;
+  }
+
+  .spec-radio:checked + label .spec-name {
+    color: #ffc107;
+  }
+
+  /* ===== BOUTON ===== */
+  .btn-primary {
+    background-color: #3b82f6;
+    border: none;
+    padding: 12px 30px;
+    font-size: 16px;
+  }
+
+  .btn-primary:hover {
+    background-color: #2563eb;
+  }
+
+  .btn-link {
+    color: #6ea8fe;
+  }
+
+  .btn-link:hover {
+    color: #ffc107;
+  }
+
+  /* ===== CLASSES (cercle) ===== */
   .circle-container {
     position: relative;
     width: 700px;
@@ -19,7 +104,6 @@
     margin: 20px auto;
   }
 
-  /* Chaque carte positionnée en cercle */
   .class-item {
     position: absolute;
     top: 50%;
@@ -30,7 +114,6 @@
     text-align: center;
   }
 
-  /* Carte ronde */
   .class-card {
     width: 80px;
     height: 80px;
@@ -57,7 +140,6 @@
     object-fit: cover;
   }
 
-  /* Nom de la classe - toujours visible, à l'extérieur */
   .class-name {
     display: block;
     margin-top: 10px;
@@ -71,7 +153,6 @@
     color: #ffc107;
   }
 
-  /* Positions en cercle (13 classes) - rayon 280px */
   .class-item:nth-child(1)  { transform: rotate(0deg) translateY(-280px) rotate(0deg); }
   .class-item:nth-child(2)  { transform: rotate(27.7deg) translateY(-280px) rotate(-27.7deg); }
   .class-item:nth-child(3)  { transform: rotate(55.4deg) translateY(-280px) rotate(-55.4deg); }
@@ -90,39 +171,48 @@
 <div class="container mt-4">
   <% if @wow_class %>
     <!-- ÉTAPE 2 : Formulaire avec pseudo + spé -->
-    <h1>Nouveau perso : <%= @wow_class.name %></h1>
-    <%= link_to "← Changer de classe", new_character_path, class: "btn btn-link mb-3" %>
-
-    <%= form_with model: @character, local: true do |f| %>
-      <%= f.hidden_field :wow_class_id, value: @wow_class.id %>
-
-      <% if @character.errors.any? %>
-        <div class="alert alert-danger">
-          <% @character.errors.full_messages.each do |msg| %>
-            <p class="mb-0"><%= msg %></p>
-          <% end %>
-        </div>
-      <% end %>
-
-      <div class="mb-3">
-        <%= f.label :pseudo, "Nom du personnage", class: "form-label" %>
-        <%= f.text_field :pseudo, class: "form-control", placeholder: "Ex: Arthas" %>
+    <div class="text-center">
+      <div class="class-header">
+        <%= image_tag("classes/#{@wow_class.name.parameterize(separator: '_')}.png", class: "class-header-icon") %>
+        <h1 class="mb-0"><%= @wow_class.name %></h1>
       </div>
 
-      <div class="mb-3">
-        <%= f.label :specialization_id, "Spécialisation", class: "form-label" %>
-        <% @specializations.each do |spec| %>
-          <div class="form-check">
-            <%= f.radio_button :specialization_id, spec.id, class: "form-check-input" %>
-            <%= f.label "specialization_id_#{spec.id}", class: "form-check-label" do %>
-              <%= spec.name %> <%= role_badge(spec.role) %>
+      <%= link_to "← Changer de classe", new_character_path, class: "btn btn-link mb-4" %>
+
+      <%= form_with model: @character, local: true do |f| %>
+        <%= f.hidden_field :wow_class_id, value: @wow_class.id %>
+
+        <% if @character.errors.any? %>
+          <div class="alert alert-danger">
+            <% @character.errors.full_messages.each do |msg| %>
+              <p class="mb-0"><%= msg %></p>
             <% end %>
           </div>
         <% end %>
-      </div>
 
-      <%= f.submit "Ajouter au roster", class: "btn btn-primary" %>
-    <% end %>
+        <div class="mb-4">
+          <%= f.label :pseudo, "Nom du personnage", class: "form-label" %>
+          <%= f.text_field :pseudo, class: "form-control", placeholder: "Ex: Arthas" %>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label">Spécialisation</label>
+          <div class="d-flex justify-content-center gap-4 mt-2">
+            <% @specializations.each do |spec| %>
+              <%= f.radio_button :specialization_id, spec.id, class: "spec-radio", id: "spec_#{spec.id}" %>
+              <label for="spec_<%= spec.id %>" class="text-center">
+                <div class="spec-card">
+                  <%= image_tag("roles/#{spec.role}.png", class: "spec-icon") %>
+                </div>
+                <div class="spec-name"><%= spec.name %></div>
+              </label>
+            <% end %>
+          </div>
+        </div>
+
+        <%= f.submit "Ajouter au roster", class: "btn btn-primary btn-lg mt-3" %>
+      <% end %>
+    </div>
 
   <% else %>
     <!-- ÉTAPE 1 : Choix de la classe en cercle -->

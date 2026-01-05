@@ -1,72 +1,194 @@
+<style>
+  body {
+    background-color: #1a1a1a;
+    color: #ffffff;
+  }
+
+  /* ===== CARTES RÔLES ===== */
+.role-card {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto;
+  transition: all 0.3s;
+  border: none;
+  background: none;
+}
+
+.role-card:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 15px #ffc107);
+}
+
+.role-icon-big {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+  .role-count {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-top: 15px;
+    color: #ffffff;
+  }
+
+  .role-label {
+    color: #aaaaaa;
+    font-size: 16px;
+    margin-top: 5px;
+  }
+
+  /* ===== TABLEAU ===== */
+  .table {
+    color: #ffffff;
+    background-color: transparent;
+  }
+
+  .table thead {
+    background-color: #2d2d2d;
+  }
+
+  .table thead th {
+    border-bottom: 2px solid #404040;
+    color: #ffffff;
+  }
+
+  .table tbody tr {
+    background-color: #1a1a1a;
+    border-bottom: 1px solid #333333;
+  }
+
+  .table tbody tr:hover {
+    background-color: #2d2d2d;
+  }
+
+  .table td, .table th {
+    border: none;
+    vertical-align: middle;
+    padding: 12px;
+  }
+
+  /* ===== PETITES ICÔNES TABLEAU ===== */
+  .role-icon-small {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .class-image-small {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  /* ===== BOUTON ===== */
+  .btn-primary {
+    background-color: #3b82f6;
+    border: none;
+    padding: 12px 30px;
+    font-size: 18px;
+  }
+
+  .btn-primary:hover {
+    background-color: #2563eb;
+  }
+
+  /* ===== MESSAGE VIDE ===== */
+  .empty-message {
+    color: #666666;
+    font-style: italic;
+    padding: 40px;
+  }
+</style>
+
 <div class="container mt-4">
-  <h1>Roster Midnight 🌙</h1>
+  <h1 class="text-center mb-5">Roster Midnight 🌙</h1>
 
   <!-- Compteurs de rôles -->
-  <div class="row mb-4">
-    <div class="col-md-4">
-      <div class="card text-white bg-danger">
-        <div class="card-body text-center">
-          <h3><%= @role_counts["tank"] || 0 %></h3>
-          <p class="mb-0">🛡️ Tanks</p>
-        </div>
+  <div class="row justify-content-center mb-5">
+    <div class="col-6 col-md-3 text-center mb-4">
+      <div class="role-card">
+        <%= image_tag("roles/tank.png", class: "role-icon-big") %>
       </div>
+      <div class="role-count"><%= @role_counts["tank"] || 0 %></div>
+      <div class="role-label">Tanks</div>
     </div>
-    <div class="col-md-4">
-      <div class="card text-white bg-success">
-        <div class="card-body text-center">
-          <h3><%= @role_counts["healer"] || 0 %></h3>
-          <p class="mb-0">💚 Healers</p>
-        </div>
+
+    <div class="col-6 col-md-3 text-center mb-4">
+      <div class="role-card">
+        <%= image_tag("roles/healer.png", class: "role-icon-big") %>
       </div>
+      <div class="role-count"><%= @role_counts["healer"] || 0 %></div>
+      <div class="role-label">Healers</div>
     </div>
-    <div class="col-md-4">
-      <div class="card text-white bg-primary">
-        <div class="card-body text-center">
-          <h3><%= @role_counts["dps"] || 0 %></h3>
-          <p class="mb-0">⚔️ DPS</p>
-        </div>
+
+    <div class="col-6 col-md-3 text-center mb-4">
+      <div class="role-card">
+        <%= image_tag("roles/dps_cac.png", class: "role-icon-big") %>
       </div>
+      <div class="role-count"><%= @role_counts["dps_cac"] || 0 %></div>
+      <div class="role-label">DPS CAC</div>
+    </div>
+
+    <div class="col-6 col-md-3 text-center mb-4">
+      <div class="role-card">
+        <%= image_tag("roles/dps_caster.png", class: "role-icon-big") %>
+      </div>
+      <div class="role-count"><%= @role_counts["dps_caster"] || 0 %></div>
+      <div class="role-label">Casters</div>
     </div>
   </div>
 
   <!-- Bouton d'ajout -->
-  <% if user_signed_in? %>
-    <%= link_to "Ajouter mon perso", new_character_path, class: "btn btn-primary mb-3" %>
-  <% else %>
-    <%= link_to "Connecte-toi pour ajouter ton perso", new_user_session_path, class: "btn btn-secondary mb-3" %>
-  <% end %>
+  <div class="text-center mb-5">
+    <% if user_signed_in? %>
+      <%= link_to "Ajouter mon perso", new_character_path, class: "btn btn-primary btn-lg" %>
+    <% else %>
+      <%= link_to "Connecte-toi pour ajouter ton perso", new_user_session_path, class: "btn btn-secondary btn-lg" %>
+    <% end %>
+  </div>
 
   <!-- Liste des persos -->
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>Joueur</th>
-        <th>Pseudo</th>
-        <th>Classe</th>
-        <th>Spé</th>
-        <th>Rôle</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @characters.each do |character| %>
+  <% if @characters.any? %>
+    <table class="table">
+      <thead>
         <tr>
-          <td><%= character.user.email.split("@").first %></td>
-          <td><strong><%= character.pseudo %></strong></td>
-          <td><%= character.wow_class.name %></td>
-          <td><%= character.specialization.name %></td>
-          <td><%= role_badge(character.specialization.role) %></td>
-          <td>
-            <% if user_signed_in? && character.user == current_user %>
-              <%= button_to "✕", character_path(character), method: :delete, class: "btn btn-sm btn-outline-danger", data: { confirm: "Supprimer ce perso ?" } %>
-            <% end %>
-          </td>
+          <th>Joueur</th>
+          <th>Pseudo</th>
+          <th>Classe</th>
+          <th>Spé</th>
+          <th>Rôle</th>
+          <th></th>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
-
-  <% if @characters.empty? %>
-    <p class="text-muted text-center">Aucun perso inscrit pour le moment.</p>
+      </thead>
+      <tbody>
+        <% @characters.each do |character| %>
+          <tr>
+            <td><%= character.user.email.split("@").first %></td>
+            <td><strong><%= character.pseudo %></strong></td>
+            <td>
+              <%= image_tag("classes/#{character.wow_class.name.parameterize(separator: '_')}.png", class: "class-image-small") %>
+              <%= character.wow_class.name %>
+            </td>
+            <td><%= character.specialization.name %></td>
+            <td>
+              <%= image_tag("roles/#{character.specialization.role}.png", class: "role-icon-small") %>
+            </td>
+            <td>
+              <% if user_signed_in? && character.user == current_user %>
+                <%= button_to "✕", character_path(character), method: :delete, class: "btn btn-sm btn-outline-danger", data: { turbo_confirm: "Supprimer ce perso ?" } %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p class="text-center empty-message">Aucun perso inscrit pour le moment.</p>
   <% end %>
 </div>
