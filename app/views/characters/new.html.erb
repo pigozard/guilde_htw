@@ -1,0 +1,144 @@
+<style>
+  body {
+    background-color: #1a1a1a;
+    color: #ffffff;
+  }
+
+  .form-control,
+  .form-select {
+    background-color: #2d2d2d;
+    border-color: #404040;
+    color: #ffffff;
+  }
+
+  /* Container du cercle - plus grand */
+  .circle-container {
+    position: relative;
+    width: 700px;
+    height: 700px;
+    margin: 20px auto;
+  }
+
+  /* Chaque carte positionnée en cercle */
+  .class-item {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 80px;
+    height: 80px;
+    margin: -40px;
+    text-align: center;
+  }
+
+  /* Carte ronde */
+  .class-card {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #2d2d2d;
+    border: 3px solid #404040;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+
+  .class-card:hover {
+    border-color: #ffc107;
+    box-shadow: 0 0 20px #ffc107;
+    transform: scale(1.1);
+  }
+
+  .class-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  /* Nom de la classe - toujours visible, à l'extérieur */
+  .class-name {
+    display: block;
+    margin-top: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    color: #cccccc;
+  }
+
+  .class-item:hover .class-name {
+    color: #ffc107;
+  }
+
+  /* Positions en cercle (13 classes) - rayon 280px */
+  .class-item:nth-child(1)  { transform: rotate(0deg) translateY(-280px) rotate(0deg); }
+  .class-item:nth-child(2)  { transform: rotate(27.7deg) translateY(-280px) rotate(-27.7deg); }
+  .class-item:nth-child(3)  { transform: rotate(55.4deg) translateY(-280px) rotate(-55.4deg); }
+  .class-item:nth-child(4)  { transform: rotate(83.1deg) translateY(-280px) rotate(-83.1deg); }
+  .class-item:nth-child(5)  { transform: rotate(110.8deg) translateY(-280px) rotate(-110.8deg); }
+  .class-item:nth-child(6)  { transform: rotate(138.5deg) translateY(-280px) rotate(-138.5deg); }
+  .class-item:nth-child(7)  { transform: rotate(166.2deg) translateY(-280px) rotate(-166.2deg); }
+  .class-item:nth-child(8)  { transform: rotate(193.9deg) translateY(-280px) rotate(-193.9deg); }
+  .class-item:nth-child(9)  { transform: rotate(221.6deg) translateY(-280px) rotate(-221.6deg); }
+  .class-item:nth-child(10) { transform: rotate(249.3deg) translateY(-280px) rotate(-249.3deg); }
+  .class-item:nth-child(11) { transform: rotate(277deg) translateY(-280px) rotate(-277deg); }
+  .class-item:nth-child(12) { transform: rotate(304.7deg) translateY(-280px) rotate(-304.7deg); }
+  .class-item:nth-child(13) { transform: rotate(332.4deg) translateY(-280px) rotate(-332.4deg); }
+</style>
+
+<div class="container mt-4">
+  <% if @wow_class %>
+    <!-- ÉTAPE 2 : Formulaire avec pseudo + spé -->
+    <h1>Nouveau perso : <%= @wow_class.name %></h1>
+    <%= link_to "← Changer de classe", new_character_path, class: "btn btn-link mb-3" %>
+
+    <%= form_with model: @character, local: true do |f| %>
+      <%= f.hidden_field :wow_class_id, value: @wow_class.id %>
+
+      <% if @character.errors.any? %>
+        <div class="alert alert-danger">
+          <% @character.errors.full_messages.each do |msg| %>
+            <p class="mb-0"><%= msg %></p>
+          <% end %>
+        </div>
+      <% end %>
+
+      <div class="mb-3">
+        <%= f.label :pseudo, "Nom du personnage", class: "form-label" %>
+        <%= f.text_field :pseudo, class: "form-control", placeholder: "Ex: Arthas" %>
+      </div>
+
+      <div class="mb-3">
+        <%= f.label :specialization_id, "Spécialisation", class: "form-label" %>
+        <% @specializations.each do |spec| %>
+          <div class="form-check">
+            <%= f.radio_button :specialization_id, spec.id, class: "form-check-input" %>
+            <%= f.label "specialization_id_#{spec.id}", class: "form-check-label" do %>
+              <%= spec.name %> <%= role_badge(spec.role) %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+
+      <%= f.submit "Ajouter au roster", class: "btn btn-primary" %>
+    <% end %>
+
+  <% else %>
+    <!-- ÉTAPE 1 : Choix de la classe en cercle -->
+    <h1 class="text-center mb-0">Choisis ta classe</h1>
+
+    <div class="circle-container">
+      <% @wow_classes.each do |wow_class| %>
+        <div class="class-item">
+          <%= link_to new_character_path(wow_class_id: wow_class.id), class: "text-decoration-none" do %>
+            <div class="class-card">
+              <%= class_icon(wow_class.name) %>
+            </div>
+            <span class="class-name"><%= wow_class.name %></span>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

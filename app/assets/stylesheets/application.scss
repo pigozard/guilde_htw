@@ -10,3 +10,51 @@
 // Your CSS partials
 @import "components/index";
 @import "pages/index";
+
+body {
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
+
+/* Cards en dark aussi */
+.card {
+  background-color: #2d2d2d;
+  border: 1px solid #404040;
+  color: #ffffff;
+}
+
+.card:hover {
+  background-color: #3d3d3d;
+}
+
+/* Tableau */
+.table {
+  color: #ffffff;
+}
+
+/* Inputs */
+.form-control,
+.form-select {
+  background-color: #2d2d2d;
+  border-color: #404040;
+  color: #ffffff;
+}
+
+.form-control::placeholder {
+  color: #888888;
+}
+
+/* Liens */
+a {
+  color: #6ea8fe;
+}
+
+a:hover {
+  color: #9ec5fe;
+}
+
+.class-image {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}

@@ -1,0 +1,72 @@
+<div class="container mt-4">
+  <h1>Roster Midnight 🌙</h1>
+
+  <!-- Compteurs de rôles -->
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="card text-white bg-danger">
+        <div class="card-body text-center">
+          <h3><%= @role_counts["tank"] || 0 %></h3>
+          <p class="mb-0">🛡️ Tanks</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-white bg-success">
+        <div class="card-body text-center">
+          <h3><%= @role_counts["healer"] || 0 %></h3>
+          <p class="mb-0">💚 Healers</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-white bg-primary">
+        <div class="card-body text-center">
+          <h3><%= @role_counts["dps"] || 0 %></h3>
+          <p class="mb-0">⚔️ DPS</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bouton d'ajout -->
+  <% if user_signed_in? %>
+    <%= link_to "Ajouter mon perso", new_character_path, class: "btn btn-primary mb-3" %>
+  <% else %>
+    <%= link_to "Connecte-toi pour ajouter ton perso", new_user_session_path, class: "btn btn-secondary mb-3" %>
+  <% end %>
+
+  <!-- Liste des persos -->
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Joueur</th>
+        <th>Pseudo</th>
+        <th>Classe</th>
+        <th>Spé</th>
+        <th>Rôle</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @characters.each do |character| %>
+        <tr>
+          <td><%= character.user.email.split("@").first %></td>
+          <td><strong><%= character.pseudo %></strong></td>
+          <td><%= character.wow_class.name %></td>
+          <td><%= character.specialization.name %></td>
+          <td><%= role_badge(character.specialization.role) %></td>
+          <td>
+            <% if user_signed_in? && character.user == current_user %>
+              <%= button_to "✕", character_path(character), method: :delete, class: "btn btn-sm btn-outline-danger", data: { confirm: "Supprimer ce perso ?" } %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <% if @characters.empty? %>
+    <p class="text-muted text-center">Aucun perso inscrit pour le moment.</p>
+  <% end %>
+</div>
