@@ -10,9 +10,31 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_05_184829) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_05_185220) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "characters", force: :cascade do |t|
+    t.string "pseudo"
+    t.bigint "user_id", null: false
+    t.bigint "wow_class_id", null: false
+    t.bigint "specialization_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["specialization_id"], name: "index_characters_on_specialization_id"
+    t.index ["user_id"], name: "index_characters_on_user_id"
+    t.index ["wow_class_id"], name: "index_characters_on_wow_class_id"
+  end
+
+  create_table "specializations", force: :cascade do |t|
+    t.string "name"
+    t.string "role"
+    t.bigint "wow_class_id", null: false
+    t.string "icon"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["wow_class_id"], name: "index_specializations_on_wow_class_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -26,4 +48,15 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_05_184829) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "wow_classes", force: :cascade do |t|
+    t.string "name"
+    t.string "icon"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_foreign_key "characters", "specializations"
+  add_foreign_key "characters", "users"
+  add_foreign_key "characters", "wow_classes"
+  add_foreign_key "specializations", "wow_classes"
 end
