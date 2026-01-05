@@ -4,27 +4,61 @@
     color: #ffffff;
   }
 
+  /* ===== TABLEAU - FORCE DARK ===== */
+  .table {
+    background-color: #2d2d2d !important;
+    color: #ffffff !important;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .table thead {
+    background-color: #3d3d3d !important;
+  }
+
+  .table thead th {
+    background-color: #3d3d3d !important;
+    color: #ffffff !important;
+    border: none !important;
+    padding: 15px !important;
+  }
+
+  .table tbody tr {
+    background-color: #2d2d2d !important;
+    border-bottom: 1px solid #404040 !important;
+  }
+
+  .table tbody tr:hover {
+    background-color: #3d3d3d !important;
+  }
+
+  .table td {
+    background-color: #2d2d2d !important;
+    color: #ffffff !important;
+    border: none !important;
+    vertical-align: middle !important;
+    padding: 12px 15px !important;
+  }
+
   /* ===== CARTES RÔLES ===== */
-.role-card {
-  width: 120px;
-  height: 120px;
-  margin: 0 auto;
-  transition: all 0.3s;
-  border: none;
-  background: none;
-}
+  .role-card {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+    transition: all 0.3s;
+  }
 
-.role-card:hover {
-  transform: scale(1.1);
-  filter: drop-shadow(0 0 15px #ffc107);
-}
+  .role-card:hover {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 15px #ffc107);
+  }
 
-.role-icon-big {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
-}
+  .role-icon-big {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+  }
 
   .role-count {
     font-size: 2.5rem;
@@ -39,50 +73,20 @@
     margin-top: 5px;
   }
 
-  /* ===== TABLEAU ===== */
-  .table {
-    color: #ffffff;
-    background-color: transparent;
-  }
-
-  .table thead {
-    background-color: #2d2d2d;
-  }
-
-  .table thead th {
-    border-bottom: 2px solid #404040;
-    color: #ffffff;
-  }
-
-  .table tbody tr {
-    background-color: #1a1a1a;
-    border-bottom: 1px solid #333333;
-  }
-
-  .table tbody tr:hover {
-    background-color: #2d2d2d;
-  }
-
-  .table td, .table th {
-    border: none;
-    vertical-align: middle;
-    padding: 12px;
-  }
-
-  /* ===== PETITES ICÔNES TABLEAU ===== */
+  /* ===== ICÔNES TABLEAU ===== */
   .role-icon-small {
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     object-fit: cover;
   }
 
   .class-image-small {
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     object-fit: cover;
-    margin-right: 8px;
+    margin-right: 10px;
     vertical-align: middle;
   }
 
@@ -98,7 +102,6 @@
     background-color: #2563eb;
   }
 
-  /* ===== MESSAGE VIDE ===== */
   .empty-message {
     color: #666666;
     font-style: italic;
@@ -158,7 +161,6 @@
     <table class="table">
       <thead>
         <tr>
-          <th>Joueur</th>
           <th>Pseudo</th>
           <th>Classe</th>
           <th>Spé</th>
@@ -169,7 +171,6 @@
       <tbody>
         <% @characters.each do |character| %>
           <tr>
-            <td><%= character.user.email.split("@").first %></td>
             <td><strong><%= character.pseudo %></strong></td>
             <td>
               <%= image_tag("classes/#{character.wow_class.name.parameterize(separator: '_')}.png", class: "class-image-small") %>
