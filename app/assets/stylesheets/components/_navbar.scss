@@ -1,12 +1,86 @@
-.navbar-lewagon {
+/* ===========================================
+   NAVBAR MIDNIGHT
+   =========================================== */
+
+.navbar-midnight {
+  background: #141416;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+  padding: 12px 32px;
+  display: flex;
   justify-content: space-between;
-  background: white;
+  align-items: center;
 }
 
-.navbar-lewagon .navbar-collapse {
-  flex-grow: 0;
+/* Logo + nom de guilde */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
 }
 
-.navbar-lewagon .navbar-brand img {
+.logo-img {
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.guild-name {
+  font-family: 'Cinzel', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #f0e6d3;
+}
+
+/* Navigation links */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-link {
+  color: #9a9a9a;
+  text-decoration: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+}
+
+.nav-link:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Avatar */
+.avatar {
   width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 215, 0, 0.4);
+  cursor: pointer;
+}
+
+.avatar:hover {
+  border-color: #ffd700;
+  box-shadow: 0 0 16px rgba(255, 215, 0, 0.5);
+}
+
+/* Bouton connexion */
+.btn-login {
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  color: #ffd700;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.btn-login:hover {
+  background: rgba(255, 215, 0, 0.2);
+  border-color: #ffd700;
 }
