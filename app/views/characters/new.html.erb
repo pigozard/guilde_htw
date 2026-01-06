@@ -148,6 +148,16 @@
     white-space: nowrap;
     color: #cccccc;
   }
+  .btn-back {
+  color: #888;
+  text-decoration: none;
+  margin-bottom: 20px;
+  display: inline-block;
+}
+
+.btn-back:hover {
+  color: #ffd700;
+}
 
   .class-item:hover .class-name {
     color: #ffc107;
@@ -169,6 +179,7 @@
 </style>
 
 <div class="container mt-4">
+
   <% if @wow_class %>
     <!-- ÉTAPE 2 : Formulaire avec pseudo + spé -->
     <div class="text-center">
@@ -216,8 +227,8 @@
 
   <% else %>
     <!-- ÉTAPE 1 : Choix de la classe en cercle -->
-    <h1 class="text-center mb-0">Choisis ta classe</h1>
 
+    <h1 class="text-center mb-0">Choisis ta classe</h1>
     <div class="circle-container">
       <% @wow_classes.each do |wow_class| %>
         <div class="class-item">

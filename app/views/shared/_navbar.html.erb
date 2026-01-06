@@ -5,7 +5,7 @@
   <ul class="nav-links">
     <% if user_signed_in? %>
       <li><%= link_to "Home", root_path, class: "nav-link" %></li>
-      <li><%= link_to "Roster", "characters#index", class: "nav-link" %></li>
+      <li><%= link_to "Roster", characters_path, class: "nav-link" %></li>
       <li>
   <%= link_to "Discord", "https://discord.gg/gpdXBfyuYw", target: "_blank", class: "nav-link" %>
 </li>
