@@ -1,16 +1,12 @@
 <nav class="navbar-midnight">
-  <%= link_to root_path, class: "navbar-brand" do %>
-    <%= image_tag "logo.png", class: "logo-img" %>
+
     <span class="guild-name">HIGHWAY TO WYPE</span>
-  <% end %>
 
   <ul class="nav-links">
     <% if user_signed_in? %>
       <li><%= link_to "Home", root_path, class: "nav-link" %></li>
-      <li><%= link_to "Messages", "#", class: "nav-link" %></li>
-      <li>
-        <img src="https://kitt.lewagon.com/placeholder/users/ssaunier" class="avatar">
-      </li>
+      <li><%= link_to "Roster", "characters#index", class: "nav-link" %></li>
+
     <% else %>
       <li><%= link_to "Connexion", new_user_session_path, class: "btn-login" %></li>
     <% end %>

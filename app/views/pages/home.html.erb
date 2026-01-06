@@ -1,2 +1,41 @@
-<h1>Pages#home</h1>
-<p>Find me in app/views/pages/home.html.erb</p>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Highway to Wype - Home</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Hero -->
+  <div class="home-hero">
+    <%= image_tag "logo.png", class: "hero-logo", alt: "Logo" %>
+    <h1 class="hero-title">Highway to Wype</h1>
+    <p class="hero-tagline">Guilde PvE • Alliance • Eitrigg</p>
+  </div>
+
+  <!-- Action cards -->
+  <div class="home-actions">
+    <a href="characters#index" class="action-card">
+      <div class="action-icon">⚔️</div>
+      <h3>Roster</h3>
+      <p>Choix de classes pour Midnight</p>
+    </a>
+
+    <div class="action-card disabled">
+      <div class="action-icon">📅</div>
+      <h3>Raids</h3>
+      <p>Calendrier des événements</p>
+      <span class="soon-badge">SOON</span>
+    </div>
+  </div>
+
+  <!-- Info -->
+  <div class="home-info">
+    <h2>À propos</h2>
+    <p>Highway to Wype est une guilde PvE sur le serveur Eitrigg. On raid dans la bonne humeur tout en visant le contenu endgame.</p>
+  </div>
+
+</body>
+</html>
