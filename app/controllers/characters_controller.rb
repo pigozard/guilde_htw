@@ -4,16 +4,17 @@ class CharactersController < ApplicationController
   def index
     @characters = Character.includes(:user, :wow_class, :specialization).order(created_at: :desc)
     @role_counts = Character.joins(:specialization).group("specializations.role").count
+    @flex_count = Character.where(specialization_id: nil).count
   end
 
-  # Étape 1 : choix de la classe
-  # Étape 2 : si wow_class_id présent, on affiche le form complet
   def new
     @character = Character.new
 
     if params[:wow_class_id]
       @wow_class = WowClass.find(params[:wow_class_id])
       @specializations = @wow_class.specializations
+    elsif params[:flex]
+      @flex = true
     else
       @wow_classes = WowClass.order(:name)
     end
@@ -25,8 +26,14 @@ class CharactersController < ApplicationController
     if @character.save
       redirect_to characters_path, notice: "Perso ajouté !"
     else
-      @wow_class = WowClass.find(params[:character][:wow_class_id])
-      @specializations = @wow_class.specializations
+      if params[:character][:wow_class_id].present?
+        @wow_class = WowClass.find(params[:character][:wow_class_id])
+        @specializations = @wow_class.specializations
+      elsif @character.wow_class_id.nil?
+        @flex = true
+      else
+        @wow_classes = WowClass.order(:name)
+      end
       render :new, status: :unprocessable_entity
     end
   end
