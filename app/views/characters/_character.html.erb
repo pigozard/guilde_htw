@@ -1,0 +1,30 @@
+<tr>
+  <td><strong><%= character.pseudo %></strong></td>
+  <td>
+    <% if character.wow_class %>
+      <%= image_tag("classes/#{character.wow_class.name.parameterize(separator: '_')}.png", class: "class-image-small") %>
+      <%= character.wow_class.name %>
+    <% else %>
+      <span class="flex-text">Flex</span>
+    <% end %>
+  </td>
+  <td>
+    <% if character.specialization %>
+      <%= character.specialization.name %>
+    <% else %>
+      <span class="text-muted">-</span>
+    <% end %>
+  </td>
+  <td>
+    <% if character.specialization %>
+      <%= image_tag("roles/#{character.specialization.role}.png", class: "role-icon-small") %>
+    <% else %>
+      <%= image_tag("roles/flex.png", class: "role-icon-small") %>
+    <% end %>
+  </td>
+  <td>
+    <% if user_signed_in? && character.user == current_user %>
+      <%= button_to "✕", character_path(character), method: :delete, class: "btn btn-sm btn-outline-danger", data: { turbo_confirm: "Supprimer ce perso ?" } %>
+    <% end %>
+  </td>
+</tr>

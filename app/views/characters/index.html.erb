@@ -1,187 +1,19 @@
-<style>
-  body {
-    background-color: #1a1a1a;
-    color: #ffffff;
-  }
-
-  /* ===== CARTES RÔLES ===== */
-  .role-card {
-    width: 120px;
-    height: 120px;
-    margin: 0 auto;
-    transition: all 0.3s;
-  }
-
-  .role-card:hover {
-    transform: scale(1.1);
-    filter: drop-shadow(0 0 15px #ffc107);
-  }
-
-  .role-icon-big {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-
-  .role-count {
-    font-size: 2.5rem;
-    font-weight: bold;
-    margin-top: 15px;
-    color: #ffffff;
-  }
-
-  .role-label {
-    color: #aaaaaa;
-    font-size: 16px;
-    margin-top: 5px;
-  }
-
-  /* ===== FLEX CARD ===== */
-  .flex-card-index {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    border: 3px solid #ffc107;
-    background-color: #2d2d2d;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto;
-    transition: all 0.3s;
-  }
-
-  .flex-card-index:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 20px #ffc107;
-  }
-
-  .flex-icon-big {
-    font-size: 60px;
-    color: #ffc107;
-  }
-
-  /* ===== TABLEAU ===== */
-  .table {
-    background-color: #2d2d2d !important;
-    color: #ffffff !important;
-    border-radius: 10px;
-    overflow: hidden;
-  }
-
-  .table thead {
-    background-color: #3d3d3d !important;
-  }
-
-  .table thead th {
-    background-color: #3d3d3d !important;
-    color: #ffffff !important;
-    border: none !important;
-    padding: 15px !important;
-  }
-
-  .table tbody tr {
-    background-color: #2d2d2d !important;
-    border-bottom: 1px solid #404040 !important;
-  }
-
-  .table tbody tr:hover {
-    background-color: #3d3d3d !important;
-  }
-
-  .table td {
-    background-color: #2d2d2d !important;
-    color: #ffffff !important;
-    border: none !important;
-    vertical-align: middle !important;
-    padding: 12px 15px !important;
-  }
-
-  /* ===== ICÔNES TABLEAU ===== */
-  .role-icon-small {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-
-  .class-image-small {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 10px;
-    vertical-align: middle;
-  }
-
-  /* ===== BOUTON ===== */
-  .btn-primary {
-    background-color: #3b82f6;
-    border: none;
-    padding: 12px 30px;
-    font-size: 18px;
-  }
-
-  .btn-primary:hover {
-    background-color: #2563eb;
-  }
-
-  .empty-message {
-    color: #666666;
-    font-style: italic;
-    padding: 40px;
-  }
-</style>
-
 <div class="container mt-4">
   <h1 class="text-center mb-5">Roster Midnight 🌙</h1>
 
   <!-- Compteurs de rôles -->
   <div class="row justify-content-center mb-5">
-    <div class="col-6 col-md-2 text-center mb-4">
-      <div class="role-card">
-        <%= image_tag("roles/tank.png", class: "role-icon-big") %>
-      </div>
-      <div class="role-count"><%= @role_counts["tank"] || 0 %></div>
-      <div class="role-label">Tanks</div>
-    </div>
-
-    <div class="col-6 col-md-2 text-center mb-4">
-      <div class="role-card">
-        <%= image_tag("roles/healer.png", class: "role-icon-big") %>
-      </div>
-      <div class="role-count"><%= @role_counts["healer"] || 0 %></div>
-      <div class="role-label">Healers</div>
-    </div>
-
-    <div class="col-6 col-md-2 text-center mb-4">
-      <div class="role-card">
-        <%= image_tag("roles/dps_cac.png", class: "role-icon-big") %>
-      </div>
-      <div class="role-count"><%= @role_counts["dps_cac"] || 0 %></div>
-      <div class="role-label">DPS CAC</div>
-    </div>
-
-    <div class="col-6 col-md-2 text-center mb-4">
-      <div class="role-card">
-        <%= image_tag("roles/dps_caster.png", class: "role-icon-big") %>
-      </div>
-      <div class="role-count"><%= @role_counts["dps_caster"] || 0 %></div>
-      <div class="role-label">Casters</div>
-    </div>
-
-  <div class="col-6 col-md-2 text-center mb-4">
-    <div class="role-card">
-    <%= image_tag("roles/flex.png", class: "role-icon-big") %>
-    </div>
-    <div class="role-count"><%= @flex_count %></div>
-    <div class="role-label">Flex</div>
+    <%= render "role_counter", role: "tank", count: @role_counts["tank"] || 0, label: "Tanks" %>
+    <%= render "role_counter", role: "healer", count: @role_counts["healer"] || 0, label: "Healers" %>
+    <%= render "role_counter", role: "dps_cac", count: @role_counts["dps_cac"] || 0, label: "DPS CAC" %>
+    <%= render "role_counter", role: "dps_caster", count: @role_counts["dps_caster"] || 0, label: "Casters" %>
+    <%= render "role_counter", role: "flex", count: @flex_count, label: "Flex" %>
   </div>
 
   <!-- Bouton d'ajout -->
   <div class="text-center mb-5">
     <% if user_signed_in? %>
-      <%= link_to "Ajouter mon perso", new_character_path, class: "btn btn-primary btn-lg" %>
+      <%= link_to "Ajouter mon perso", new_character_path, class: "btn btn-roster btn-lg" %>
     <% else %>
       <%= link_to "Connecte-toi pour ajouter ton perso", new_user_session_path, class: "btn btn-secondary btn-lg" %>
     <% end %>
@@ -189,7 +21,7 @@
 
   <!-- Liste des persos -->
   <% if @characters.any? %>
-    <table class="table">
+    <table class="table roster-table">
       <thead>
         <tr>
           <th>Pseudo</th>
@@ -200,38 +32,7 @@
         </tr>
       </thead>
       <tbody>
-        <% @characters.each do |character| %>
-          <tr>
-            <td><strong><%= character.pseudo %></strong></td>
-            <td>
-              <% if character.wow_class %>
-                <%= image_tag("classes/#{character.wow_class.name.parameterize(separator: '_')}.png", class: "class-image-small") %>
-                <%= character.wow_class.name %>
-              <% else %>
-                <span style="color: #ffc107;">Flex</span>
-              <% end %>
-            </td>
-            <td>
-              <% if character.specialization %>
-                <%= character.specialization.name %>
-              <% else %>
-                <span style="color: #888;">-</span>
-              <% end %>
-            </td>
-            <td>
-              <% if character.specialization %>
-                <%= image_tag("roles/#{character.specialization.role}.png", class: "role-icon-small") %>
-              <% else %>
-                <span style="font-size: 24px; color: #ffc107;">?</span>
-              <% end %>
-            </td>
-            <td>
-              <% if user_signed_in? && character.user == current_user %>
-                <%= button_to "✕", character_path(character), method: :delete, class: "btn btn-sm btn-outline-danger", data: { turbo_confirm: "Supprimer ce perso ?" } %>
-              <% end %>
-            </td>
-          </tr>
-        <% end %>
+        <%= render @characters %>
       </tbody>
     </table>
   <% else %>
