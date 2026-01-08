@@ -10,15 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_05_185220) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_08_200616) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "characters", force: :cascade do |t|
     t.string "pseudo"
     t.bigint "user_id", null: false
-    t.bigint "wow_class_id", null: false
-    t.bigint "specialization_id", null: false
+    t.bigint "wow_class_id"
+    t.bigint "specialization_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["specialization_id"], name: "index_characters_on_specialization_id"

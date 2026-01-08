@@ -19,81 +19,49 @@
     box-shadow: none;
   }
 
-  /* ===== HEADER CLASSE ===== */
-  .class-header {
+  /* ===== FLEX AU CENTRE ===== */
+  .flex-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+  .flex-card {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #2d2d2d;
+    border: 3px solid #ffc107;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 15px;
-    margin-bottom: 10px;
-  }
-
-  .class-header-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-  }
-
-  /* ===== SPECS ===== */
-  .spec-card {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    border: 3px solid #404040;
-    overflow: hidden;
-    margin: 0 auto;
-    cursor: pointer;
     transition: all 0.3s;
+    cursor: pointer;
+    margin: 0 auto;
   }
 
-  .spec-card:hover {
-    border-color: #ffc107;
-    box-shadow: 0 0 20px #ffc107;
-  }
-
-  .spec-icon {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .spec-name {
-    color: #cccccc;
-    font-size: 13px;
-    margin-top: 8px;
-  }
-
-  .spec-radio {
-    display: none;
-  }
-
-  .spec-radio:checked + label .spec-card {
-    border-color: #ffc107;
+  .flex-card:hover {
+    background-color: #ffc107;
     box-shadow: 0 0 25px #ffc107;
+    transform: scale(1.1);
   }
 
-  .spec-radio:checked + label .spec-name {
+  .flex-card:hover .flex-icon {
+    color: #1a1a1a;
+  }
+
+  .flex-icon {
+    font-size: 40px;
     color: #ffc107;
+    transition: color 0.3s;
   }
 
-  /* ===== BOUTON ===== */
-  .btn-primary {
-    background-color: #3b82f6;
-    border: none;
-    padding: 12px 30px;
-    font-size: 16px;
-  }
-
-  .btn-primary:hover {
-    background-color: #2563eb;
-  }
-
-  .btn-link {
-    color: #6ea8fe;
-  }
-
-  .btn-link:hover {
+  .flex-label {
     color: #ffc107;
+    margin-top: 10px;
+    font-weight: bold;
   }
 
   /* ===== CLASSES (cercle) ===== */
@@ -148,46 +116,108 @@
     white-space: nowrap;
     color: #cccccc;
   }
-  .btn-back {
-  color: #888;
-  text-decoration: none;
-  margin-bottom: 20px;
-  display: inline-block;
-}
-
-.btn-back:hover {
-  color: #ffd700;
-}
 
   .class-item:hover .class-name {
     color: #ffc107;
   }
 
-  .class-item:nth-child(1)  { transform: rotate(0deg) translateY(-280px) rotate(0deg); }
-  .class-item:nth-child(2)  { transform: rotate(27.7deg) translateY(-280px) rotate(-27.7deg); }
-  .class-item:nth-child(3)  { transform: rotate(55.4deg) translateY(-280px) rotate(-55.4deg); }
-  .class-item:nth-child(4)  { transform: rotate(83.1deg) translateY(-280px) rotate(-83.1deg); }
-  .class-item:nth-child(5)  { transform: rotate(110.8deg) translateY(-280px) rotate(-110.8deg); }
-  .class-item:nth-child(6)  { transform: rotate(138.5deg) translateY(-280px) rotate(-138.5deg); }
-  .class-item:nth-child(7)  { transform: rotate(166.2deg) translateY(-280px) rotate(-166.2deg); }
-  .class-item:nth-child(8)  { transform: rotate(193.9deg) translateY(-280px) rotate(-193.9deg); }
-  .class-item:nth-child(9)  { transform: rotate(221.6deg) translateY(-280px) rotate(-221.6deg); }
-  .class-item:nth-child(10) { transform: rotate(249.3deg) translateY(-280px) rotate(-249.3deg); }
-  .class-item:nth-child(11) { transform: rotate(277deg) translateY(-280px) rotate(-277deg); }
-  .class-item:nth-child(12) { transform: rotate(304.7deg) translateY(-280px) rotate(-304.7deg); }
-  .class-item:nth-child(13) { transform: rotate(332.4deg) translateY(-280px) rotate(-332.4deg); }
+  /* ===== SPECS ===== */
+  .spec-card {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid #404040;
+    overflow: hidden;
+    margin: 0 auto;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .spec-card:hover {
+    border-color: #ffc107;
+    box-shadow: 0 0 20px #ffc107;
+  }
+
+  .spec-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .spec-name {
+    color: #cccccc;
+    font-size: 13px;
+    margin-top: 8px;
+  }
+
+  .spec-radio {
+    display: none;
+  }
+
+  .spec-radio:checked + label .spec-card {
+    border-color: #ffc107;
+    box-shadow: 0 0 25px #ffc107;
+  }
+
+  .spec-radio:checked + label .spec-name {
+    color: #ffc107;
+  }
+
+  /* ===== BOUTONS ===== */
+  .btn-primary {
+    background-color: #3b82f6;
+    border: none;
+    padding: 12px 30px;
+    font-size: 16px;
+  }
+
+  .btn-primary:hover {
+    background-color: #2563eb;
+  }
+
+  .btn-link {
+    color: #6ea8fe;
+  }
+
+  .btn-link:hover {
+    color: #ffc107;
+  }
 </style>
 
 <div class="container mt-4">
+  <% if @flex %>
+    <!-- FLEX : Juste le pseudo -->
+    <div class="text-center">
+      <div class="flex-card" style="margin: 0 auto 20px;">
+        <span class="flex-icon">?</span>
+      </div>
+      <h1 class="mb-3">Flex</h1>
+      <p class="text-muted mb-4">Tu décideras ta classe plus tard !</p>
 
-  <% if @wow_class %>
+      <%= link_to "← Retour", new_character_path, class: "btn btn-link mb-4" %>
+
+      <%= form_with model: @character, local: true do |f| %>
+        <% if @character.errors.any? %>
+          <div class="alert alert-danger">
+            <% @character.errors.full_messages.each do |msg| %>
+              <p class="mb-0"><%= msg %></p>
+            <% end %>
+          </div>
+        <% end %>
+
+        <div class="mb-4">
+          <%= f.label :pseudo, "Nom du personnage", class: "form-label" %>
+          <%= f.text_field :pseudo, class: "form-control", placeholder: "Ex: Arthas" %>
+        </div>
+
+        <%= f.submit "Ajouter au roster", class: "btn btn-primary btn-lg mt-3" %>
+      <% end %>
+    </div>
+
+  <% elsif @wow_class %>
     <!-- ÉTAPE 2 : Formulaire avec pseudo + spé -->
     <div class="text-center">
-      <div class="class-header">
-        <%= image_tag("classes/#{@wow_class.name.parameterize(separator: '_')}.png", class: "class-header-icon") %>
-        <h1 class="mb-0"><%= @wow_class.name %></h1>
-      </div>
-
+      <h1 class="mb-3"><%= @wow_class.name %></h1>
       <%= link_to "← Changer de classe", new_character_path, class: "btn btn-link mb-4" %>
 
       <%= form_with model: @character, local: true do |f| %>
@@ -227,11 +257,22 @@
 
   <% else %>
     <!-- ÉTAPE 1 : Choix de la classe en cercle -->
-
     <h1 class="text-center mb-0">Choisis ta classe</h1>
+
     <div class="circle-container">
-      <% @wow_classes.each do |wow_class| %>
-        <div class="class-item">
+      <!-- FLEX au centre -->
+      <div class="flex-center">
+        <%= link_to new_character_path(flex: true), class: "text-decoration-none" do %>
+          <div class="flex-card">
+            <span class="flex-icon">?</span>
+          </div>
+          <div class="flex-label">Flex</div>
+        <% end %>
+      </div>
+
+      <!-- Classes autour (calculé dynamiquement) -->
+      <% @wow_classes.each_with_index do |wow_class, index| %>
+        <div class="class-item" style="transform: rotate(<%= index * 27.7 %>deg) translateY(-280px) rotate(<%= -index * 27.7 %>deg);">
           <%= link_to new_character_path(wow_class_id: wow_class.id), class: "text-decoration-none" do %>
             <div class="class-card">
               <%= class_icon(wow_class.name) %>
