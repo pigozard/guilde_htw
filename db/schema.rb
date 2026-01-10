@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_08_200616) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_10_204745) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -24,6 +24,32 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_08_200616) do
     t.index ["specialization_id"], name: "index_characters_on_specialization_id"
     t.index ["user_id"], name: "index_characters_on_user_id"
     t.index ["wow_class_id"], name: "index_characters_on_wow_class_id"
+  end
+
+  create_table "event_participations", force: :cascade do |t|
+    t.bigint "event_id", null: false
+    t.bigint "character_id", null: false
+    t.bigint "specialization_id"
+    t.string "status", default: "confirmed"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["character_id"], name: "index_event_participations_on_character_id"
+    t.index ["event_id", "character_id"], name: "index_event_participations_on_event_id_and_character_id", unique: true
+    t.index ["event_id"], name: "index_event_participations_on_event_id"
+    t.index ["specialization_id"], name: "index_event_participations_on_specialization_id"
+  end
+
+  create_table "events", force: :cascade do |t|
+    t.string "title", null: false
+    t.text "description"
+    t.datetime "start_time", null: false
+    t.datetime "end_time"
+    t.string "event_type", default: "raid"
+    t.integer "max_participants"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_events_on_user_id"
   end
 
   create_table "specializations", force: :cascade do |t|
@@ -58,5 +84,9 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_08_200616) do
   add_foreign_key "characters", "specializations"
   add_foreign_key "characters", "users"
   add_foreign_key "characters", "wow_classes"
+  add_foreign_key "event_participations", "characters"
+  add_foreign_key "event_participations", "events"
+  add_foreign_key "event_participations", "specializations"
+  add_foreign_key "events", "users"
   add_foreign_key "specializations", "wow_classes"
 end

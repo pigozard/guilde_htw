@@ -1,0 +1,43 @@
+<div class="card-htw">
+  <div class="card-body">
+    <%= simple_form_for @event do |f| %>
+
+      <div class="mb-3">
+        <%= f.label :title, "Titre" %>
+        <%= f.text_field :title, class: "form-control-htw", placeholder: "Ex: Raid Nerub'ar Palace" %>
+      </div>
+
+      <div class="mb-3">
+        <%= f.label :event_type, "Type d'événement" %>
+        <%= f.select :event_type, [
+          ["⚔️ Raid", "raid"],
+          ["🔑 Mythic+", "mythic+"],
+          ["🛡️ PvP", "pvp"],
+          ["🎉 Social", "social"],
+          ["📅 Autre", "other"]
+        ], {}, class: "form-control-htw" %>
+      </div>
+
+      <div class="mb-3">
+        <%= f.label :start_time, "Date et heure" %>
+        <%= f.datetime_local_field :start_time, class: "form-control-htw" %>
+      </div>
+
+      <div class="mb-3">
+        <%= f.label :max_participants, "Max participants (optionnel)" %>
+        <%= f.number_field :max_participants, class: "form-control-htw", placeholder: "Ex: 20" %>
+      </div>
+
+      <div class="mb-4">
+        <%= f.label :description, "Description (optionnel)" %>
+        <%= f.text_area :description, class: "form-control-htw", rows: 3, placeholder: "Détails sur l'événement..." %>
+      </div>
+
+      <div class="d-flex gap-3">
+        <%= f.submit "Enregistrer", class: "btn-gold" %>
+        <%= link_to "Annuler", events_path, class: "btn btn-outline-light" %>
+      </div>
+
+    <% end %>
+  </div>
+</div>

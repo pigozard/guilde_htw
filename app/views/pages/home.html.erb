@@ -13,12 +13,11 @@
     <p>Choix de classes pour Midnight</p>
   <% end %>
 
-  <div class="action-card disabled">
+  <%= link_to events_path, class: "action-card" do %>
     <div class="action-icon">📅</div>
-    <h3>Raids</h3>
-    <p>Calendrier des événements</p>
-    <span class="soon-badge">SOON</span>
-  </div>
+    <h3>Calendrier</h3>
+    <p>Événements de la guilde</p>
+  <% end %>
 </div>
 
 <!-- Info -->

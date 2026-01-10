@@ -1,0 +1,18 @@
+<div class="participant-item">
+  <% if p.character.wow_class&.icon.present? %>
+    <%= image_tag p.character.wow_class.icon, class: "class-icon" %>
+  <% end %>
+  <div>
+    <strong><%= p.character.pseudo %></strong>
+    <% if p.active_specialization %>
+      <% role_icon = case p.role
+        when "tank" then "🛡️"
+        when "healer" then "💚"
+        when "dps_cac" then "⚔️"
+        when "dps_caster" then "🔮"
+        else ""
+      end %>
+      <small class="text-muted">- <%= p.active_specialization.name %> <%= role_icon %></small>
+    <% end %>
+  </div>
+</div>

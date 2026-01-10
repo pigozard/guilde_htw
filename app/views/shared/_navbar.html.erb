@@ -1,16 +1,12 @@
 <nav class="navbar-midnight">
-
-
-    <%= link_to "HIGHWAY TO WIPE", root_path, class: "guild-name" %>
+  <%= link_to "HIGHWAY TO WIPE", root_path, class: "guild-name" %>
 
   <ul class="nav-links">
     <% if user_signed_in? %>
       <li><%= link_to "Home", root_path, class: "nav-link" %></li>
       <li><%= link_to "Roster", characters_path, class: "nav-link" %></li>
-      <li>
-  <%= link_to "Discord", "https://discord.gg/gpdXBfyuYw", target: "_blank", class: "nav-link" %>
-</li>
-
+      <li><%= link_to "Calendrier", events_path, class: "nav-link" %></li>
+      <li><%= link_to "Discord", "https://discord.gg/gpdXBfyuYw", target: "_blank", class: "nav-link" %></li>
     <% else %>
       <li><%= link_to "Connexion", new_user_session_path, class: "btn-login" %></li>
     <% end %>
