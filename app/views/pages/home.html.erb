@@ -7,11 +7,11 @@
 
 <!-- Action cards -->
 <div class="home-actions">
-  <a href="/characters" class="action-card">
+  <%= link_to characters_path, class: "action-card" do %>
     <div class="action-icon">⚔️</div>
     <h3>Roster</h3>
     <p>Choix de classes pour Midnight</p>
-  </a>
+  <% end %>
 
   <div class="action-card disabled">
     <div class="action-icon">📅</div>
