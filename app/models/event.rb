@@ -3,27 +3,26 @@ class Event < ApplicationRecord
   has_many :event_participations, dependent: :destroy
   has_many :characters, through: :event_participations
 
+  EVENT_TYPES_DATA = {
+    "raid" => { emoji: "⚔️", label: "Raid" },
+    "mythic+" => { emoji: "🔑", label: "Mythic+" },
+    "pvp" => { emoji: "🛡️", label: "PvP" },
+    "social" => { emoji: "🎉", label: "Social" },
+    "other" => { emoji: "📅", label: "Autre" }
+  }.freeze
+
+  EVENT_TYPES = EVENT_TYPES_DATA.keys.freeze
+
   validates :title, presence: true
   validates :start_time, presence: true
+  validates :event_type, inclusion: { in: EVENT_TYPES }, allow_blank: true
 
   def event_type_emoji
-    case event_type
-    when "raid" then "⚔️"
-    when "mythic+" then "🔑"
-    when "pvp" then "🛡️"
-    when "social" then "🎉"
-    else "📅"
-    end
+    EVENT_TYPES_DATA.dig(event_type, :emoji) || "📅"
   end
 
   def event_type_label
-    case event_type
-    when "raid" then "Raid"
-    when "mythic+" then "Mythic+"
-    when "pvp" then "PvP"
-    when "social" then "Social"
-    else "Autre"
-    end
+    EVENT_TYPES_DATA.dig(event_type, :label) || "Autre"
   end
 
   def confirmed_count

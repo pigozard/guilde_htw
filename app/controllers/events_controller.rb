@@ -1,6 +1,7 @@
 class EventsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
   before_action :set_event, only: [:show, :edit, :update, :destroy]
+  before_action :authorize_owner!, only: [:edit, :update, :destroy]
 
   def index
     @date = params[:start_date] ? Date.parse(params[:start_date]) : Date.today
@@ -11,9 +12,9 @@ class EventsController < ApplicationController
     @confirmed = @event.event_participations.where(status: "confirmed").includes(character: [:wow_class, :specialization], specialization: [])
     @tentative = @event.event_participations.where(status: "tentative").includes(character: [:wow_class, :specialization], specialization: [])
     @declined = @event.event_participations.where(status: "declined").includes(character: [:wow_class, :specialization], specialization: [])
-    if user_signed_in?
-      @my_characters = current_user.characters.includes(:wow_class, :specialization).reject { |c| c.wow_class.nil? || c.wow_class.name == "Flex" }
 
+    if user_signed_in?
+      @my_characters = current_user.characters.with_class.includes(:wow_class, :specialization)
     end
   end
 
@@ -24,11 +25,7 @@ class EventsController < ApplicationController
 
   def create
     @event = current_user.events.build(event_params)
-
-    # Combiner date + heure
-    if params[:event][:start_date].present? && params[:event][:start_hour].present?
-      @event.start_time = DateTime.parse("#{params[:event][:start_date]} #{params[:event][:start_hour]}")
-    end
+    set_event_start_time
 
     if @event.save
       redirect_to @event, notice: "Événement créé !"
@@ -41,10 +38,7 @@ class EventsController < ApplicationController
   end
 
   def update
-    # Combiner date + heure
-    if params[:event][:start_date].present? && params[:event][:start_hour].present?
-      @event.start_time = DateTime.parse("#{params[:event][:start_date]} #{params[:event][:start_hour]}")
-    end
+    set_event_start_time
 
     if @event.update(event_params)
       redirect_to @event, notice: "Événement mis à jour."
@@ -62,6 +56,18 @@ class EventsController < ApplicationController
 
   def set_event
     @event = Event.find(params[:id])
+  end
+
+  def authorize_owner!
+    unless @event.user == current_user
+      redirect_to events_path, alert: "Non autorisé"
+    end
+  end
+
+  def set_event_start_time
+    return unless params[:event][:start_date].present? && params[:event][:start_hour].present?
+
+    @event.start_time = DateTime.parse("#{params[:event][:start_date]} #{params[:event][:start_hour]}")
   end
 
   def event_params
