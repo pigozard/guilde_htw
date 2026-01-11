@@ -3,17 +3,17 @@ class EventsController < ApplicationController
   before_action :set_event, only: [:show, :edit, :update, :destroy]
 
   def index
-  @date = params[:start_date] ? Date.parse(params[:start_date]) : Date.today
-  @events = Event.where(start_time: @date.beginning_of_month.beginning_of_week..@date.end_of_month.end_of_week)
+    @date = params[:start_date] ? Date.parse(params[:start_date]) : Date.today
+    @events = Event.where(start_time: @date.beginning_of_month.beginning_of_week..@date.end_of_month.end_of_week)
   end
 
   def show
     @confirmed = @event.event_participations.where(status: "confirmed").includes(character: [:wow_class, :specialization], specialization: [])
     @tentative = @event.event_participations.where(status: "tentative").includes(character: [:wow_class, :specialization], specialization: [])
     @declined = @event.event_participations.where(status: "declined").includes(character: [:wow_class, :specialization], specialization: [])
-
     if user_signed_in?
-      @my_characters = current_user.characters.includes(:wow_class, :specialization)
+      @my_characters = current_user.characters.includes(:wow_class, :specialization).reject { |c| c.wow_class.nil? || c.wow_class.name == "Flex" }
+
     end
   end
 
@@ -24,6 +24,11 @@ class EventsController < ApplicationController
 
   def create
     @event = current_user.events.build(event_params)
+
+    # Combiner date + heure
+    if params[:event][:start_date].present? && params[:event][:start_hour].present?
+      @event.start_time = DateTime.parse("#{params[:event][:start_date]} #{params[:event][:start_hour]}")
+    end
 
     if @event.save
       redirect_to @event, notice: "Événement créé !"
@@ -36,6 +41,11 @@ class EventsController < ApplicationController
   end
 
   def update
+    # Combiner date + heure
+    if params[:event][:start_date].present? && params[:event][:start_hour].present?
+      @event.start_time = DateTime.parse("#{params[:event][:start_date]} #{params[:event][:start_hour]}")
+    end
+
     if @event.update(event_params)
       redirect_to @event, notice: "Événement mis à jour."
     else

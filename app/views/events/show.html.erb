@@ -30,38 +30,37 @@
         <% end %>
       </div>
 
-      <!-- Composition -->
-      <% if @confirmed.any? %>
-        <div class="card-htw mb-4">
-          <div class="card-header">📊 Composition</div>
-          <div class="card-body">
-            <div class="composition-grid">
-              <% roles = @confirmed.map(&:role).compact.tally %>
-              <div class="composition-box">
-                <div class="icon">🛡️</div>
-                <div class="count"><%= roles["tank"] || 0 %></div>
-                <div class="label">Tanks</div>
-              </div>
-              <div class="composition-box">
-                <div class="icon">💚</div>
-                <div class="count"><%= roles["healer"] || 0 %></div>
-                <div class="label">Heals</div>
-              </div>
-              <div class="composition-box">
-                <div class="icon">⚔️</div>
-                <div class="count"><%= roles["dps_cac"] || 0 %></div>
-                <div class="label">CAC</div>
-              </div>
-              <div class="composition-box">
-                <div class="icon">🔮</div>
-                <div class="count"><%= roles["dps_caster"] || 0 %></div>
-                <div class="label">Casters</div>
-              </div>
-            </div>
-          </div>
+    <!-- Composition -->
+<% if @confirmed.any? %>
+  <div class="card-htw mb-4">
+    <div class="card-header">📊 Composition</div>
+    <div class="card-body">
+      <div class="composition-grid">
+        <% roles = @confirmed.map(&:role).compact.tally %>
+        <div class="composition-box">
+          <%= image_tag "roles/tank.png", class: "role-icon-big" %>
+          <div class="count"><%= roles["tank"] || 0 %></div>
+          <div class="label">Tanks</div>
         </div>
-      <% end %>
-
+        <div class="composition-box">
+          <%= image_tag "roles/healer.png", class: "role-icon-big" %>
+          <div class="count"><%= roles["healer"] || 0 %></div>
+          <div class="label">Heals</div>
+        </div>
+        <div class="composition-box">
+          <%= image_tag "roles/dps_cac.png", class: "role-icon-big" %>
+          <div class="count"><%= roles["dps_cac"] || 0 %></div>
+          <div class="label">CAC</div>
+        </div>
+        <div class="composition-box">
+          <%= image_tag "roles/dps_caster.png", class: "role-icon-big" %>
+          <div class="count"><%= roles["dps_caster"] || 0 %></div>
+          <div class="label">Casters</div>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
       <!-- Confirmés -->
       <div class="card-htw mb-3">
         <div class="card-header header-confirmed">✅ Confirmés (<%= @confirmed.count %>)</div>

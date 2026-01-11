@@ -685,3 +685,213 @@
   .card-htw .card-header { padding: 12px 15px !important; font-size: 0.9rem; }
   .card-htw .card-body { padding: 15px !important; }
 }
+/* ===========================================
+   FORMULAIRE EVENT
+   =========================================== */
+
+.event-form-container {
+  background: #2d2d2d;
+  border: 1px solid #404040;
+  border-radius: 10px;
+  padding: 30px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.event-form .form-label {
+  color: #f0e6d3;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.event-form .form-control {
+  background: #1a1a1a !important;
+  border: 1px solid #404040 !important;
+  color: #fff !important;
+  border-radius: 6px;
+  padding: 12px 15px;
+}
+
+.event-form .form-control:focus {
+  border-color: #ffd700 !important;
+  box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2) !important;
+  outline: none;
+}
+
+.event-form .form-control::placeholder {
+  color: #666;
+}
+
+/* Date/Time input sans secondes */
+.event-form input[type="datetime-local"] {
+  color-scheme: dark;
+}
+
+.alert-error {
+  background: rgba(220, 53, 69, 0.15);
+  border: 1px solid #dc3545;
+  color: #dc3545;
+  border-radius: 8px;
+  padding: 15px;
+}
+
+.alert-error ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+/* ===========================================
+   SPEC SELECTOR
+   =========================================== */
+
+.spec-selector {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+
+.spec-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 15px;
+  background: #2d2d2d;
+  border: 2px solid #404040;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.spec-option:hover {
+  border-color: #ffd700;
+  background: #3d3d3d;
+}
+
+.spec-option.active,
+.spec-option:has(input:checked) {
+  border-color: #ffd700;
+  background: rgba(255, 215, 0, 0.1);
+}
+
+.spec-option input[type="radio"] {
+  display: none;
+}
+
+.spec-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+}
+
+.spec-name {
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.spec-role-icon {
+  font-size: 0.85rem;
+}
+
+/* ===========================================
+   SIGNUP SIMPLIFIÉ
+   =========================================== */
+
+.signup-spec-info {
+  color: #aaa;
+  font-size: 0.85rem;
+}
+
+.role-icon-small {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  margin-left: 5px;
+}
+
+.spec-toggle {
+  margin-left: 15px;
+}
+
+.spec-toggle-link {
+  color: #888 !important;
+  font-size: 0.8rem;
+  text-decoration: none !important;
+}
+
+.spec-toggle-link:hover {
+  color: #ffd700 !important;
+}
+
+.spec-selector {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  padding: 10px;
+  background: #2d2d2d;
+  border-radius: 8px;
+}
+
+.spec-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: #1a1a1a;
+  border: 1px solid #404040;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.spec-option:hover {
+  border-color: #ffd700;
+}
+
+.spec-option.active,
+.spec-option:has(input:checked) {
+  border-color: #ffd700;
+  background: rgba(255, 215, 0, 0.1);
+}
+
+.spec-option input[type="radio"] {
+  display: none;
+}
+
+.spec-name {
+  color: #fff;
+  font-size: 0.85rem;
+}
+
+/* Icônes de rôle */
+.role-icon-big {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.role-icon-small {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  vertical-align: middle;
+}
+
+/* Participant card simplifié */
+.participant-card .participant-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.participant-card .participant-name {
+  font-weight: 600;
+  color: #fff;
+}
+
+.participant-card .participant-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+}
