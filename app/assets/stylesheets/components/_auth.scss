@@ -1,0 +1,315 @@
+/* ===========================================
+   PAGES AUTHENTIFICATION - STYLE WOW
+   =========================================== */
+
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+  position: relative;
+}
+
+.auth-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="1" fill="%23ffd700" opacity="0.1"/></svg>');
+  background-size: 50px 50px;
+  opacity: 0.3;
+}
+
+.auth-card {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  background: linear-gradient(180deg, #1e1e24 0%, #141418 100%);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow:
+    0 0 40px rgba(0, 0, 0, 0.5),
+    0 0 80px rgba(255, 215, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.auth-card::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ffd700, transparent);
+}
+
+/* Header */
+.auth-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.auth-logo {
+  width: 200px !important;
+  height: 200px !important;
+  margin-bottom: 16px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 215, 0, 0.4);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  object-fit: cover;
+}
+
+.auth-title {
+  font-family: 'Cinzel', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffd700;
+  margin: 0 0 8px 0;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+.auth-subtitle {
+  color: #9a9a9a;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Form */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* IMPORTANT: Force le style sur les inputs Simple Form */
+.auth-card input[type="text"],
+.auth-card input[type="email"],
+.auth-card input[type="password"],
+.auth-card .form-control,
+.auth-card .string,
+.auth-card .email,
+.auth-card .password {
+  width: 100% !important;
+  padding: 14px 18px !important;
+  background: rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid rgba(255, 215, 0, 0.2) !important;
+  border-radius: 8px !important;
+  color: #ffffff !important;
+  font-size: 15px !important;
+  transition: all 0.3s ease !important;
+}
+
+.auth-card input[type="text"]:focus,
+.auth-card input[type="email"]:focus,
+.auth-card input[type="password"]:focus,
+.auth-card .form-control:focus {
+  outline: none !important;
+  border-color: #ffd700 !important;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.2) !important;
+  background: rgba(0, 0, 0, 0.6) !important;
+}
+
+.auth-card input::placeholder {
+  color: #666 !important;
+}
+
+/* Labels cachés */
+.auth-card label.form-label,
+.auth-card .form-group > label {
+  display: none !important;
+}
+
+/* Form groups */
+.auth-card .form-group {
+  margin-bottom: 0 !important;
+}
+
+/* Checkbox remember me */
+.auth-card .form-check {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.auth-card .form-check-label {
+  color: #9a9a9a !important;
+  font-size: 14px !important;
+  margin: 0 !important;
+}
+
+.auth-card .form-check-input {
+  background-color: rgba(0, 0, 0, 0.4) !important;
+  border-color: rgba(255, 215, 0, 0.3) !important;
+  width: 18px !important;
+  height: 18px !important;
+  margin: 0 !important;
+}
+
+.auth-card .form-check-input:checked {
+  background-color: #ffd700 !important;
+  border-color: #ffd700 !important;
+}
+
+/* Hints */
+.auth-hint {
+  color: #666;
+  font-size: 12px;
+  margin: -8px 0 0 0;
+  text-align: center;
+}
+
+.auth-card .form-text {
+  display: none;
+}
+
+/* Button */
+.auth-card .btn,
+.auth-card input[type="submit"],
+.auth-card button[type="submit"] {
+  width: 100% !important;
+  padding: 14px 24px !important;
+  background: linear-gradient(180deg, #ffd700 0%, #b8860b 100%) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  color: #000 !important;
+  font-family: 'Cinzel', serif !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3) !important;
+  margin-top: 8px !important;
+}
+
+.auth-card .btn:hover,
+.auth-card input[type="submit"]:hover,
+.auth-card button[type="submit"]:hover {
+  background: linear-gradient(180deg, #ffdf40 0%, #daa520 100%) !important;
+  box-shadow: 0 6px 25px rgba(255, 215, 0, 0.5) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Links */
+.auth-links {
+  text-align: center;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 215, 0, 0.1);
+}
+
+.auth-link {
+  color: #ffd700 !important;
+  text-decoration: none !important;
+  font-size: 14px !important;
+  transition: all 0.3s ease !important;
+}
+
+.auth-link:hover {
+  color: #fff !important;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5) !important;
+}
+
+.auth-separator {
+  color: #444;
+  margin: 0 12px;
+}
+
+.auth-text {
+  color: #666;
+  font-size: 14px;
+  margin-right: 8px;
+}
+
+/* Divider */
+.auth-divider {
+  border: none;
+  border-top: 1px solid rgba(255, 215, 0, 0.1);
+  margin: 20px 0;
+}
+
+/* Section title */
+.auth-section-title {
+  color: #9a9a9a;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 0 8px 0;
+  text-align: center;
+}
+
+/* Danger zone */
+.auth-danger-zone {
+  text-align: center;
+  padding-top: 16px;
+}
+
+.auth-danger-title {
+  color: #dc3545;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.auth-btn-danger {
+  background: transparent !important;
+  border: 1px solid #dc3545 !important;
+  color: #dc3545 !important;
+  padding: 10px 20px !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+}
+
+.auth-btn-danger:hover {
+  background: #dc3545 !important;
+  color: #fff !important;
+}
+
+/* Error messages */
+.auth-card .invalid-feedback,
+.auth-card .field_with_errors + .invalid-feedback {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}
+
+.auth-card .field_with_errors {
+  display: contents;
+}
+
+.auth-card .field_with_errors input {
+  border-color: #dc3545 !important;
+}
+
+/* Hide navbar on auth pages */
+.auth-container ~ .navbar-midnight,
+body:has(.auth-container) .navbar-midnight {
+  display: none;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 30px 24px;
+    margin: 0 10px;
+  }
+
+  .auth-title {
+    font-size: 24px;
+  }
+
+  .auth-logo {
+    width: 60px !important;
+    height: 60px !important;
+  }
+}

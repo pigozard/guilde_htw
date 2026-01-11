@@ -1,32 +1,50 @@
-<h2>Créer un compte</h2>
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <%= image_tag "logo.png", class: "auth-logo", alt: "Logo" %>
+      <h1 class="auth-title">Rejoins la guilde</h1>
+      <p class="auth-subtitle">Highway to Wipe t'attend !</p>
+    </div>
 
-<%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= f.error_notification %>
+    <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+      <%= f.error_notification %>
 
-  <div class="form-inputs">
-    <%= f.input :pseudo,
-                required: true,
-                autofocus: true,
-                input_html: { autocomplete: "pseudo" },
-                placeholder: "Ton pseudo" %>
+      <div class="auth-form">
+        <%= f.input :pseudo,
+                    required: true,
+                    autofocus: true,
+                    label: false,
+                    placeholder: "Ton pseudo",
+                    input_html: { autocomplete: "pseudo", class: "auth-input" } %>
 
-    <%= f.input :email,
-                required: true,
-                input_html: { autocomplete: "email" } %>
+        <%= f.input :email,
+                    required: true,
+                    label: false,
+                    placeholder: "Email",
+                    input_html: { autocomplete: "email", class: "auth-input" } %>
 
-    <%= f.input :password,
-                required: true,
-                hint: ("#{@minimum_password_length} caractères minimum" if @minimum_password_length),
-                input_html: { autocomplete: "new-password" } %>
+        <%= f.input :password,
+                    required: true,
+                    label: false,
+                    placeholder: "Mot de passe",
+                    hint: false,
+                    input_html: { autocomplete: "new-password", class: "auth-input" } %>
 
-    <%= f.input :password_confirmation,
-                required: true,
-                input_html: { autocomplete: "new-password" } %>
+        <%= f.input :password_confirmation,
+                    required: true,
+                    label: false,
+                    placeholder: "Confirmer le mot de passe",
+                    input_html: { autocomplete: "new-password", class: "auth-input" } %>
+
+        <p class="auth-hint">Minimum 6 caractères</p>
+
+        <%= f.button :submit, "Créer mon compte", class: "auth-btn" %>
+      </div>
+    <% end %>
+
+    <div class="auth-links">
+      <span class="auth-text">Déjà un compte ?</span>
+      <%= link_to "Se connecter", new_session_path(resource_name), class: "auth-link" %>
+    </div>
   </div>
-
-  <div class="form-actions">
-    <%= f.button :submit, "S'inscrire", class: "btn btn-gold" %>
-  </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+</div>
