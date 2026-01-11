@@ -838,3 +838,12 @@
   .card-htw .card-body { padding: 15px !important; }
   .signup-character .class-icon { width: 35px; height: 35px; }
 }
+
+/* ===========================================
+   FIX - Icônes Roster
+   =========================================== */
+
+.role-card .role-icon-big {
+  width: 100px !important;
+  height: 100px !important;
+}
