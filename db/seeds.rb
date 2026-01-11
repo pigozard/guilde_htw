@@ -1,8 +1,3 @@
-# Au début du fichier seeds.rb
-if Rails.env.production?
-  puts "⚠️ Production detected - skipping destructive seeds"
-  exit
-end
 
 # OU plus sûr :
 Character.destroy_all unless Rails.env.production?
