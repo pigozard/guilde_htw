@@ -9,6 +9,6 @@ Rails.application.routes.draw do
   end
 
   resources :wow_classes, only: [] do
-  get :specializations, on: :member
+    get :specializations, on: :member
   end
 end
