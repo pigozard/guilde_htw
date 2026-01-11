@@ -29,12 +29,13 @@
           </div>
         <% end %>
       </div>
-<!-- Composition -->
+
+      <!-- Composition -->
       <% if @confirmed.any? %>
         <div class="card-htw mb-4">
           <div class="card-header">📊 Composition</div>
           <div class="card-body">
-            <div class="d-flex justify-content-around">
+            <div class="composition-grid">
               <% roles = @confirmed.map(&:role).compact.tally %>
               <div class="composition-box">
                 <div class="icon">🛡️</div>
@@ -69,7 +70,7 @@
             <div class="row">
               <% @confirmed.each do |p| %>
                 <div class="col-md-6">
-                  <%= render "participant", p: p %>
+                  <%= render "participant_card", p: p %>
                 </div>
               <% end %>
             </div>
@@ -78,14 +79,19 @@
           <% end %>
         </div>
       </div>
-       <!-- Incertains -->
+
+      <!-- Incertains -->
       <div class="card-htw mb-3">
         <div class="card-header header-tentative">❓ Incertains (<%= @tentative.count %>)</div>
         <div class="card-body">
           <% if @tentative.any? %>
-            <% @tentative.each do |p| %>
-              <%= render "participant", p: p %>
-            <% end %>
+            <div class="row">
+              <% @tentative.each do |p| %>
+                <div class="col-md-6">
+                  <%= render "participant_card", p: p %>
+                </div>
+              <% end %>
+            </div>
           <% else %>
             <p class="text-muted mb-0">Personne</p>
           <% end %>
@@ -97,87 +103,40 @@
         <div class="card-htw mb-4">
           <div class="card-header header-declined">❌ Absents (<%= @declined.count %>)</div>
           <div class="card-body">
-            <% @declined.each do |p| %>
-              <%= render "participant", p: p %>
-            <% end %>
+            <div class="row">
+              <% @declined.each do |p| %>
+                <div class="col-md-6">
+                  <%= render "participant_card", p: p %>
+                </div>
+              <% end %>
+            </div>
           </div>
         </div>
       <% end %>
+
       <!-- Inscription -->
       <% if user_signed_in? && @my_characters.any? %>
         <div class="card-htw mb-4">
           <div class="card-header">📝 S'inscrire</div>
           <div class="card-body">
             <% @my_characters.each do |character| %>
-              <% existing = @event.participation_for(character) %>
-              <div class="participation-row">
-                <div class="d-flex align-items-center mb-3">
-                  <% if character.wow_class&.icon.present? %>
-                    <%= image_tag character.wow_class.icon, class: "class-icon me-2" %>
-                  <% end %>
-                  <strong><%= character.pseudo %></strong>
-                  <small class="text-muted ms-2">(<%= character.wow_class&.name || "Flex" %>)</small>
-                </div>
-
-                <% if existing %>
-                  <%= form_with url: event_event_participation_path(@event, existing), method: :patch, local: true, class: "d-flex align-items-center gap-3 flex-wrap" do %>
-                    <% if character.wow_class %>
-                      <select name="specialization_id" class="spec-select">
-                        <% character.wow_class.specializations.each do |spec| %>
-                          <option value="<%= spec.id %>" <%= 'selected' if existing.active_specialization == spec %>>
-                            <%= spec.name %> - <%= spec.role %>
-                          </option>
-                        <% end %>
-                      </select>
-                    <% end %>
-                    <div class="d-flex gap-2">
-                      <button type="submit" name="status" value="confirmed" class="btn-status btn-status-success <%= 'active' if existing.status == 'confirmed' %>">✅</button>
-                      <button type="submit" name="status" value="tentative" class="btn-status btn-status-warning <%= 'active' if existing.status == 'tentative' %>">❓</button>
-                      <button type="submit" name="status" value="declined" class="btn-status btn-status-danger <%= 'active' if existing.status == 'declined' %>">❌</button>
-                    </div>
-                  <% end %>
-                  <%= button_to event_event_participation_path(@event, existing), method: :delete, class: "btn btn-outline-secondary btn-sm mt-3" do %>
-                    Retirer
-                  <% end %>
-                <% else %>
-                  <%= form_with url: event_event_participations_path(@event), method: :post, local: true, class: "d-flex align-items-center gap-3 flex-wrap" do %>
-                    <input type="hidden" name="character_id" value="<%= character.id %>">
-                    <% if character.wow_class %>
-                      <select name="specialization_id" class="spec-select">
-                        <% character.wow_class.specializations.each do |spec| %>
-                          <option value="<%= spec.id %>" <%= 'selected' if character.specialization == spec %>>
-                            <%= spec.name %> - <%= spec.role %>
-                          </option>
-                        <% end %>
-                      </select>
-                    <% end %>
-                    <div class="d-flex gap-2">
-                      <button type="submit" name="status" value="confirmed" class="btn-status btn-status-success">✅ Présent</button>
-                      <button type="submit" name="status" value="tentative" class="btn-status btn-status-warning">❓ Incertain</button>
-                    </div>
-                  <% end %>
-                <% end %>
-              </div>
+              <%= render "signup_form", character: character, event: @event %>
             <% end %>
           </div>
         </div>
       <% elsif user_signed_in? %>
-        <div class="alert alert-info">
-          <%= link_to "Crée un personnage", new_character_path %> pour t'inscrire.
-        </div>
+        <div class="alert-info-htw">
+  <%= link_to "Crée un personnage", new_character_path %> pour t'inscrire.
+</div>
       <% else %>
-        <div class="alert alert-info">
-          <%= link_to "Connecte-toi", new_user_session_path %> pour t'inscrire.
-        </div>
+       <div class="alert-info-htw">
+  <%= link_to "Crée un personnage", new_character_path %> pour t'inscrire.
+</div>
       <% end %>
 
-
-
-
-
-      <%= link_to events_path, class: "btn btn-outline-light" do %>
-        ⬅️ Retour au calendrier
-      <% end %>
+   <%= link_to events_path, class: "btn-outline-gold" do %>
+  ⬅️ Retour au calendrier
+<% end %>
 
     </div>
   </div>

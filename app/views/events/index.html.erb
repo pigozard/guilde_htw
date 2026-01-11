@@ -10,7 +10,23 @@
   <% end %>
 
   <div class="calendar-container">
-    <%= month_calendar(events: @events) do |date, events| %>
+    <!-- Header custom -->
+    <div class="calendar-nav">
+      <%= link_to events_path(start_date: @date.prev_month), class: "calendar-nav-btn" do %>
+        ‹
+      <% end %>
+
+      <div class="calendar-nav-center">
+        <span class="calendar-month"><%= l(@date, format: '%B %Y').capitalize %></span>
+        <%= link_to "Aujourd'hui", events_path, class: "calendar-today-btn" %>
+      </div>
+
+      <%= link_to events_path(start_date: @date.next_month), class: "calendar-nav-btn" do %>
+        ›
+      <% end %>
+    </div>
+
+    <%= month_calendar(events: @events, start_date: @date) do |date, events| %>
       <div class="day-number"><%= date.day %></div>
       <% events.each do |event| %>
         <%= link_to event_path(event), class: "event-pill event-#{event.event_type.gsub('+', '-plus')}" do %>

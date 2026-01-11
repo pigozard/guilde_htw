@@ -3,7 +3,8 @@ class EventsController < ApplicationController
   before_action :set_event, only: [:show, :edit, :update, :destroy]
 
   def index
-    @events = Event.all
+  @date = params[:start_date] ? Date.parse(params[:start_date]) : Date.today
+  @events = Event.where(start_time: @date.beginning_of_month.beginning_of_week..@date.end_of_month.end_of_week)
   end
 
   def show

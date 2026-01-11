@@ -1,0 +1,18 @@
+<div class="participant-card">
+  <div class="participant-info">
+    <% if p.character.wow_class&.icon.present? %>
+      <%= image_tag p.character.wow_class.icon, class: "class-icon" %>
+    <% end %>
+    <div class="participant-details">
+      <span class="participant-name"><%= p.character.pseudo %></span>
+      <% if p.active_specialization %>
+        <span class="participant-spec">
+          <%= p.active_specialization.name %>
+          <span class="role-badge role-<%= p.role %>">
+            <%= role_icon(p.role) %>
+          </span>
+        </span>
+      <% end %>
+    </div>
+  </div>
+</div>

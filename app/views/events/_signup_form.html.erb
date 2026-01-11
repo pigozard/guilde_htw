@@ -1,0 +1,54 @@
+<% existing = event.participation_for(character) %>
+
+<div class="signup-row">
+  <div class="signup-character">
+    <% if character.wow_class&.icon.present? %>
+      <%= image_tag character.wow_class.icon, class: "class-icon" %>
+    <% end %>
+    <div class="signup-character-info">
+      <strong><%= character.pseudo %></strong>
+      <small class="text-muted"><%= character.wow_class&.name || "Flex" %></small>
+    </div>
+  </div>
+
+  <div class="signup-actions">
+    <% if existing %>
+      <%= form_with url: event_event_participation_path(event, existing), method: :patch, local: true, class: "signup-form" do %>
+        <% if character.wow_class %>
+          <select name="specialization_id" class="spec-select">
+            <% character.wow_class.specializations.each do |spec| %>
+              <option value="<%= spec.id %>" <%= 'selected' if existing.active_specialization == spec %>>
+                <%= spec.name %> - <%= spec.role %>
+              </option>
+            <% end %>
+          </select>
+        <% end %>
+        <div class="status-buttons">
+          <button type="submit" name="status" value="confirmed" class="btn-status btn-status-success <%= 'active' if existing.status == 'confirmed' %>" title="Présent">✅</button>
+          <button type="submit" name="status" value="tentative" class="btn-status btn-status-warning <%= 'active' if existing.status == 'tentative' %>" title="Incertain">❓</button>
+          <button type="submit" name="status" value="declined" class="btn-status btn-status-danger <%= 'active' if existing.status == 'declined' %>" title="Absent">❌</button>
+        </div>
+      <% end %>
+      <%= button_to event_event_participation_path(event, existing), method: :delete, class: "btn-remove" do %>
+        🗑️ Retirer
+      <% end %>
+    <% else %>
+      <%= form_with url: event_event_participations_path(event), method: :post, local: true, class: "signup-form" do %>
+        <input type="hidden" name="character_id" value="<%= character.id %>">
+        <% if character.wow_class %>
+          <select name="specialization_id" class="spec-select">
+            <% character.wow_class.specializations.each do |spec| %>
+              <option value="<%= spec.id %>" <%= 'selected' if character.specialization == spec %>>
+                <%= spec.name %> - <%= spec.role %>
+              </option>
+            <% end %>
+          </select>
+        <% end %>
+        <div class="status-buttons">
+          <button type="submit" name="status" value="confirmed" class="btn-status btn-status-success" title="Présent">✅</button>
+          <button type="submit" name="status" value="tentative" class="btn-status btn-status-warning" title="Incertain">❓</button>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>
