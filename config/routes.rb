@@ -7,4 +7,8 @@ Rails.application.routes.draw do
   resources :events do
     resources :event_participations, only: [:create, :update, :destroy]
   end
+
+  resources :wow_classes, only: [] do
+  get :specializations, on: :member
+  end
 end

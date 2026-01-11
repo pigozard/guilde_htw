@@ -2,14 +2,13 @@ class CharactersController < ApplicationController
   before_action :authenticate_user!, except: [:index]
 
   def index
-    @characters = Character.includes(:user, :wow_class, :specialization).order(created_at: :desc)
-    @role_counts = Character.joins(:specialization).group("specializations.role").count
-    @flex_count = Character.where(specialization_id: nil).count
+    @characters = Character.where(temporary: false).includes(:user, :wow_class, :specialization).order(created_at: :desc)
+    @role_counts = Character.where(temporary: false).joins(:specialization).group("specializations.role").count
+    @flex_count = Character.where(temporary: false, specialization_id: nil).count
   end
 
   def new
     @character = Character.new
-
     if params[:wow_class_id]
       @wow_class = WowClass.find(params[:wow_class_id])
       @specializations = @wow_class.specializations
@@ -41,7 +40,7 @@ class CharactersController < ApplicationController
   def destroy
     @character = current_user.characters.find(params[:id])
     @character.destroy
-    redirect_to characters_path, notice: "Perso supprimé."
+    redirect_back fallback_location: characters_path, notice: "Perso supprimé."
   end
 
   private

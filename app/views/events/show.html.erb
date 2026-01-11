@@ -1,3 +1,6 @@
+
+
+
 <div class="container mt-4">
   <div class="row justify-content-center">
     <div class="col-lg-8">
@@ -113,30 +116,72 @@
         </div>
       <% end %>
 
-      <!-- Inscription -->
-      <% if user_signed_in? && @my_characters.any? %>
-        <div class="card-htw mb-4">
-          <div class="card-header">📝 S'inscrire</div>
-          <div class="card-body">
-            <% @my_characters.each do |character| %>
-              <%= render "signup_form", character: character, event: @event %>
-            <% end %>
-          </div>
-        </div>
-      <% elsif user_signed_in? %>
-        <div class="alert-info-htw">
-  <%= link_to "Crée un personnage", new_character_path %> pour t'inscrire.
-</div>
-      <% else %>
-       <div class="alert-info-htw">
-  <%= link_to "Crée un personnage", new_character_path %> pour t'inscrire.
-</div>
+     <!-- Inscription -->
+<% if user_signed_in? %>
+  <div class="card-htw mb-4">
+    <div class="card-header">📝 S'inscrire</div>
+    <div class="card-body">
+      <% characters_to_show = @my_characters.reject { |c| c.wow_class.nil? || c.wow_class.name == "Flex" } %>
+
+      <% if characters_to_show.any? %>
+        <% characters_to_show.each do |character| %>
+          <%= render "signup_form", character: character, event: @event %>
+        <% end %>
       <% end %>
 
-   <%= link_to events_path, class: "btn-outline-gold" do %>
-  ⬅️ Retour au calendrier
-<% end %>
+      <div class="add-character-section">
+        <a href="#" class="btn-add-character" onclick="document.getElementById('temp-character-form').classList.toggle('d-none'); return false;">
+          ➕ Jouer un autre perso
+        </a>
 
+        <div id="temp-character-form" class="temp-form d-none">
+          <%= form_with url: event_event_participations_path(@event), method: :post, local: true do %>
+            <input type="hidden" name="temporary" value="true">
+
+            <div class="temp-form-row">
+              <input type="text" name="pseudo" placeholder="Pseudo" class="form-control" required>
+
+              <select name="wow_class_id" id="temp-class-select" class="form-control" required>
+                <option value="">-- Classe --</option>
+                <% WowClass.where.not(name: "Flex").each do |wc| %>
+                  <option value="<%= wc.id %>"><%= wc.name %></option>
+                <% end %>
+              </select>
+
+              <select name="specialization_id" id="temp-spec-select" class="form-control" required>
+                <option value="">-- Spé --</option>
+              </select>
+
+              <button type="submit" name="status" value="confirmed" class="btn-status btn-status-success">✅</button>
+              <button type="submit" name="status" value="tentative" class="btn-status btn-status-warning">❓</button>
+            </div>
+          <% end %>
+        </div>
+      </div>
+      <script>
+  document.getElementById('temp-class-select')?.addEventListener('change', function() {
+    const classId = this.value;
+    const specSelect = document.getElementById('temp-spec-select');
+    specSelect.innerHTML = '<option value="">-- Spé --</option>';
+
+    if (classId) {
+      fetch(`/wow_classes/${classId}/specializations.json`)
+        .then(response => response.json())
+        .then(specs => {
+          specs.forEach(spec => {
+            const option = document.createElement('option');
+            option.value = spec.id;
+            option.textContent = spec.name;
+            specSelect.appendChild(option);
+          });
+        });
+    }
+  });
+</script>
     </div>
   </div>
-</div>
+<% else %>
+  <div class="alert-info-htw">
+    <%= link_to "Connecte-toi", new_user_session_path %> pour t'inscrire.
+  </div>
+<% end %>
