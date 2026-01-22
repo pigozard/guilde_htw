@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'farm/index'
   devise_for :users
   root to: "pages#home"
 
@@ -11,4 +12,8 @@ Rails.application.routes.draw do
   resources :wow_classes, only: [] do
     get :specializations, on: :member
   end
+
+  get 'farm', to: 'farm#index'
+  resources :farm_contributions, only: [:create, :update, :destroy]
+  resources :consumable_selections, only: [:create, :destroy]
 end

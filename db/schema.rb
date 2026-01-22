@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_11_192057) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_22_152951) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -25,6 +25,27 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_11_192057) do
     t.index ["specialization_id"], name: "index_characters_on_specialization_id"
     t.index ["user_id"], name: "index_characters_on_user_id"
     t.index ["wow_class_id"], name: "index_characters_on_wow_class_id"
+  end
+
+  create_table "consumable_selections", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "consumable_id", null: false
+    t.integer "quantity"
+    t.date "week"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["consumable_id"], name: "index_consumable_selections_on_consumable_id"
+    t.index ["user_id"], name: "index_consumable_selections_on_user_id"
+  end
+
+  create_table "consumables", force: :cascade do |t|
+    t.string "name"
+    t.string "category"
+    t.string "expansion"
+    t.string "icon_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "blizzard_id"
   end
 
   create_table "event_participations", force: :cascade do |t|
@@ -51,6 +72,36 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_11_192057) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_events_on_user_id"
+  end
+
+  create_table "farm_contributions", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "ingredient_id", null: false
+    t.integer "quantity"
+    t.date "week"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ingredient_id"], name: "index_farm_contributions_on_ingredient_id"
+    t.index ["user_id"], name: "index_farm_contributions_on_user_id"
+  end
+
+  create_table "ingredients", force: :cascade do |t|
+    t.string "name"
+    t.string "category"
+    t.string "icon_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "blizzard_id"
+  end
+
+  create_table "recipes", force: :cascade do |t|
+    t.bigint "consumable_id", null: false
+    t.bigint "ingredient_id", null: false
+    t.integer "quantity"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["consumable_id"], name: "index_recipes_on_consumable_id"
+    t.index ["ingredient_id"], name: "index_recipes_on_ingredient_id"
   end
 
   create_table "specializations", force: :cascade do |t|
@@ -86,9 +137,15 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_11_192057) do
   add_foreign_key "characters", "specializations"
   add_foreign_key "characters", "users"
   add_foreign_key "characters", "wow_classes"
+  add_foreign_key "consumable_selections", "consumables"
+  add_foreign_key "consumable_selections", "users"
   add_foreign_key "event_participations", "characters"
   add_foreign_key "event_participations", "events"
   add_foreign_key "event_participations", "specializations"
   add_foreign_key "events", "users"
+  add_foreign_key "farm_contributions", "ingredients"
+  add_foreign_key "farm_contributions", "users"
+  add_foreign_key "recipes", "consumables"
+  add_foreign_key "recipes", "ingredients"
   add_foreign_key "specializations", "wow_classes"
 end
