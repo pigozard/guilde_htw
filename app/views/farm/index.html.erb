@@ -5,7 +5,7 @@
   <div class="card-htw mb-4">
     <div class="card-header">🌿 Composants à farm (priorité)</div>
     <div class="card-body">
-      <% if @ingredients_summary.any? %>
+      <% if @ingredients_summary.present? && @ingredients_summary.any? %>
         <% @ingredients_summary.each do |ingredient, data| %>
           <div class="ingredient-row mb-3">
             <div class="d-flex justify-content-between align-items-center mb-1">
@@ -32,7 +32,7 @@
   <div class="card-htw mb-4">
     <div class="card-header">📊 Consommables sélectionnés cette semaine</div>
     <div class="card-body">
-      <% if @consumable_selections.any? %>
+      <% if @consumable_selections.present? %>
         <div class="row">
           <% @consumable_selections.each do |consumable, selections| %>
             <div class="col-md-6 mb-3">
