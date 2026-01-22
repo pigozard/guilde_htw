@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_22_152951) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_22_180732) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -85,6 +85,16 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_22_152951) do
     t.index ["user_id"], name: "index_farm_contributions_on_user_id"
   end
 
+  create_table "farmer_assignments", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "ingredient_id", null: false
+    t.date "week"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ingredient_id"], name: "index_farmer_assignments_on_ingredient_id"
+    t.index ["user_id"], name: "index_farmer_assignments_on_user_id"
+  end
+
   create_table "ingredients", force: :cascade do |t|
     t.string "name"
     t.string "category"
@@ -145,6 +155,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_22_152951) do
   add_foreign_key "events", "users"
   add_foreign_key "farm_contributions", "ingredients"
   add_foreign_key "farm_contributions", "users"
+  add_foreign_key "farmer_assignments", "ingredients"
+  add_foreign_key "farmer_assignments", "users"
   add_foreign_key "recipes", "consumables"
   add_foreign_key "recipes", "ingredients"
   add_foreign_key "specializations", "wow_classes"

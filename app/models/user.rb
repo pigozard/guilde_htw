@@ -5,6 +5,7 @@ class User < ApplicationRecord
   has_many :characters, dependent: :destroy
   has_many :events, dependent: :destroy
   has_many :consumable_selections, dependent: :destroy
+  has_many :farm_contributions, dependent: :destroy
 
   validates :pseudo, presence: true, uniqueness: true
 
