@@ -1,0 +1,46 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card-htw">
+        <div class="card-header">
+          <h3 class="mb-0">⚙️ Mon Profil</h3>
+        </div>
+        <div class="card-body">
+          <%= form_with model: @user, url: profile_path, method: :patch, local: true do |f| %>
+
+            <div class="mb-3">
+              <%= f.label :email, "Email", class: "form-label" %>
+              <%= f.email_field :email, class: "form-control", disabled: true %>
+              <small class="text-muted">L'email ne peut pas être modifié</small>
+            </div>
+
+            <div class="mb-4">
+              <%= f.label :nickname, "Pseudo (affiché sur le site)", class: "form-label" %>
+              <%= f.text_field :nickname,
+                  class: "form-control",
+                  placeholder: "Ex: Zargul, Arathel, Sephiroth...",
+                  autofocus: true %>
+              <small class="text-muted d-block mt-2">
+                <% if @user.nickname.present? %>
+                  Actuellement affiché : <strong class="text-success"><%= @user.display_name %></strong>
+                <% else %>
+                  Par défaut, on affiche : <strong class="text-warning"><%= @user.email.split('@').first.capitalize %></strong>
+                <% end %>
+              </small>
+            </div>
+
+            <div class="d-flex gap-2">
+              <%= f.submit "Enregistrer", class: "btn btn-primary flex-grow-1" %>
+              <%= link_to "Annuler", :back, class: "btn btn-secondary" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Lien vers changement de mot de passe -->
+      <div class="text-center mt-3">
+        <%= link_to "Changer mon mot de passe", edit_user_registration_path, class: "btn btn-link" %>
+      </div>
+    </div>
+  </div>
+</div>

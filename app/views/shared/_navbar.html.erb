@@ -1,6 +1,5 @@
 <nav class="navbar-midnight">
   <%= link_to "HIGHWAY TO WIPE", root_path, class: "guild-name" %>
-
   <ul class="nav-links">
     <% if user_signed_in? %>
       <li><%= link_to "Home", root_path, class: "nav-link" %></li>
@@ -12,10 +11,11 @@
       <li class="nav-account">
         <div class="dropdown">
           <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-            👤 <%= current_user.pseudo %>
+            👤 <%= current_user.display_name %>
           </a>
           <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-            <li><%= link_to "Mon profil", edit_user_registration_path, class: "dropdown-item" %></li>
+            <li><%= link_to "Mon Profil", edit_profile_path, class: "dropdown-item" %></li>
+            <li><%= link_to "Changer mon mot de passe", edit_user_registration_path, class: "dropdown-item" %></li>
             <li><hr class="dropdown-divider"></li>
             <li><%= button_to "Déconnexion", destroy_user_session_path, method: :delete, class: "dropdown-item" %></li>
           </ul>

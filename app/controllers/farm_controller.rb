@@ -4,47 +4,61 @@ class FarmController < ApplicationController
   def index
     @current_week = Date.current.beginning_of_week
 
-    # Toutes les sélections de la semaine (tous les joueurs)
-    @all_selections = ConsumableSelection.current_week.includes(:consumable, :user)
-
-    # Résumé par consumable (combien de fois choisi)
-    @consumables_summary = @all_selections.group(:consumable_id).sum(:quantity)
-
-    # Calcul des ingrédients nécessaires (PRIORITÉ)
-    @ingredients_needed = calculate_ingredients_needed
-
-    # Tous les consumables pour la recherche
+    # Toutes les potions disponibles (pour la section recherche)
     @all_consumables = Consumable.includes(recipes: :ingredient).order(:category, :name)
 
-    # Mes sélections perso
-    @my_selections = current_user.consumable_selections.current_week.includes(:consumable)
+    # Sélections de TOUS les joueurs cette semaine
+    @consumable_selections = ConsumableSelection
+      .current_week
+      .includes(:consumable, :user)
+      .order('consumables.name')
+
+    # Grouper par consumable
+    @selections_by_consumable = @consumable_selections.group_by(&:consumable)
+
+    # Calcul des ingrédients nécessaires basé sur les sélections
+    @ingredients_summary = calculate_ingredients_from_selections
+
+    # Assignments des farmers
+    @farmer_assignments = FarmerAssignment.current_week.includes(:user, :ingredient)
   end
 
   private
 
-  def calculate_ingredients_needed
+  def calculate_ingredients_from_selections
     summary = {}
 
-    # Pour chaque sélection, on additionne les ingrédients nécessaires
-    @all_selections.each do |selection|
-      selection.consumable.recipes.each do |recipe|
-        ingredient = recipe.ingredient
-        needed_qty = recipe.quantity * selection.quantity
+    # Pour chaque ingrédient
+    Ingredient.includes(:recipes, :farmer_assignments).find_each do |ingredient|
+      needed = 0
 
-        summary[ingredient] ||= { needed: 0, farmed: 0 }
-        summary[ingredient][:needed] += needed_qty
+      # Calcule le total nécessaire basé sur les sélections
+      @selections_by_consumable.each do |consumable, selections|
+        total_quantity = selections.sum(&:quantity)
+        recipe = consumable.recipes.find_by(ingredient: ingredient)
+        needed += (recipe.quantity * total_quantity) if recipe
       end
-    end
 
-    # Ajoute les quantités farmées
-    summary.each do |ingredient, data|
-      data[:farmed] = ingredient.total_farmed(@current_week)
-      data[:percentage] = data[:needed].zero? ? 100 : ((data[:farmed].to_f / data[:needed]) * 100).round(1)
-      data[:status] = status_for_percentage(data[:percentage])
+      # Skip si pas nécessaire
+      next if needed.zero?
+
+      # Qui farm cet ingrédient ?
+      farmers = ingredient.farmer_assignments.current_week.includes(:user).map(&:user)
+
+      # Pourcentage (on considère 0% pour l'instant, tu pourras ajouter un système de validation plus tard)
+      percentage = 0
+
+      summary[ingredient] = {
+        needed: needed,
+        farmed: 0,
+        percentage: percentage,
+        status: status_for_percentage(percentage),
+        farmers: farmers
+      }
     end
 
     # Trie par priorité (les plus critiques en premier)
-    summary.sort_by { |_, data| data[:percentage] }.to_h
+    summary.sort_by { |_, data| [data[:percentage], -data[:needed]] }.to_h
   end
 
   def status_for_percentage(percentage)

@@ -2,6 +2,7 @@ class Ingredient < ApplicationRecord
   has_many :recipes, dependent: :destroy
   has_many :consumables, through: :recipes
   has_many :farm_contributions, dependent: :destroy
+  has_many :farmer_assignments, dependent: :destroy
 
   validates :name, presence: true
   validates :blizzard_id, uniqueness: true, allow_nil: true

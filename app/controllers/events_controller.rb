@@ -24,7 +24,7 @@ class EventsController < ApplicationController
   end
 
   def create
-    @event = current_user.events.build(event_params)
+    @event = current_user.created_events.build(event_params)
     set_event_start_time
 
     if @event.save
@@ -66,7 +66,6 @@ class EventsController < ApplicationController
 
   def set_event_start_time
     return unless params[:event][:start_date].present? && params[:event][:start_hour].present?
-
     @event.start_time = DateTime.parse("#{params[:event][:start_date]} #{params[:event][:start_hour]}")
   end
 

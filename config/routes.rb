@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
-  get 'farm/index'
   devise_for :users
+  resource :profile, only: [:edit, :update]
+
   root to: "pages#home"
 
   resources :characters, only: [:index, :new, :create, :destroy]
@@ -13,7 +14,8 @@ Rails.application.routes.draw do
     get :specializations, on: :member
   end
 
+  # Routes pour le farm collaboratif
   get 'farm', to: 'farm#index'
-  resources :farm_contributions, only: [:create, :update, :destroy]
-  resources :consumable_selections, only: [:create, :destroy]
+  resources :consumable_selections, only: [:create, :update, :destroy]
+  resources :farmer_assignments, only: [:create, :destroy]
 end

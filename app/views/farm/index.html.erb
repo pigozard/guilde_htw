@@ -1,51 +1,162 @@
 <div class="container mt-4">
   <h1 class="text-center mb-4 page-title">🧪 Farm Collaboratif</h1>
 
-  <!-- SECTION 1 : COMPOSANTS À FARM (PRIORITÉ) -->
+  <!-- SECTION 1 : COMPOSANTS À FARM -->
   <div class="card-htw mb-4">
     <div class="card-header">🌿 Composants à farm (priorité)</div>
     <div class="card-body">
       <% if @ingredients_summary.present? && @ingredients_summary.any? %>
-        <% @ingredients_summary.each do |ingredient, data| %>
-          <div class="ingredient-row mb-3">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-              <strong><%= ingredient.name %></strong>
-              <span class="badge badge-<%= data[:status] %>">
-                <%= data[:farmed] %>/<%= data[:needed] %> (<%= data[:percentage] %>%)
-              </span>
-            </div>
-            <div class="progress" style="height: 20px;">
-              <div class="progress-bar bg-<%= data[:status] %>"
-                   role="progressbar"
-                   style="width: <%= data[:percentage] %>%">
-              </div>
-            </div>
-          </div>
-        <% end %>
+        <div class="table-responsive">
+          <table class="table table-dark table-hover">
+            <thead>
+              <tr>
+                <th>Ingrédient</th>
+                <th class="text-center">Quantité nécessaire</th>
+                <th class="text-center">Qui farm ?</th>
+                <th class="text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @ingredients_summary.each do |ingredient, data| %>
+                <tr>
+                  <td><strong><%= ingredient.name %></strong></td>
+                  <td class="text-center">
+                    <span class="badge badge-<%= data[:status] %>" style="font-size: 14px;">
+                      <%= data[:needed] %>
+                    </span>
+                  </td>
+                  <td class="text-center">
+                    <% if data[:farmers].any? %>
+                      <% data[:farmers].each do |farmer| %>
+                        <span class="badge bg-success me-1">
+                          <%= farmer.display_name %>
+                          <% if farmer == current_user %>
+                            <% assignment = @farmer_assignments.find_by(user: current_user, ingredient: ingredient) %>
+                            <% if assignment %>
+                              <%= button_to farmer_assignment_path(assignment),
+                                  method: :delete,
+                                  data: { turbo: false, confirm: "Retirer ton assignment ?" },
+                                  form_class: "d-inline",
+                                  style: "background: none; border: none; color: white; padding: 0; cursor: pointer; margin-left: 4px;" do %>
+                                ×
+                              <% end %>
+                            <% end %>
+                          <% end %>
+                        </span>
+                      <% end %>
+                    <% else %>
+                      <span class="text-muted">Personne</span>
+                    <% end %>
+                  </td>
+                  <td class="text-center">
+                    <% if data[:farmers].include?(current_user) %>
+                      <span class="text-success">✅ Tu farm ça</span>
+                    <% else %>
+                      <%= form_with url: farmer_assignments_path, method: :post, local: true, data: { turbo: false }, class: "d-inline" do |f| %>
+                        <%= hidden_field_tag :ingredient_id, ingredient.id %>
+                        <%= f.submit "Je farm ça !", class: "btn btn-sm btn-outline-success" %>
+                      <% end %>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
       <% else %>
         <p class="text-muted text-center">Aucun consommable sélectionné pour cette semaine.</p>
       <% end %>
     </div>
   </div>
 
-  <!-- SECTION 2 : POTIONS CHOISIES PAR LES JOUEURS -->
+  <!-- SECTION 2 : CONSOMMABLES SÉLECTIONNÉS -->
   <div class="card-htw mb-4">
     <div class="card-header">📊 Consommables sélectionnés cette semaine</div>
     <div class="card-body">
-      <% if @consumable_selections.present? %>
-        <div class="row">
-          <% @consumable_selections.each do |consumable, selections| %>
-            <div class="col-md-6 mb-3">
-              <div class="selected-consumable">
-                <img src="<%= consumable.icon_image_url %>"
-                     alt="<%= consumable.name %>"
-                     style="width: 32px; height: 32px; margin-right: 10px;">
-                <strong><%= consumable.name %></strong>
-                <span class="badge bg-primary ms-2"><%= selections.sum(&:quantity) %>x</span>
-                <small class="text-muted">(<%= selections.count %> <%= selections.count > 1 ? 'joueurs' : 'joueur' %>)</small>
-              </div>
-            </div>
-          <% end %>
+      <% if @selections_by_consumable.any? %>
+        <div class="table-responsive">
+          <table class="table table-dark table-hover">
+            <thead>
+              <tr>
+                <th>Consommable</th>
+                <th class="text-center">Quantité totale</th>
+                <th>Sélectionné par</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @selections_by_consumable.each do |consumable, selections| %>
+                <tr>
+                  <td>
+                    <img src="<%= consumable.icon_image_url %>"
+                         alt="<%= consumable.name %>"
+                         style="width: 32px; height: 32px; margin-right: 10px; border: 2px solid #d4af37; border-radius: 4px;">
+                    <strong><%= consumable.name %></strong>
+                  </td>
+                  <td class="text-center">
+                    <span class="badge bg-primary" style="font-size: 16px;">
+                      <%= selections.sum(&:quantity) %>x
+                    </span>
+                  </td>
+                  <td>
+                    <% selections.each do |selection| %>
+                      <div class="d-inline-flex align-items-center me-3 mb-2">
+                        <span class="badge bg-secondary" style="font-size: 14px; padding: 8px 10px;">
+                          <%= selection.user.display_name %>
+                        </span>
+
+                        <% if selection.user == current_user %>
+                          <div class="quantity-controls ms-2">
+                            <%= button_to consumable_selection_path(selection),
+                                method: :patch,
+                                params: { action_type: 'decrease' },
+                                form_class: 'd-inline',
+                                class: 'btn-quantity-control',
+                                data: { turbo: false } do %>
+                              −
+                            <% end %>
+
+                            <%= form_with url: consumable_selection_path(selection),
+                                method: :patch,
+                                local: true,
+                                data: { turbo: false },
+                                class: 'd-inline quantity-input-form' do |f| %>
+                              <%= hidden_field_tag :action_type, 'set_quantity' %>
+                              <%= number_field_tag :quantity,
+                                  selection.quantity,
+                                  min: 1,
+                                  max: 999,
+                                  class: 'quantity-input',
+                                  onchange: 'this.form.requestSubmit()' %>
+                            <% end %>
+
+                            <%= button_to consumable_selection_path(selection),
+                                method: :patch,
+                                params: { action_type: 'increase' },
+                                form_class: 'd-inline',
+                                class: 'btn-quantity-control',
+                                data: { turbo: false } do %>
+                              +
+                            <% end %>
+
+                            <%= button_to consumable_selection_path(selection),
+                                method: :delete,
+                                data: { turbo: false, confirm: "Retirer complètement ta sélection ?" },
+                                form_class: "d-inline",
+                                class: "btn-remove-selection ms-2",
+                                title: "Supprimer" do %>
+                              ×
+                            <% end %>
+                          </div>
+                        <% else %>
+                          <span class="ms-2 text-muted"><%= selection.quantity %>x</span>
+                        <% end %>
+                      </div>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
         </div>
       <% else %>
         <p class="text-muted text-center">Aucun consommable sélectionné pour le moment.</p>
@@ -55,20 +166,12 @@
 
   <!-- SECTION 3 : CHOISIR MES CONSOMMABLES -->
   <div class="card-htw mb-4">
-    <div class="card-header">🔍 Choisir mes consommables</div>
+    <div class="card-header">🔍 Choisir les consommables à produire</div>
     <div class="card-body">
-      <!-- Barre de recherche -->
-      <div class="mb-3">
-        <input type="text"
-               id="consumable-search"
-               class="form-control"
-               placeholder="🔎 Rechercher une potion, flask, food...">
-      </div>
-
       <!-- Liste de tous les consommables (cliquables) -->
       <div id="consumables-list">
         <% @all_consumables.group_by(&:category).each do |category, consumables| %>
-          <h5 class="mt-3">
+          <h5 class="mt-4 mb-3 category-title">
             <%= category == 'flask' ? '⚗️ Flasks' : '' %>
             <%= category == 'potion' ? '🧪 Potions' : '' %>
             <%= category == 'food' ? '🍖 Food' : '' %>
@@ -76,13 +179,12 @@
           </h5>
           <div class="row">
             <% consumables.each do |consumable| %>
-              <div class="col-md-4 col-lg-3 mb-3 consumable-item" data-name="<%= consumable.name.downcase %>">
-                <%= form_with url: consumable_selections_path, method: :post, local: true do |f| %>
+              <div class="col-md-3 col-lg-2 mb-3 consumable-item" data-name="<%= consumable.name.downcase %>">
+                <%= form_with url: consumable_selections_path, method: :post, local: true, data: { turbo: false } do |f| %>
                   <%= hidden_field_tag :consumable_id, consumable.id %>
                   <button type="submit" class="consumable-button">
                     <img src="<%= consumable.icon_image_url %>"
-                         alt="<%= consumable.name %>"
-                         style="width: 48px; height: 48px;">
+                         alt="<%= consumable.name %>">
                     <div class="consumable-name"><%= consumable.name %></div>
                   </button>
                 <% end %>
@@ -91,36 +193,6 @@
           </div>
         <% end %>
       </div>
-    </div>
-  </div>
-
-  <!-- SECTION 4 : FORMULAIRE CONTRIBUTION (optionnel) -->
-  <div class="card-htw mt-4">
-    <div class="card-header">➕ J'ai farmé des composants</div>
-    <div class="card-body">
-      <%= form_with model: FarmContribution.new, url: farm_contributions_path, local: true, class: "row g-3" do |f| %>
-        <div class="col-md-5">
-          <%= f.label :ingredient_id, "Ingrédient", class: "form-label" %>
-          <%= f.collection_select :ingredient_id,
-                                   Ingredient.order(:name),
-                                   :id,
-                                   :name,
-                                   { prompt: "-- Choisir --" },
-                                   class: "form-control" %>
-        </div>
-
-        <div class="col-md-3">
-          <%= f.label :quantity, "Quantité", class: "form-label" %>
-          <%= f.number_field :quantity,
-                             class: "form-control",
-                             min: 0,
-                             placeholder: "Ex: 50" %>
-        </div>
-
-        <div class="col-md-4 d-flex align-items-end">
-          <%= f.submit "Ajouter", class: "btn btn-success w-100" %>
-        </div>
-      <% end %>
     </div>
   </div>
 </div>
@@ -142,6 +214,39 @@
           item.style.display = 'none';
         }
       });
+    });
+  });
+</script>
+
+<!-- Script pour éviter le scroll en haut -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Empêche le scroll lors des soumissions de formulaire
+    document.addEventListener('submit', function(e) {
+      const form = e.target;
+      if (form.closest('.quantity-controls')) {
+        e.preventDefault();
+
+        // Sauvegarde la position
+        const scrollPos = window.scrollY;
+
+        // Soumet le formulaire
+        fetch(form.action, {
+          method: form.method,
+          body: new FormData(form),
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        }).then(() => {
+          // Recharge la page
+          window.location.reload();
+
+          // Restaure la position après rechargement
+          window.addEventListener('load', function() {
+            window.scrollTo(0, scrollPos);
+          }, { once: true });
+        });
+      }
     });
   });
 </script>

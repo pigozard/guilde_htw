@@ -1,57 +1,100 @@
 // Styles pour la page Farm collaboratif
 
-// Section ingrédients à farm
-.ingredient-row {
-  .badge-critical {
-    background-color: #dc3545;
-    color: white;
+// Tables
+.table-dark {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+
+  th {
+    color: #d4af37;
+    border-bottom: 2px solid rgba(212, 175, 55, 0.5);
   }
 
-  .badge-warning {
-    background-color: #ffc107;
-    color: #000;
+  td {
+    color: #fff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  .badge-ok {
-    background-color: #28a745;
-    color: white;
-  }
-
-  .progress {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    overflow: hidden;
-
-    .progress-bar {
-      transition: width 0.6s ease;
-
-      &.bg-critical {
-        background-color: #dc3545 !important;
-      }
-
-      &.bg-warning {
-        background-color: #ffc107 !important;
-      }
-
-      &.bg-ok {
-        background-color: #28a745 !important;
-      }
-    }
+  tbody tr:hover {
+    background-color: rgba(212, 175, 55, 0.1);
   }
 }
 
-// Section consommables sélectionnés
-.selected-consumable {
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  border-left: 3px solid #d4af37;
+// Badges status
+.badge-critical {
+  background-color: #dc3545;
+  color: white;
+}
 
-  img {
-    border: 2px solid #d4af37;
-    border-radius: 4px;
+.badge-warning {
+  background-color: #ffc107;
+  color: #000;
+}
+
+.badge-ok {
+  background-color: #28a745;
+  color: white;
+}
+
+// Contrôles de quantité [ - | 3x | + ]
+.quantity-controls {
+  display: inline-flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 6px;
+  overflow: hidden;
+
+  .btn-quantity-control {
+    background: none;
+    border: none;
+    color: #d4af37;
+    padding: 4px 12px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    transition: all 0.2s;
+
+    &:hover {
+      background-color: rgba(212, 175, 55, 0.2);
+      color: #fff;
+    }
+
+    &:active {
+      background-color: rgba(212, 175, 55, 0.3);
+    }
+  }
+
+  .quantity-display {
+    color: #fff;
+    padding: 4px 10px;
+    font-size: 14px;
+    font-weight: bold;
+    border-left: 1px solid rgba(212, 175, 55, 0.3);
+    border-right: 1px solid rgba(212, 175, 55, 0.3);
+    min-width: 40px;
+    text-align: center;
+  }
+}
+
+// Bouton supprimer
+// Bouton supprimer
+.btn-remove-selection {
+  background: none;
+  border: none;
+  color: #dc3545;
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 2px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  cursor: pointer;
+  line-height: 1;
+
+  &:hover {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: #ff4d4d;
   }
 }
 
@@ -60,7 +103,7 @@
   background: rgba(255, 255, 255, 0.05);
   border: 2px solid rgba(212, 175, 55, 0.3);
   border-radius: 8px;
-  padding: 10px;
+  padding: 15px 10px;
   width: 100%;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -74,6 +117,8 @@
   }
 
   img {
+    width: 56px;
+    height: 56px;
     border: 2px solid #d4af37;
     border-radius: 4px;
     margin-bottom: 8px;
@@ -81,25 +126,65 @@
 
   .consumable-name {
     color: #d4af37;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: bold;
-    margin-top: 5px;
+    margin-top: 8px;
+    line-height: 1.2;
   }
 }
 
 // Barre de recherche
 #consumable-search {
   background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(212, 175, 55, 0.3);
+  border: 2px solid rgba(212, 175, 55, 0.3);
   color: white;
+  padding: 12px 20px;
 
   &:focus {
     background-color: rgba(255, 255, 255, 0.15);
     border-color: #d4af37;
     color: white;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
   }
 
   &::placeholder {
     color: rgba(255, 255, 255, 0.5);
   }
 }
+
+// Titres de catégories
+.category-title {
+  color: #d4af37;
+  font-weight: bold;
+  border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+  padding-bottom: 8px;
+  margin-bottom: 15px;
+}
+.quantity-input {
+    background: none;
+    border: none;
+    border-left: 1px solid rgba(212, 175, 55, 0.3);
+    border-right: 1px solid rgba(212, 175, 55, 0.3);
+    color: #fff;
+    padding: 4px 8px;
+    font-size: 14px;
+    font-weight: bold;
+    width: 50px;
+    text-align: center;
+    -moz-appearance: textfield; // Retire les flèches Firefox
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      -webkit-appearance: none; // Retire les flèches Chrome/Safari
+      margin: 0;
+    }
+
+    &:focus {
+      outline: none;
+      background-color: rgba(212, 175, 55, 0.1);
+    }
+  }
+
+  .quantity-input-form {
+    margin: 0;
+  }
