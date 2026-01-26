@@ -1,46 +1,155 @@
 <div class="container mt-5">
   <div class="row justify-content-center">
-    <div class="col-md-6">
+    <div class="col-md-8">
       <div class="card-htw">
         <div class="card-header">
-          <h3 class="mb-0">⚙️ Mon Profil</h3>
+          <h3 class="mb-0" style="color: #d4af37;">⚙️ Mon Profil</h3>
         </div>
         <div class="card-body">
-          <%= form_with model: @user, url: profile_path, method: :patch, local: true do |f| %>
 
+          <!-- SECTION 1 : PSEUDO -->
+          <h5 class="mb-3" style="color: #d4af37; border-bottom: 2px solid rgba(212, 175, 55, 0.3); padding-bottom: 10px;">
+            👤 Informations générales
+          </h5>
+
+          <%= form_with model: @user, url: profile_path, method: :patch, local: true do |f| %>
             <div class="mb-3">
               <%= f.label :email, "Email", class: "form-label" %>
-              <%= f.email_field :email, class: "form-control", disabled: true %>
+              <%= f.email_field :email, class: "form-control form-control-dark", disabled: true %>
               <small class="text-muted">L'email ne peut pas être modifié</small>
             </div>
 
             <div class="mb-4">
               <%= f.label :nickname, "Pseudo (affiché sur le site)", class: "form-label" %>
               <%= f.text_field :nickname,
-                  class: "form-control",
+                  class: "form-control form-control-dark",
                   placeholder: "Ex: Zargul, Arathel, Sephiroth...",
                   autofocus: true %>
               <small class="text-muted d-block mt-2">
                 <% if @user.nickname.present? %>
-                  Actuellement affiché : <strong class="text-success"><%= @user.display_name %></strong>
+                  Actuellement affiché : <strong style="color: #28a745;"><%= @user.display_name %></strong>
                 <% else %>
-                  Par défaut, on affiche : <strong class="text-warning"><%= @user.email.split('@').first.capitalize %></strong>
+                  Par défaut : <strong style="color: #ffc107;"><%= @user.email.split('@').first.capitalize %></strong>
                 <% end %>
               </small>
             </div>
 
-            <div class="d-flex gap-2">
-              <%= f.submit "Enregistrer", class: "btn btn-primary flex-grow-1" %>
-              <%= link_to "Annuler", :back, class: "btn btn-secondary" %>
+            <div class="d-flex gap-2 mb-5">
+              <%= f.submit "Enregistrer le pseudo", class: "btn btn-gold flex-grow-1" %>
+              <%= link_to "Annuler", :back, class: "btn btn-secondary-htw" %>
             </div>
           <% end %>
-        </div>
-      </div>
 
-      <!-- Lien vers changement de mot de passe -->
-      <div class="text-center mt-3">
-        <%= link_to "Changer mon mot de passe", edit_user_registration_path, class: "btn btn-link" %>
+          <hr class="my-4" style="border-color: rgba(212, 175, 55, 0.3);">
+
+          <!-- SECTION 2 : MOT DE PASSE -->
+          <h5 class="mb-3" style="color: #d4af37; border-bottom: 2px solid rgba(212, 175, 55, 0.3); padding-bottom: 10px;">
+            🔒 Changer mon mot de passe
+          </h5>
+
+          <%= form_for(@user, url: user_registration_path, html: { method: :put }) do |f| %>
+
+            <% if @user.errors.any? %>
+              <div class="alert alert-danger mb-4">
+                <strong>Erreurs :</strong>
+                <ul class="mb-0 mt-2">
+                  <% @user.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div class="mb-3">
+              <%= f.label :password, "Nouveau mot de passe", class: "form-label" %>
+              <%= f.password_field :password,
+                  autocomplete: "new-password",
+                  class: "form-control form-control-dark",
+                  placeholder: "Laisser vide pour ne pas changer" %>
+              <small class="text-muted">Minimum 6 caractères</small>
+            </div>
+
+            <div class="mb-3">
+              <%= f.label :password_confirmation, "Confirmer le nouveau mot de passe", class: "form-label" %>
+              <%= f.password_field :password_confirmation,
+                  autocomplete: "new-password",
+                  class: "form-control form-control-dark",
+                  placeholder: "Confirme ton nouveau mot de passe" %>
+            </div>
+
+            <div class="mb-4">
+              <%= f.label :current_password, "Mot de passe actuel (requis)", class: "form-label" %>
+              <%= f.password_field :current_password,
+                  autocomplete: "current-password",
+                  class: "form-control form-control-dark",
+                  placeholder: "Ton mot de passe actuel" %>
+              <small class="text-muted">Nécessaire pour confirmer les changements</small>
+            </div>
+
+            <%= f.submit "Changer le mot de passe", class: "btn btn-gold w-100" %>
+          <% end %>
+
+        </div>
       </div>
     </div>
   </div>
 </div>
+
+<style>
+  .form-control-dark {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    color: #fff;
+  }
+
+  .form-control-dark:focus {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: #d4af37;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+  }
+
+  .form-control-dark:disabled {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #6c757d;
+  }
+
+  .form-control-dark::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .btn-gold {
+    background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+    border: none;
+    color: #000;
+    font-weight: bold;
+    padding: 10px 20px;
+    transition: all 0.3s;
+  }
+
+  .btn-gold:hover {
+    background: linear-gradient(135deg, #f4d03f 0%, #d4af37 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+    color: #000;
+  }
+
+  .btn-secondary-htw {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    color: #d4af37;
+    padding: 10px 20px;
+    transition: all 0.3s;
+  }
+
+  .btn-secondary-htw:hover {
+    background-color: rgba(212, 175, 55, 0.2);
+    border-color: #d4af37;
+    color: #fff;
+  }
+
+  .form-label {
+    color: #d4af37;
+    font-weight: 500;
+  }
+</style>
