@@ -1,0 +1,69 @@
+# Ingrédients TWW (Herbes)
+ingredients:
+  210796:
+    name: "Mycobloom"
+    category: "herb"
+  210797:
+    name: "Blessing Blossom"
+    category: "herb"
+  210798:
+    name: "Arathor's Spear"
+    category: "herb"
+  210799:
+    name: "Luredrop"
+    category: "herb"
+  210800:
+    name: "Orbinid"
+    category: "herb"
+  210801:
+    name: "Null Lotus"
+    category: "herb"
+
+# Consumables TWW
+consumables:
+  # Flasks
+  212242:
+    category: "flask"
+    expansion: "The War Within"
+  212243:
+    category: "flask"
+    expansion: "The War Within"
+  212244:
+    category: "flask"
+    expansion: "The War Within"
+  212245:
+    category: "flask"
+    expansion: "The War Within"
+  212246:
+    category: "flask"
+    expansion: "The War Within"
+
+  # Potions
+  212241:
+    category: "potion"
+    expansion: "The War Within"
+  212247:
+    category: "potion"
+    expansion: "The War Within"
+  212248:
+    category: "potion"
+    expansion: "The War Within"
+
+  # Food
+  212249:
+    category: "food"
+    expansion: "The War Within"
+
+  # Runes
+  224572:
+    category: "rune"
+    expansion: "The War Within"
+
+# Recettes (à compléter manuellement ou via l'API Profession)
+recipes:
+  212242: # Flask 1
+    - ingredient_id: 210796
+      quantity: 3
+    - ingredient_id: 210799
+      quantity: 2
+  # À compléter avec les autres recettes
