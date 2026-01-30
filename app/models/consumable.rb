@@ -2,7 +2,7 @@ class Consumable < ApplicationRecord
   has_many :recipes, dependent: :destroy
   has_many :ingredients, through: :recipes
 
-  validates :name, presence: true, uniqueness: true
+  validates :name, presence: true
   validates :blizzard_id, uniqueness: true, allow_nil: true
   validates :category, presence: true
 

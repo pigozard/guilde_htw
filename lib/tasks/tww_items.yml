@@ -1,4 +1,4 @@
-# Ingrédients TWW (Herbes)
+# Ingrédients TWW (Herbes d'alchimie)
 ingredients:
   210796:
     name: "Mycobloom"
@@ -19,51 +19,109 @@ ingredients:
     name: "Null Lotus"
     category: "herb"
 
-# Consumables TWW
+# Consumables TWW - IDs VÉRIFIÉS
 consumables:
-  # Flasks
-  212242:
-    category: "flask"
-    expansion: "The War Within"
-  212243:
-    category: "flask"
-    expansion: "The War Within"
-  212244:
-    category: "flask"
-    expansion: "The War Within"
-  212245:
-    category: "flask"
-    expansion: "The War Within"
-  212246:
+  # === FLASKS ===
+  212255:
     category: "flask"
     expansion: "The War Within"
 
-  # Potions
-  212241:
-    category: "potion"
+  212253:
+    category: "flask"
     expansion: "The War Within"
-  212247:
-    category: "potion"
+
+  212251:
+    category: "flask"
     expansion: "The War Within"
-  212248:
+
+  212257:
+    category: "flask"
+    expansion: "The War Within"
+
+  212259:
+    category: "flask"
+    expansion: "The War Within"
+
+  # === POTIONS ===
+  212262:
     category: "potion"
     expansion: "The War Within"
 
-  # Food
-  212249:
+  212265:
+    category: "potion"
+    expansion: "The War Within"
+
+  212268:
+    category: "potion"
+    expansion: "The War Within"
+
+  # === FOOD ===
+  222720:
     category: "food"
     expansion: "The War Within"
 
-  # Runes
-  224572:
-    category: "rune"
-    expansion: "The War Within"
-
-# Recettes (à compléter manuellement ou via l'API Profession)
+# Recettes (quantités approximatives - à ajuster si besoin)
 recipes:
-  212242: # Flask 1
+  212255:
     - ingredient_id: 210796
       quantity: 3
     - ingredient_id: 210799
       quantity: 2
-  # À compléter avec les autres recettes
+    - ingredient_id: 210797
+      quantity: 1
+
+  212253:
+    - ingredient_id: 210796
+      quantity: 3
+    - ingredient_id: 210800
+      quantity: 2
+    - ingredient_id: 210798
+      quantity: 1
+
+  212251:
+    - ingredient_id: 210796
+      quantity: 3
+    - ingredient_id: 210797
+      quantity: 2
+    - ingredient_id: 210799
+      quantity: 1
+
+  212257:
+    - ingredient_id: 210796
+      quantity: 3
+    - ingredient_id: 210798
+      quantity: 2
+    - ingredient_id: 210800
+      quantity: 1
+
+  212259:
+    - ingredient_id: 210796
+      quantity: 4
+    - ingredient_id: 210801
+      quantity: 1
+    - ingredient_id: 210800
+      quantity: 2
+
+  212262:
+    - ingredient_id: 210796
+      quantity: 2
+    - ingredient_id: 210799
+      quantity: 1
+
+  212265:
+    - ingredient_id: 210797
+      quantity: 2
+    - ingredient_id: 210798
+      quantity: 1
+
+  212268:
+    - ingredient_id: 210796
+      quantity: 2
+    - ingredient_id: 210800
+      quantity: 1
+
+  222720:
+    - ingredient_id: 210796
+      quantity: 5
+    - ingredient_id: 210797
+      quantity: 3
