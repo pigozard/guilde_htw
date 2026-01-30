@@ -1,127 +1,558 @@
-# Ingrédients TWW (Herbes d'alchimie)
+# =============================================================================
+# The War Within - Consommables & Ingrédients
+# IDs vérifiés sur Wowhead - Version Française
+# Pour la guilde Highway to Wipe
+# =============================================================================
+
+# Ingrédients TWW
 ingredients:
+  # === HERBES ===
   210796:
     name: "Mycobloom"
-    category: "herb"
-  210797:
-    name: "Blessing Blossom"
-    category: "herb"
-  210798:
-    name: "Arathor's Spear"
     category: "herb"
   210799:
     name: "Luredrop"
     category: "herb"
-  210800:
+  210802:
     name: "Orbinid"
     category: "herb"
-  210801:
-    name: "Null Lotus"
+  210805:
+    name: "Fleur bénie"
+    category: "herb"
+  210808:
+    name: "Lance d'Arathor"
+    category: "herb"
+  213197:
+    name: "Lotus nul"
     category: "herb"
 
-# Consumables TWW - IDs VÉRIFIÉS
+  # === REACTIFS ALCHIMIE ===
+  213611:
+    name: "Echantillon frétillant"
+    category: "reagent"
+  213612:
+    name: "Spores viridescentes"
+    category: "reagent"
+  213613:
+    name: "Résidu de ligne tellurique"
+    category: "reagent"
+  211806:
+    name: "Fiole dorée"
+    category: "reagent"
+
+  # === INGREDIENTS CUISINE ===
+  222737:
+    name: "Mycobloom haché"
+    category: "prepared"
+  222738:
+    name: "Steak en portions"
+    category: "prepared"
+  222739:
+    name: "Oeufs préparés"
+    category: "prepared"
+  222741:
+    name: "Filet frais"
+    category: "prepared"
+  222695:
+    name: "Herbes tressées"
+    category: "prepared"
+  222694:
+    name: "Poivrons croquants"
+    category: "reagent"
+  222696:
+    name: "Epices émiettées"
+    category: "reagent"
+
+  # === POISSONS ===
+  220149:
+    name: "Aiguillat sanguinaire"
+    category: "fish"
+  220143:
+    name: "Requin des bas-fonds kaheti"
+    category: "fish"
+  220145:
+    name: "Esturgeon cristallin"
+    category: "fish"
+  220141:
+    name: "Poisson spéculaire"
+    category: "fish"
+
+# Consommables TWW - IDs VÉRIFIÉS sur Wowhead
 consumables:
-  # === FLASKS ===
-  212255:
+  # === FLACONS ===
+  212280:
+    name: "Flacon de maîtrise trempée"
     category: "flask"
     expansion: "The War Within"
 
-  212253:
+  212271:
+    name: "Flacon d'agression trempée"
     category: "flask"
     expansion: "The War Within"
 
-  212251:
+  212274:
+    name: "Flacon de célérité trempée"
     category: "flask"
     expansion: "The War Within"
 
-  212257:
+  212277:
+    name: "Flacon de polyvalence trempée"
     category: "flask"
+    expansion: "The War Within"
+
+  212283:
+    name: "Flacon de chaos alchimique"
+    category: "flask"
+    expansion: "The War Within"
+
+  212286:
+    name: "Flacon des grâces salvatrices"
+    category: "flask"
+    expansion: "The War Within"
+
+  # === POTIONS DE COMBAT ===
+  212265:
+    name: "Potion trempée"
+    category: "potion"
     expansion: "The War Within"
 
   212259:
-    category: "flask"
-    expansion: "The War Within"
-
-  # === POTIONS ===
-  212262:
+    name: "Potion de concentration inébranlable"
     category: "potion"
     expansion: "The War Within"
 
-  212265:
+  212261:
+    name: "Potion de ligne de front"
     category: "potion"
     expansion: "The War Within"
 
-  212268:
+  212263:
+    name: "Potion du guépard réincarné"
     category: "potion"
     expansion: "The War Within"
 
-  # === FOOD ===
-  222720:
+  212257:
+    name: "Fiole grotesque"
+    category: "potion"
+    expansion: "The War Within"
+
+  # === POTIONS UTILITAIRES ===
+  211880:
+    name: "Potion de soins algari"
+    category: "potion"
+    expansion: "The War Within"
+
+  211882:
+    name: "Potion de mana algari"
+    category: "potion"
+    expansion: "The War Within"
+
+  211884:
+    name: "Délice du troglodyte"
+    category: "potion"
+    expansion: "The War Within"
+
+  211886:
+    name: "Sérum d'âme somnolente"
+    category: "potion"
+    expansion: "The War Within"
+
+  212253:
+    name: "Rasade de pas silencieux"
+    category: "potion"
+    expansion: "The War Within"
+
+  212255:
+    name: "Rasade de révélations choquantes"
+    category: "potion"
+    expansion: "The War Within"
+
+  # === PHIALES ===
+  212289:
+    name: "Phiale des saisons généreuses"
+    category: "phial"
+    expansion: "The War Within"
+
+  212292:
+    name: "Phiale d'ingéniosité concentrée"
+    category: "phial"
+    expansion: "The War Within"
+
+  212295:
+    name: "Phiale d'ambidextrie améliorée"
+    category: "phial"
+    expansion: "The War Within"
+
+  212298:
+    name: "Phiale de vision véritable"
+    category: "phial"
+    expansion: "The War Within"
+
+  # === NOURRITURE ===
+  222732:
+    name: "Festin du jour divin"
     category: "food"
     expansion: "The War Within"
 
-# Recettes (quantités approximatives - à ajuster si besoin)
-recipes:
-  212255:
-    - ingredient_id: 210796
-      quantity: 3
-    - ingredient_id: 210799
-      quantity: 2
-    - ingredient_id: 210797
-      quantity: 1
-
-  212253:
-    - ingredient_id: 210796
-      quantity: 3
-    - ingredient_id: 210800
-      quantity: 2
-    - ingredient_id: 210798
-      quantity: 1
-
-  212251:
-    - ingredient_id: 210796
-      quantity: 3
-    - ingredient_id: 210797
-      quantity: 2
-    - ingredient_id: 210799
-      quantity: 1
-
-  212257:
-    - ingredient_id: 210796
-      quantity: 3
-    - ingredient_id: 210798
-      quantity: 2
-    - ingredient_id: 210800
-      quantity: 1
-
-  212259:
-    - ingredient_id: 210796
-      quantity: 4
-    - ingredient_id: 210801
-      quantity: 1
-    - ingredient_id: 210800
-      quantity: 2
-
-  212262:
-    - ingredient_id: 210796
-      quantity: 2
-    - ingredient_id: 210799
-      quantity: 1
-
-  212265:
-    - ingredient_id: 210797
-      quantity: 2
-    - ingredient_id: 210798
-      quantity: 1
-
-  212268:
-    - ingredient_id: 210796
-      quantity: 2
-    - ingredient_id: 210800
-      quantity: 1
+  222735:
+    name: "Festin du bal masqué de minuit"
+    category: "food"
+    expansion: "The War Within"
 
   222720:
+    name: "Le spécial sushi"
+    category: "food"
+    expansion: "The War Within"
+
+  222717:
+    name: "Planche du bouffon"
+    category: "food"
+    expansion: "The War Within"
+
+  222714:
+    name: "Générosité de Beledar"
+    category: "food"
+    expansion: "The War Within"
+
+  222708:
+    name: "Poivrons farcis des cavernes"
+    category: "food"
+    expansion: "The War Within"
+
+  222705:
+    name: "Chili de Hallowfall"
+    category: "food"
+    expansion: "The War Within"
+
+# Recettes - Quantités vérifiées sur Wowhead
+recipes:
+  # === FLACONS ===
+  # Flacon de maîtrise trempée
+  212280:
+    - ingredient_id: 213197
+      quantity: 1
+    - ingredient_id: 213613
+      quantity: 2
+    - ingredient_id: 210805
+      quantity: 12
+    - ingredient_id: 210808
+      quantity: 12
+    - ingredient_id: 211806
+      quantity: 2
+
+  # Flacon d'agression trempée
+  212271:
+    - ingredient_id: 213197
+      quantity: 1
+    - ingredient_id: 213612
+      quantity: 2
+    - ingredient_id: 210799
+      quantity: 12
+    - ingredient_id: 210802
+      quantity: 12
+    - ingredient_id: 211806
+      quantity: 2
+
+  # Flacon de célérité trempée
+  212274:
+    - ingredient_id: 213197
+      quantity: 1
+    - ingredient_id: 213613
+      quantity: 2
+    - ingredient_id: 210799
+      quantity: 12
+    - ingredient_id: 210805
+      quantity: 12
+    - ingredient_id: 211806
+      quantity: 2
+
+  # Flacon de polyvalence trempée
+  212277:
+    - ingredient_id: 213197
+      quantity: 1
+    - ingredient_id: 213612
+      quantity: 2
+    - ingredient_id: 210802
+      quantity: 12
+    - ingredient_id: 210808
+      quantity: 12
+    - ingredient_id: 211806
+      quantity: 2
+
+  # Flacon de chaos alchimique
+  212283:
+    - ingredient_id: 213197
+      quantity: 1
+    - ingredient_id: 213613
+      quantity: 2
+    - ingredient_id: 213612
+      quantity: 2
     - ingredient_id: 210796
+      quantity: 8
+    - ingredient_id: 211806
+      quantity: 2
+
+  # Flacon des grâces salvatrices
+  212286:
+    - ingredient_id: 213197
+      quantity: 1
+    - ingredient_id: 213613
+      quantity: 2
+    - ingredient_id: 210796
+      quantity: 12
+    - ingredient_id: 210805
+      quantity: 12
+    - ingredient_id: 211806
+      quantity: 2
+
+  # === POTIONS DE COMBAT ===
+  # Potion trempée
+  212265:
+    - ingredient_id: 213611
+      quantity: 1
+    - ingredient_id: 210796
+      quantity: 12
+    - ingredient_id: 210799
+      quantity: 4
+    - ingredient_id: 210808
+      quantity: 4
+    - ingredient_id: 211806
       quantity: 5
-    - ingredient_id: 210797
+
+  # Potion de concentration inébranlable
+  212259:
+    - ingredient_id: 213611
+      quantity: 1
+    - ingredient_id: 210796
+      quantity: 12
+    - ingredient_id: 210802
+      quantity: 4
+    - ingredient_id: 210805
+      quantity: 4
+    - ingredient_id: 211806
+      quantity: 5
+
+  # Potion de ligne de front
+  212261:
+    - ingredient_id: 213611
+      quantity: 1
+    - ingredient_id: 210796
+      quantity: 8
+    - ingredient_id: 210805
+      quantity: 6
+    - ingredient_id: 210808
+      quantity: 6
+    - ingredient_id: 211806
+      quantity: 5
+
+  # Potion du guépard réincarné
+  212263:
+    - ingredient_id: 210796
+      quantity: 8
+    - ingredient_id: 210802
+      quantity: 6
+    - ingredient_id: 210808
+      quantity: 6
+    - ingredient_id: 211806
+      quantity: 5
+
+  # Fiole grotesque
+  212257:
+    - ingredient_id: 213611
+      quantity: 1
+    - ingredient_id: 210796
+      quantity: 8
+    - ingredient_id: 210799
+      quantity: 6
+    - ingredient_id: 210808
+      quantity: 6
+    - ingredient_id: 211806
+      quantity: 5
+
+  # === POTIONS UTILITAIRES ===
+  # Potion de soins algari
+  211880:
+    - ingredient_id: 210796
+      quantity: 6
+    - ingredient_id: 211806
+      quantity: 5
+
+  # Potion de mana algari
+  211882:
+    - ingredient_id: 210796
+      quantity: 4
+    - ingredient_id: 210805
+      quantity: 4
+    - ingredient_id: 211806
+      quantity: 5
+
+  # Délice du troglodyte
+  211884:
+    - ingredient_id: 210796
+      quantity: 4
+    - ingredient_id: 210799
+      quantity: 4
+    - ingredient_id: 210802
+      quantity: 4
+    - ingredient_id: 211806
+      quantity: 5
+
+  # Sérum d'âme somnolente
+  211886:
+    - ingredient_id: 210796
+      quantity: 4
+    - ingredient_id: 210805
+      quantity: 5
+    - ingredient_id: 210808
+      quantity: 5
+    - ingredient_id: 211806
+      quantity: 5
+
+  # Rasade de pas silencieux
+  212253:
+    - ingredient_id: 210796
+      quantity: 6
+    - ingredient_id: 210802
+      quantity: 4
+    - ingredient_id: 210808
+      quantity: 4
+    - ingredient_id: 211806
+      quantity: 5
+
+  # Rasade de révélations choquantes
+  212255:
+    - ingredient_id: 210796
+      quantity: 6
+    - ingredient_id: 210802
+      quantity: 4
+    - ingredient_id: 210808
+      quantity: 4
+    - ingredient_id: 211806
+      quantity: 5
+
+  # === PHIALES ===
+  # Phiale des saisons généreuses
+  212289:
+    - ingredient_id: 213197
+      quantity: 1
+    - ingredient_id: 210799
+      quantity: 8
+    - ingredient_id: 210802
+      quantity: 8
+    - ingredient_id: 210805
+      quantity: 8
+    - ingredient_id: 210808
+      quantity: 8
+    - ingredient_id: 211806
+      quantity: 2
+
+  # Phiale d'ingéniosité concentrée
+  212292:
+    - ingredient_id: 213197
+      quantity: 1
+    - ingredient_id: 210799
+      quantity: 10
+    - ingredient_id: 210802
+      quantity: 10
+    - ingredient_id: 210805
+      quantity: 10
+    - ingredient_id: 211806
+      quantity: 2
+
+  # Phiale d'ambidextrie améliorée
+  212295:
+    - ingredient_id: 213197
+      quantity: 1
+    - ingredient_id: 210796
+      quantity: 10
+    - ingredient_id: 210799
+      quantity: 10
+    - ingredient_id: 210802
+      quantity: 10
+    - ingredient_id: 211806
+      quantity: 2
+
+  # Phiale de vision véritable
+  212298:
+    - ingredient_id: 213197
+      quantity: 1
+    - ingredient_id: 210796
+      quantity: 10
+    - ingredient_id: 210799
+      quantity: 10
+    - ingredient_id: 210805
+      quantity: 10
+    - ingredient_id: 211806
+      quantity: 2
+
+  # === NOURRITURE ===
+  # Festin du jour divin
+  222732:
+    - ingredient_id: 222741
+      quantity: 200
+    - ingredient_id: 222737
+      quantity: 100
+    - ingredient_id: 220149
+      quantity: 5
+    - ingredient_id: 222695
+      quantity: 50
+
+  # Festin du bal masqué de minuit
+  222735:
+    - ingredient_id: 222738
+      quantity: 200
+    - ingredient_id: 222739
+      quantity: 100
+    - ingredient_id: 220141
+      quantity: 5
+    - ingredient_id: 222695
+      quantity: 50
+
+  # Le spécial sushi
+  222720:
+    - ingredient_id: 222741
+      quantity: 4
+    - ingredient_id: 220143
+      quantity: 2
+    - ingredient_id: 220145
+      quantity: 2
+    - ingredient_id: 220149
+      quantity: 1
+
+  # Planche du bouffon
+  222717:
+    - ingredient_id: 222738
+      quantity: 4
+    - ingredient_id: 222739
+      quantity: 2
+    - ingredient_id: 222695
+      quantity: 2
+
+  # Générosité de Beledar
+  222714:
+    - ingredient_id: 222738
       quantity: 3
+    - ingredient_id: 222737
+      quantity: 2
+    - ingredient_id: 222695
+      quantity: 2
+
+  # Poivrons farcis des cavernes
+  222708:
+    - ingredient_id: 222738
+      quantity: 2
+    - ingredient_id: 222737
+      quantity: 2
+    - ingredient_id: 222694
+      quantity: 2
+
+  # Chili de Hallowfall
+  222705:
+    - ingredient_id: 222738
+      quantity: 2
+    - ingredient_id: 222737
+      quantity: 1
+    - ingredient_id: 222694
+      quantity: 2
+    - ingredient_id: 222696
+      quantity: 1
