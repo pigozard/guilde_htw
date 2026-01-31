@@ -1,6 +1,6 @@
 # =============================================================================
 # The War Within - Consommables & Ingrédients
-# IDs vérifiés sur Wowhead/Blizzard API - Version Française
+# IDs Rank 3 uniquement - Version corrigée sans doublons
 # Pour la guilde Highway to Wipe
 # =============================================================================
 
@@ -77,94 +77,78 @@ ingredients:
     category: "fish"
 
 consumables:
-  # === FLACONS ===
-  212280:
+  # === FLACONS (Rank 3) ===
+  212282:
     name: "Flacon de maîtrise trempée"
     category: "flask"
     expansion: "The War Within"
-  212271:
+  212273:
     name: "Flacon d'agression trempée"
     category: "flask"
     expansion: "The War Within"
-  212274:
+  212276:
     name: "Flacon de célérité trempée"
     category: "flask"
     expansion: "The War Within"
-  212277:
+  212279:
     name: "Flacon de polyvalence trempée"
     category: "flask"
     expansion: "The War Within"
-  212283:
+  212285:
     name: "Flacon de chaos alchimique"
     category: "flask"
     expansion: "The War Within"
-  212301:
+  212303:
     name: "Flacon des grâces salvatrices"
     category: "flask"
     expansion: "The War Within"
 
-  # === POTIONS DE COMBAT ===
-  212265:
+  # === POTIONS DE COMBAT (Rank 3) ===
+  212267:
     name: "Potion trempée"
     category: "potion"
     expansion: "The War Within"
-  212259:
+  212261:
     name: "Potion de concentration inébranlable"
     category: "potion"
     expansion: "The War Within"
-  212261:
+  212264:
     name: "Potion de ligne de front"
     category: "potion"
     expansion: "The War Within"
-  212263:
-    name: "Potion du guépard réincarné"
-    category: "potion"
-    expansion: "The War Within"
-  212257:
+  212258:
     name: "Fiole grotesque"
     category: "potion"
     expansion: "The War Within"
 
-  # === POTIONS UTILITAIRES ===
-  212239:
-    name: "Potion de soins algari"
-    category: "potion"
-    expansion: "The War Within"
+  # === POTIONS UTILITAIRES (Rank 3) ===
   212241:
     name: "Potion de mana algari"
     category: "potion"
     expansion: "The War Within"
-  212243:
+  212245:
     name: "Délice du troglodyte"
     category: "potion"
     expansion: "The War Within"
-  212247:
+  212249:
     name: "Sérum d'âme somnolente"
     category: "potion"
     expansion: "The War Within"
-  212253:
-    name: "Rasade de pas silencieux"
-    category: "potion"
-    expansion: "The War Within"
-  212255:
-    name: "Rasade de révélations choquantes"
-    category: "potion"
-    expansion: "The War Within"
 
-  # === PHIALES ===
-  212289:
+  # === PHIALES (Rank 3) ===
+  212291:
     name: "Phiale des saisons généreuses"
     category: "phial"
     expansion: "The War Within"
-  212292:
+  212294:
     name: "Phiale d'ingéniosité concentrée"
     category: "phial"
     expansion: "The War Within"
-  212295:
+  212297:
     name: "Phiale d'ambidextrie améliorée"
     category: "phial"
     expansion: "The War Within"
-  212298:
+  212300:
     name: "Phiale de vision véritable"
     category: "phial"
     expansion: "The War Within"
@@ -180,38 +164,38 @@ consumables:
     expansion: "The War Within"
 
   # === NOURRITURE ===
-  222732:
+  222734:
     name: "Festin du jour divin"
     category: "food"
     expansion: "The War Within"
-  222735:
+  222736:
     name: "Festin du bal masqué de minuit"
     category: "food"
     expansion: "The War Within"
-  222720:
+  222722:
     name: "Le spécial sushi"
     category: "food"
     expansion: "The War Within"
-  222717:
+  222719:
     name: "Planche du bouffon"
     category: "food"
     expansion: "The War Within"
-  222714:
+  222716:
     name: "Générosité de Beledar"
     category: "food"
     expansion: "The War Within"
-  222708:
+  222710:
     name: "Poivrons farcis des cavernes"
     category: "food"
     expansion: "The War Within"
-  222705:
+  222707:
     name: "Chili de Hallowfall"
     category: "food"
     expansion: "The War Within"
 
 recipes:
   # === FLACONS ===
-  212280:
+  212282:
     - ingredient_id: 213197
       quantity: 1
     - ingredient_id: 213613
@@ -222,7 +206,7 @@ recipes:
       quantity: 12
     - ingredient_id: 211806
       quantity: 2
-  212271:
+  212273:
     - ingredient_id: 213197
       quantity: 1
     - ingredient_id: 213612
@@ -233,7 +217,7 @@ recipes:
       quantity: 12
     - ingredient_id: 211806
       quantity: 2
-  212274:
+  212276:
     - ingredient_id: 213197
       quantity: 1
     - ingredient_id: 213613
@@ -244,7 +228,7 @@ recipes:
       quantity: 12
     - ingredient_id: 211806
       quantity: 2
-  212277:
+  212279:
     - ingredient_id: 213197
       quantity: 1
     - ingredient_id: 213612
@@ -255,7 +239,7 @@ recipes:
       quantity: 12
     - ingredient_id: 211806
       quantity: 2
-  212283:
+  212285:
     - ingredient_id: 213197
       quantity: 1
     - ingredient_id: 213613
@@ -266,7 +250,7 @@ recipes:
       quantity: 8
     - ingredient_id: 211806
       quantity: 2
-  212301:
+  212303:
     - ingredient_id: 213197
       quantity: 1
     - ingredient_id: 213613
@@ -279,7 +263,7 @@ recipes:
       quantity: 2
 
   # === POTIONS DE COMBAT ===
-  212265:
+  212267:
     - ingredient_id: 213611
       quantity: 1
     - ingredient_id: 210796
@@ -290,7 +274,7 @@ recipes:
       quantity: 4
     - ingredient_id: 211806
       quantity: 5
-  212259:
+  212261:
     - ingredient_id: 213611
       quantity: 1
     - ingredient_id: 210796
@@ -301,7 +285,7 @@ recipes:
       quantity: 4
     - ingredient_id: 211806
       quantity: 5
-  212261:
+  212264:
     - ingredient_id: 213611
       quantity: 1
     - ingredient_id: 210796
@@ -312,16 +296,7 @@ recipes:
       quantity: 6
     - ingredient_id: 211806
       quantity: 5
-  212263:
-    - ingredient_id: 210796
-      quantity: 8
-    - ingredient_id: 210802
-      quantity: 6
-    - ingredient_id: 210808
-      quantity: 6
-    - ingredient_id: 211806
-      quantity: 5
-  212257:
+  212258:
     - ingredient_id: 213611
       quantity: 1
     - ingredient_id: 210796
@@ -334,11 +309,6 @@ recipes:
       quantity: 5
 
   # === POTIONS UTILITAIRES ===
-  212239:
-    - ingredient_id: 210796
-      quantity: 6
-    - ingredient_id: 211806
-      quantity: 5
   212241:
     - ingredient_id: 210796
       quantity: 4
@@ -346,7 +316,7 @@ recipes:
       quantity: 4
     - ingredient_id: 211806
       quantity: 5
-  212243:
+  212245:
     - ingredient_id: 210796
       quantity: 4
     - ingredient_id: 210799
@@ -355,36 +325,18 @@ recipes:
       quantity: 4
     - ingredient_id: 211806
       quantity: 5
-  212247:
+  212249:
     - ingredient_id: 210796
       quantity: 4
     - ingredient_id: 210805
       quantity: 5
     - ingredient_id: 210808
       quantity: 5
-    - ingredient_id: 211806
-      quantity: 5
-  212253:
-    - ingredient_id: 210796
-      quantity: 6
-    - ingredient_id: 210802
-      quantity: 4
-    - ingredient_id: 210808
-      quantity: 4
-    - ingredient_id: 211806
-      quantity: 5
-  212255:
-    - ingredient_id: 210796
-      quantity: 6
-    - ingredient_id: 210802
-      quantity: 4
-    - ingredient_id: 210808
-      quantity: 4
     - ingredient_id: 211806
       quantity: 5
 
   # === PHIALES ===
-  212289:
+  212291:
     - ingredient_id: 213197
       quantity: 1
     - ingredient_id: 210799
@@ -397,7 +349,7 @@ recipes:
       quantity: 8
     - ingredient_id: 211806
       quantity: 2
-  212292:
+  212294:
     - ingredient_id: 213197
       quantity: 1
     - ingredient_id: 210799
@@ -408,7 +360,7 @@ recipes:
       quantity: 10
     - ingredient_id: 211806
       quantity: 2
-  212295:
+  212297:
     - ingredient_id: 213197
       quantity: 1
     - ingredient_id: 210796
@@ -419,7 +371,7 @@ recipes:
       quantity: 10
     - ingredient_id: 211806
       quantity: 2
-  212298:
+  212300:
     - ingredient_id: 213197
       quantity: 1
     - ingredient_id: 210796
@@ -432,7 +384,7 @@ recipes:
       quantity: 2
 
   # === NOURRITURE ===
-  222732:
+  222734:
     - ingredient_id: 222741
       quantity: 200
     - ingredient_id: 222737
@@ -441,7 +393,7 @@ recipes:
       quantity: 5
     - ingredient_id: 222695
       quantity: 50
-  222735:
+  222736:
     - ingredient_id: 222738
       quantity: 200
     - ingredient_id: 222739
@@ -450,7 +402,7 @@ recipes:
       quantity: 5
     - ingredient_id: 222695
       quantity: 50
-  222720:
+  222722:
     - ingredient_id: 222741
       quantity: 4
     - ingredient_id: 220143
@@ -459,28 +411,28 @@ recipes:
       quantity: 2
     - ingredient_id: 220149
       quantity: 1
-  222717:
+  222719:
     - ingredient_id: 222738
       quantity: 4
     - ingredient_id: 222739
       quantity: 2
     - ingredient_id: 222695
       quantity: 2
-  222714:
+  222716:
     - ingredient_id: 222738
       quantity: 3
     - ingredient_id: 222737
       quantity: 2
     - ingredient_id: 222695
       quantity: 2
-  222708:
+  222710:
     - ingredient_id: 222738
       quantity: 2
     - ingredient_id: 222737
       quantity: 2
     - ingredient_id: 222696
       quantity: 2
-  222705:
+  222707:
     - ingredient_id: 222738
       quantity: 2
     - ingredient_id: 222737
