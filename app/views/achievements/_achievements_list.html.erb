@@ -1,0 +1,68 @@
+<% if achievements.any? %>
+  <div class="card">
+    <div class="card-header">
+      <h5 class="mb-0">
+        <% if @show_completed %>
+          📋 Tous les hauts faits
+        <% else %>
+          ❌ Hauts faits manquants
+        <% end %>
+        (<%= achievements.count %>)
+      </h5>
+    </div>
+    <div class="list-group list-group-flush" style="max-height: 800px; overflow-y: auto;">
+      <% achievements.each do |achievement| %>
+        <% is_completed = @synced_achievements.include?(achievement.blizzard_id) %>
+
+        <div class="list-group-item <%= 'bg-light' if is_completed %>">
+          <div class="d-flex align-items-start">
+            <% if achievement.icon.present? %>
+              <img src="<%= achievement.icon_url %>"
+                   alt="<%= achievement.name %>"
+                   class="me-3 <%= 'opacity-50' unless is_completed %>"
+                   style="width: 42px; height: 42px; border-radius: 6px; border: 2px solid <%= is_completed ? '#28a745' : '#dc3545' %>;">
+            <% else %>
+              <div class="me-3" style="width: 42px; height: 42px; background: #ddd; border-radius: 6px;"></div>
+            <% end %>
+
+            <div class="flex-grow-1">
+              <h6 class="mb-1 <%= 'text-muted' if is_completed %>">
+                <%= achievement.name %>
+                <% if is_completed %>
+                  <span class="badge bg-success ms-2">✅</span>
+                <% else %>
+                  <span class="badge bg-danger ms-2">❌</span>
+                <% end %>
+              </h6>
+              <% if achievement.description.present? %>
+                <p class="mb-1 small <%= 'text-muted' if is_completed %>">
+                  <%= achievement.description %>
+                </p>
+              <% end %>
+              <% if achievement.category.present? %>
+                <small class="text-muted">
+                  📂 <%= achievement.category %>
+                </small>
+              <% end %>
+            </div>
+
+            <div class="text-end ms-3">
+              <span class="badge bg-warning text-dark"><%= achievement.points %> pts</span>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% else %>
+  <div class="alert alert-success text-center">
+    <h4>🎉 Félicitations !</h4>
+    <p class="mb-0">
+      <% if @selected_category.present? %>
+        Vous avez terminé tous les hauts faits de la catégorie "<%= @selected_category %>" !
+      <% else %>
+        Vous avez terminé tous les hauts faits de cette section !
+      <% end %>
+    </p>
+  </div>
+<% end %>

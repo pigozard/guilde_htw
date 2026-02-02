@@ -10,9 +10,43 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_26_134301) do
+ActiveRecord::Schema[7.1].define(version: 2026_02_01_130002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "achievements", force: :cascade do |t|
+    t.integer "blizzard_id", null: false
+    t.string "name", null: false
+    t.text "description"
+    t.string "icon"
+    t.integer "points", default: 0
+    t.bigint "expansion_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "category"
+    t.string "subcategory"
+    t.string "tags"
+    t.boolean "is_feat_of_strength", default: false
+    t.integer "display_order", default: 0
+    t.index ["blizzard_id"], name: "index_achievements_on_blizzard_id", unique: true
+    t.index ["category"], name: "index_achievements_on_category"
+    t.index ["display_order"], name: "index_achievements_on_display_order"
+    t.index ["expansion_id"], name: "index_achievements_on_expansion_id"
+    t.index ["is_feat_of_strength"], name: "index_achievements_on_is_feat_of_strength"
+    t.index ["tags"], name: "index_achievements_on_tags"
+  end
+
+  create_table "character_achievements", force: :cascade do |t|
+    t.bigint "character_id", null: false
+    t.bigint "achievement_id", null: false
+    t.boolean "completed", default: false
+    t.datetime "completed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["achievement_id"], name: "index_character_achievements_on_achievement_id"
+    t.index ["character_id", "achievement_id"], name: "index_char_achievements_on_char_and_achievement", unique: true
+    t.index ["character_id"], name: "index_character_achievements_on_character_id"
+  end
 
   create_table "characters", force: :cascade do |t|
     t.string "pseudo"
@@ -22,6 +56,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_26_134301) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "temporary", default: false
+    t.string "realm"
+    t.string "region", default: "eu"
     t.index ["specialization_id"], name: "index_characters_on_specialization_id"
     t.index ["user_id"], name: "index_characters_on_user_id"
     t.index ["wow_class_id"], name: "index_characters_on_wow_class_id"
@@ -74,6 +110,16 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_26_134301) do
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 
+  create_table "expansions", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "code", null: false
+    t.string "slug", null: false
+    t.integer "order_index", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_expansions_on_code", unique: true
+  end
+
   create_table "farm_contributions", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "ingredient_id", null: false
@@ -124,6 +170,19 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_26_134301) do
     t.index ["wow_class_id"], name: "index_specializations_on_wow_class_id"
   end
 
+  create_table "user_achievement_syncs", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "character_name"
+    t.string "realm"
+    t.string "region", default: "eu"
+    t.text "synced_achievement_ids"
+    t.datetime "synced_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "character_name", "realm"], name: "index_user_achievement_syncs_on_user_and_character", unique: true
+    t.index ["user_id"], name: "index_user_achievement_syncs_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -145,6 +204,9 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_26_134301) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "achievements", "expansions"
+  add_foreign_key "character_achievements", "achievements"
+  add_foreign_key "character_achievements", "characters"
   add_foreign_key "characters", "specializations"
   add_foreign_key "characters", "users"
   add_foreign_key "characters", "wow_classes"
@@ -161,4 +223,5 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_26_134301) do
   add_foreign_key "recipes", "consumables"
   add_foreign_key "recipes", "ingredients"
   add_foreign_key "specializations", "wow_classes"
+  add_foreign_key "user_achievement_syncs", "users"
 end

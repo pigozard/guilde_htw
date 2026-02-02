@@ -12,6 +12,7 @@ class User < ApplicationRecord
   has_many :farm_contributions, dependent: :destroy
   has_many :consumable_selections, dependent: :destroy
   has_many :farmer_assignments, dependent: :destroy
+  has_many :user_achievement_syncs, dependent: :destroy
 
   # Validations
   validates :email, presence: true, uniqueness: true

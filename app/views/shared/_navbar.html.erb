@@ -3,9 +3,11 @@
   <ul class="nav-links">
     <% if user_signed_in? %>
       <li><%= link_to "Home", root_path, class: "nav-link" %></li>
-      <li><%= link_to "Roster", characters_path, class: "nav-link" %></li>
       <li><%= link_to "Calendrier", events_path, class: "nav-link" %></li>
+      <li><%= link_to "Roster", characters_path, class: "nav-link" %></li>
+
       <li><%= link_to "Farm", farm_path, class: "nav-link" %></li>
+      <%= link_to "Hauts Faits", achievements_path, class: "nav-link" %>
       <li><%= link_to "Discord", "https://discord.gg/gpdXBfyuYw", target: "_blank", class: "nav-link" %></li>
 
       <li class="nav-account">

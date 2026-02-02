@@ -18,4 +18,8 @@ Rails.application.routes.draw do
   get 'farm', to: 'farm#index'
   resources :consumable_selections, only: [:create, :update, :destroy]
   resources :farmer_assignments, only: [:create, :destroy]
+
+  # Page dédiée Hauts Faits
+  get 'achievements', to: 'achievements#index'
+  post 'achievements/sync', to: 'achievements#sync', as: :sync_achievements
 end

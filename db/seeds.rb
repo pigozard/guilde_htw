@@ -88,3 +88,31 @@ CLASSES_DATA.each do |class_name, specs|
 end
 
 puts "Done! Created #{WowClass.count} classes and #{Specialization.count} specs."
+
+# Seed des expansions WoW
+puts "🌟 Création des expansions..."
+
+expansions_data = [
+  { name: "Classic", code: "classic", slug: "classic", order_index: 0 },
+  { name: "The Burning Crusade", code: "tbc", slug: "the-burning-crusade", order_index: 1 },
+  { name: "Wrath of the Lich King", code: "wotlk", slug: "wrath-of-the-lich-king", order_index: 2 },
+  { name: "Cataclysm", code: "cata", slug: "cataclysm", order_index: 3 },
+  { name: "Mists of Pandaria", code: "mop", slug: "mists-of-pandaria", order_index: 4 },
+  { name: "Warlords of Draenor", code: "wod", slug: "warlords-of-draenor", order_index: 5 },
+  { name: "Legion", code: "legion", slug: "legion", order_index: 6 },
+  { name: "Battle for Azeroth", code: "bfa", slug: "battle-for-azeroth", order_index: 7 },
+  { name: "Shadowlands", code: "sl", slug: "shadowlands", order_index: 8 },
+  { name: "Dragonflight", code: "df", slug: "dragonflight", order_index: 9 },
+  { name: "The War Within", code: "tww", slug: "the-war-within", order_index: 10 }
+]
+
+expansions_data.each do |exp_data|
+  expansion = Expansion.find_or_create_by(code: exp_data[:code]) do |e|
+    e.name = exp_data[:name]
+    e.slug = exp_data[:slug]
+    e.order_index = exp_data[:order_index]
+  end
+  puts "  ✅ #{expansion.name}"
+end
+
+puts "✨ #{Expansion.count} expansions créées !"

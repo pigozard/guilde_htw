@@ -1,0 +1,292 @@
+<div class="container mt-4">
+  <h2 class="text-center mb-4">🏆 Suivi des Hauts Faits</h2>
+
+  <!-- Formulaire de recherche -->
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">🔍 Rechercher un personnage</h5>
+    </div>
+    <div class="card-body">
+      <%= form_with url: sync_achievements_path, method: :post, local: true do |f| %>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <%= text_field_tag :character_name, @character_name,
+                              class: 'form-control',
+                              placeholder: 'Nom du personnage',
+                              required: true %>
+          </div>
+          <div class="col-md-3">
+            <%= text_field_tag :realm, @realm,
+                              class: 'form-control',
+                              placeholder: 'Serveur (ex: Dalaran)',
+                              required: true %>
+          </div>
+          <div class="col-md-3">
+            <%= select_tag :region,
+                          options_for_select([['Europe', 'eu'], ['US', 'us'], ['Corée', 'kr'], ['Taïwan', 'tw']], @region),
+                          class: 'form-select' %>
+          </div>
+          <div class="col-md-2">
+            <%= submit_tag "🔄 Synchroniser", class: "btn btn-primary w-100" %>
+          </div>
+        </div>
+      <% end %>
+
+      <% if @character_name.present? && @user_sync %>
+        <div class="alert alert-info mt-3 mb-0">
+          <strong>📌 Personnage :</strong> <%= @character_name %>-<%= @realm.try(:titleize) %> (<%= @region.upcase %>)
+          <br>
+          <small class="text-muted">Dernière synchro : <%= @user_sync.synced_at.strftime("%d/%m/%Y à %H:%M") %></small>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Affichage des achievements -->
+  <% if @synced_achievements.present? %>
+
+    <!-- VUE D'ENSEMBLE -->
+    <% if @view_type == 'overview' %>
+
+      <!-- Extensions -->
+      <h4 class="mb-3">📚 Extensions</h4>
+      <div class="row">
+        <% @expansion_stats.each do |stat| %>
+          <div class="col-md-6 col-lg-4 mb-3">
+            <%= link_to achievements_path(view_type: 'expansion', expansion_id: stat[:expansion].id), class: "text-decoration-none" do %>
+              <div class="card h-100 hover-card">
+                <div class="card-body">
+                  <h5 class="card-title"><%= stat[:expansion].name %></h5>
+
+                  <div class="mb-2">
+                    <div class="d-flex justify-content-between mb-1">
+                      <span class="text-success"><strong><%= stat[:completed] %></strong> ✅</span>
+                      <span class="text-danger"><strong><%= stat[:remaining] %></strong> ❌</span>
+                    </div>
+                    <div class="progress" style="height: 20px;">
+                      <div class="progress-bar bg-success"
+                           style="width: <%= stat[:percentage] %>%">
+                        <%= stat[:percentage] %>%
+                      </div>
+                    </div>
+                  </div>
+
+                  <p class="text-muted mb-0 small"><%= stat[:total] %> hauts faits</p>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Catégories spéciales -->
+      <h4 class="mb-3 mt-4">🎯 Catégories spéciales</h4>
+      <div class="row">
+
+        <!-- PvP -->
+        <% if @pvp_stats && @pvp_stats[:total] > 0 %>
+          <div class="col-md-6 col-lg-4 mb-3">
+            <%= link_to achievements_path(view_type: 'pvp'), class: "text-decoration-none" do %>
+              <div class="card h-100 hover-card">
+                <div class="card-body">
+                  <h5 class="card-title">⚔️ PvP</h5>
+                  <div class="mb-2">
+                    <div class="d-flex justify-content-between mb-1">
+                      <span class="text-success"><strong><%= @pvp_stats[:completed] %></strong> ✅</span>
+                      <span class="text-danger"><strong><%= @pvp_stats[:remaining] %></strong> ❌</span>
+                    </div>
+                    <div class="progress" style="height: 20px;">
+                      <div class="progress-bar bg-success" style="width: <%= @pvp_stats[:percentage] %>%">
+                        <%= @pvp_stats[:percentage] %>%
+                      </div>
+                    </div>
+                  </div>
+                  <p class="text-muted mb-0 small"><%= @pvp_stats[:total] %> hauts faits</p>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+
+        <!-- Métiers -->
+        <% if @professions_stats && @professions_stats[:total] > 0 %>
+          <div class="col-md-6 col-lg-4 mb-3">
+            <%= link_to achievements_path(view_type: 'professions'), class: "text-decoration-none" do %>
+              <div class="card h-100 hover-card">
+                <div class="card-body">
+                  <h5 class="card-title">🔨 Métiers</h5>
+                  <div class="mb-2">
+                    <div class="d-flex justify-content-between mb-1">
+                      <span class="text-success"><strong><%= @professions_stats[:completed] %></strong> ✅</span>
+                      <span class="text-danger"><strong><%= @professions_stats[:remaining] %></strong> ❌</span>
+                    </div>
+                    <div class="progress" style="height: 20px;">
+                      <div class="progress-bar bg-success" style="width: <%= @professions_stats[:percentage] %>%">
+                        <%= @professions_stats[:percentage] %>%
+                      </div>
+                    </div>
+                  </div>
+                  <p class="text-muted mb-0 small"><%= @professions_stats[:total] %> hauts faits</p>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+
+        <!-- Collections -->
+        <% if @collections_stats && @collections_stats[:total] > 0 %>
+          <div class="col-md-6 col-lg-4 mb-3">
+            <%= link_to achievements_path(view_type: 'collections'), class: "text-decoration-none" do %>
+              <div class="card h-100 hover-card">
+                <div class="card-body">
+                  <h5 class="card-title">🎨 Collections</h5>
+                  <div class="mb-2">
+                    <div class="d-flex justify-content-between mb-1">
+                      <span class="text-success"><strong><%= @collections_stats[:completed] %></strong> ✅</span>
+                      <span class="text-danger"><strong><%= @collections_stats[:remaining] %></strong> ❌</span>
+                    </div>
+                    <div class="progress" style="height: 20px;">
+                      <div class="progress-bar bg-success" style="width: <%= @collections_stats[:percentage] %>%">
+                        <%= @collections_stats[:percentage] %>%
+                      </div>
+                    </div>
+                  </div>
+                  <p class="text-muted mb-0 small"><%= @collections_stats[:total] %> hauts faits</p>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+
+        <!-- Mascottes -->
+        <% if @pets_stats && @pets_stats[:total] > 0 %>
+          <div class="col-md-6 col-lg-4 mb-3">
+            <%= link_to achievements_path(view_type: 'pets'), class: "text-decoration-none" do %>
+              <div class="card h-100 hover-card">
+                <div class="card-body">
+                  <h5 class="card-title">🐾 Mascottes</h5>
+                  <div class="mb-2">
+                    <div class="d-flex justify-content-between mb-1">
+                      <span class="text-success"><strong><%= @pets_stats[:completed] %></strong> ✅</span>
+                      <span class="text-danger"><strong><%= @pets_stats[:remaining] %></strong> ❌</span>
+                    </div>
+                    <div class="progress" style="height: 20px;">
+                      <div class="progress-bar bg-success" style="width: <%= @pets_stats[:percentage] %>%">
+                        <%= @pets_stats[:percentage] %>%
+                      </div>
+                    </div>
+                  </div>
+                  <p class="text-muted mb-0 small"><%= @pets_stats[:total] %> hauts faits</p>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+
+        <!-- Exploration -->
+        <% if @exploration_stats && @exploration_stats[:total] > 0 %>
+          <div class="col-md-6 col-lg-4 mb-3">
+            <%= link_to achievements_path(view_type: 'exploration'), class: "text-decoration-none" do %>
+              <div class="card h-100 hover-card">
+                <div class="card-body">
+                  <h5 class="card-title">🗺️ Exploration</h5>
+                  <div class="mb-2">
+                    <div class="d-flex justify-content-between mb-1">
+                      <span class="text-success"><strong><%= @exploration_stats[:completed] %></strong> ✅</span>
+                      <span class="text-danger"><strong><%= @exploration_stats[:remaining] %></strong> ❌</span>
+                    </div>
+                    <div class="progress" style="height: 20px;">
+                      <div class="progress-bar bg-success" style="width: <%= @exploration_stats[:percentage] %>%">
+                        <%= @exploration_stats[:percentage] %>%
+                      </div>
+                    </div>
+                  </div>
+                  <p class="text-muted mb-0 small"><%= @exploration_stats[:total] %> hauts faits</p>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+
+        <!-- Événements -->
+        <% if @events_stats && @events_stats[:total] > 0 %>
+          <div class="col-md-6 col-lg-4 mb-3">
+            <%= link_to achievements_path(view_type: 'events'), class: "text-decoration-none" do %>
+              <div class="card h-100 hover-card">
+                <div class="card-body">
+                  <h5 class="card-title">🎉 Événements</h5>
+                  <div class="mb-2">
+                    <div class="d-flex justify-content-between mb-1">
+                      <span class="text-success"><strong><%= @events_stats[:completed] %></strong> ✅</span>
+                      <span class="text-danger"><strong><%= @events_stats[:remaining] %></strong> ❌</span>
+                    </div>
+                    <div class="progress" style="height: 20px;">
+                      <div class="progress-bar bg-success" style="width: <%= @events_stats[:percentage] %>%">
+                        <%= @events_stats[:percentage] %>%
+                      </div>
+                    </div>
+                  </div>
+                  <p class="text-muted mb-0 small"><%= @events_stats[:total] %> hauts faits</p>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+
+      </div>
+
+    <% end %>
+
+    <!-- VUE DÉTAILLÉE : EXTENSION -->
+    <% if @view_type == 'expansion' && @selected_expansion %>
+      <%= render 'detailed_view',
+                 title: @selected_expansion.name,
+                 breadcrumb_items: [
+                   { label: "Vue d'ensemble", url: achievements_path },
+                   { label: @selected_expansion.name, active: true }
+                 ],
+                 back_url: achievements_path,
+                 categories_with_stats: @categories_with_stats,
+                 current_stats: @current_stats,
+                 achievements: @achievements,
+                 base_url_params: { view_type: 'expansion', expansion_id: @selected_expansion.id } %>
+    <% end %>
+
+    <!-- VUE DÉTAILLÉE : CATÉGORIES SPÉCIALES -->
+    <% if @view_type.in?(['pvp', 'professions', 'pets', 'collections', 'exploration', 'events']) %>
+      <%= render 'detailed_view',
+                 title: @category_title,
+                 breadcrumb_items: [
+                   { label: "Vue d'ensemble", url: achievements_path },
+                   { label: @category_title, active: true }
+                 ],
+                 back_url: achievements_path,
+                 categories_with_stats: @categories_with_stats,
+                 current_stats: @current_stats,
+                 achievements: @achievements,
+                 base_url_params: { view_type: @view_type } %>
+    <% end %>
+
+  <% else %>
+    <div class="alert alert-info text-center">
+      <h5>👆 Entrez un personnage ci-dessus pour commencer</h5>
+      <p class="mb-0">Les données seront récupérées en temps réel depuis l'API Blizzard.</p>
+      <p class="text-muted small mt-2">
+        <strong><%= Achievement.where(is_feat_of_strength: false).count %></strong> hauts faits disponibles
+        (hors <%= Achievement.where(is_feat_of_strength: true).count %> Tours de force)
+      </p>
+    </div>
+  <% end %>
+</div>
+
+<style>
+.hover-card {
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+.hover-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  border-color: #007bff;
+}
+</style>
