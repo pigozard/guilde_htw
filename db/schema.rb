@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_02_01_130002) do
+ActiveRecord::Schema[7.1].define(version: 2026_02_03_205049) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -148,6 +148,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_01_130002) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "blizzard_id"
+    t.integer "objective_quantity", default: 500
   end
 
   create_table "recipes", force: :cascade do |t|

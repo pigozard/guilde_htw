@@ -306,275 +306,158 @@ namespace :blizzard do
   end
 
   # ============================================================================
-  # NETTOYAGE BASÉ SUR LA STRUCTURE EXCEL
+  # RÉORGANISATION
   # ============================================================================
 
-  desc "Nettoyage complet basé sur la structure Excel"
-  task excel_clean: :environment do
-    puts "📊 Nettoyage basé sur la structure Excel..."
+  desc "Remettre à zéro tous les achievements (extension + tags)"
+  task reset_achievements: :environment do
+    puts "🔄 Remise à zéro des achievements..."
 
-    # Récupérer les expansions
-    classic = Expansion.find_by(code: 'classic')
-    tbc = Expansion.find_by(code: 'tbc')
-    wotlk = Expansion.find_by(code: 'wotlk')
-    cata = Expansion.find_by(code: 'cata')
-    mop = Expansion.find_by(code: 'mop')
-    wod = Expansion.find_by(code: 'wod')
-    legion = Expansion.find_by(code: 'legion')
-    bfa = Expansion.find_by(code: 'bfa')
-    sl = Expansion.find_by(code: 'sl')
-    df = Expansion.find_by(code: 'df')
-    tww = Expansion.find_by(code: 'tww')
+    total = Achievement.count
+
+    puts "\n⚠️  ATTENTION : Vous allez réinitialiser #{total} achievements !"
+    puts "Les achievements resteront en BDD mais :"
+    puts "  - Toutes les extensions seront mises sur Classic par défaut"
+    puts "  - Tous les tags seront supprimés"
+    puts "  - Les catégories/sous-catégories seront conservées"
+    puts "\nContinuer ? (y/n)"
+
+    response = STDIN.gets.chomp
+
+    if response.downcase == 'y'
+      classic = Expansion.find_by(code: 'classic')
+
+      # Réinitialiser
+      Achievement.update_all(
+        expansion_id: classic&.id,
+        tags: nil,
+        is_feat_of_strength: false
+      )
+
+      puts "\n✅ #{total} achievements réinitialisés !"
+      puts "📊 Tous les achievements sont maintenant dans Classic sans tags"
+      puts "🚀 Tu peux maintenant lancer : rake blizzard:reorganize_from_blizzard_api"
+    else
+      puts "❌ Annulé"
+    end
+  end
+
+  desc "Réorganiser les achievements en utilisant l'API Blizzard (structure officielle)"
+  task reorganize_from_blizzard_api: :environment do
+    puts "🏆 Réorganisation via l'API Blizzard..."
+
+    service = BlizzardApiService.new
+    unless service.authenticate
+      puts "❌ Échec de l'authentification"
+      exit
+    end
+
+    puts "📥 Récupération de la structure des catégories..."
+    categories_data = service.get_achievement_categories
+
+    unless categories_data && categories_data['categories']
+      puts "❌ Impossible de récupérer les catégories"
+      exit
+    end
 
     total_moved = 0
     total_tagged = 0
 
-    # ========================================================================
-    # CLASSIC - Zones spécifiques
-    # ========================================================================
-    puts "\n🔵 Nettoyage CLASSIC"
+    # Mapping des catégories vers extensions
+    expansion_keywords = {
+      'classic' => ['Classic', 'Royaumes de l\'Est', 'Kalimdor'],
+      'tbc' => ['Burning Crusade', 'Outreterre', 'Outland'],
+      'wotlk' => ['Lich King', 'Norfendre', 'Northrend', 'Wrath'],
+      'cata' => ['Cataclysm', 'Cataclysme', 'Vashj\'ir', 'Mont Hyjal', 'Tréfonds', 'Uldum'],
+      'mop' => ['Mists of Pandaria', 'Pandarie', 'Pandaria'],
+      'wod' => ['Warlords of Draenor', 'Draenor'],
+      'legion' => ['Legion'],
+      'bfa' => ['Battle for Azeroth', 'Kul Tiras', 'Zandalar'],
+      'sl' => ['Shadowlands', 'Ombreterre', 'Maldraxxus', 'Revendreth', 'Bastion', 'Ardenweald'],
+      'df' => ['Dragonflight', 'Îles aux Dragons', 'Dragon Isles'],
+      'tww' => ['War Within', 'The War Within']
+    }
 
-    if classic
-      classic_zones = [
-        # Quêtes Classic
-        "Désolace", "Tornades du Nord", "Serres-Rocheuses", "Marécage d'Âprefange",
-        "Tornades du Sud", "Azshara", "Gangrebois", "Sillithus", "Tanaris",
-        "Mille Pointes", "Cratère d'Un'Goro", "Berceau de l'Hiver", "Orneval",
-        "Féralas", "Hinterlands", "Maleterres", "Contreforts de Hautebrande",
-        "Forêt des Pins Argentés", "Steppes Ardentes", "Marais des Chagrins",
-        "Cap de Strangleronce", "Terres Foudroyées", "Gorge des Vents Brûlants",
-        "Strangleronce",
-        # Exploration Classic
-        "Durotar", "Mulgore", "Teldrassil", "Dun Morogh", "Elwynn",
-        "Tirisfal", "Royaumes de l'Est", "Kalimdor",
-        # Raids Classic
-        "Temple d'Ahn'Qiraj", "Repaire de l'Aile noire", "Cœur du Magma",
-        "Repaire d'Onyxia"
-      ]
+    # Tags spéciaux
+    tag_keywords = {
+      'pvp' => ['Player vs. Player', 'PvP', 'Arena', 'Arène', 'Battleground', 'Champs de bataille'],
+      'professions' => ['Profession', 'Métier', 'Cooking', 'Cuisine', 'Fishing', 'Pêche'],
+      'pets' => ['Pet Battle', 'Bataille de mascottes', 'Mascotte'],
+      'events' => ['World Event', 'Événement', 'Holiday', 'Fête'],
+      'collections' => ['Collection', 'Mount', 'Monture', 'Apparence', 'Héritage'],
+      'exploration' => ['Exploration', 'Vol dynamique', 'Dragonriding']
+    }
 
-      classic_count = 0
-      classic_zones.each do |zone|
-        achs = Achievement.where("name LIKE ? OR category LIKE ? OR subcategory LIKE ?",
-                                "%#{zone}%", "%#{zone}%", "%#{zone}%")
-                         .where.not(expansion_id: classic.id)
-        count = achs.update_all(expansion_id: classic.id)
-        classic_count += count
+    puts "\n📂 Analyse des catégories..."
+
+    categories_data['categories'].each do |category|
+      category_id = category['id']
+      category_name = category['name']
+
+      # Récupérer les détails de la catégorie
+      category_details = service.get_achievement_category(category_id)
+      next unless category_details
+      next unless category_details['achievements']
+
+      achievement_ids = category_details['achievements'].map { |a| a['id'] }
+
+      # Vérifier si c'est un tag spécial
+      tag_assigned = nil
+      tag_keywords.each do |tag, keywords|
+        if keywords.any? { |keyword| category_name.include?(keyword) }
+          tag_assigned = tag
+          break
+        end
       end
-      puts "  ✅ #{classic_count} achievements → Classic"
-      total_moved += classic_count
-    end
 
-    # ========================================================================
-    # THE BURNING CRUSADE
-    # ========================================================================
-    puts "\n🟢 Nettoyage THE BURNING CRUSADE"
+      if tag_assigned
+        # C'est une catégorie spéciale
+        tagged = Achievement.where(blizzard_id: achievement_ids)
+                           .where(tags: nil)
+                           .update_all(tags: tag_assigned)
 
-    if tbc
-      tbc_zones = [
-        "Péninsule des Flammes infernales", "Marécage de Zangar", "Forêt de Terokkar",
-        "Nagrand", "Tranchantes", "Raz de Néant", "Vallée d'Ombrelune",
-        "Outreterre", "Karazhan", "Gruul", "Magtheridon", "Repaire du serpent",
-        "Donjon de la Tempête", "Mont Hyjal", "Temple noir", "Caverne du sanctuaire",
-        "Cryptes d'Auchenaï"
-      ]
+        if tagged > 0
+          puts "  🏷️ #{category_name} → TAG: #{tag_assigned} (#{tagged} achievements)"
+          total_tagged += tagged
+        end
+      else
+        # C'est une catégorie d'extension
+        expansion_code = nil
+        expansion_keywords.each do |exp_code, keywords|
+          if keywords.any? { |keyword| category_name.include?(keyword) }
+            expansion_code = exp_code
+            break
+          end
+        end
 
-      tbc_count = 0
-      tbc_zones.each do |zone|
-        achs = Achievement.where("name LIKE ? OR category LIKE ? OR subcategory LIKE ?",
-                                "%#{zone}%", "%#{zone}%", "%#{zone}%")
-                         .where.not(expansion_id: tbc.id)
-        count = achs.update_all(expansion_id: tbc.id)
-        tbc_count += count
+        if expansion_code
+          expansion = Expansion.find_by(code: expansion_code)
+          if expansion
+            moved = Achievement.where(blizzard_id: achievement_ids)
+                             .where.not(expansion_id: expansion.id)
+                             .update_all(expansion_id: expansion.id)
+
+            if moved > 0
+              puts "  ✅ #{category_name} → #{expansion.name} (#{moved} achievements)"
+              total_moved += moved
+            end
+          end
+        end
       end
-      puts "  ✅ #{tbc_count} achievements → TBC"
-      total_moved += tbc_count
+
+      sleep(0.1)
     end
-
-    # ========================================================================
-    # WRATH OF THE LICH KING
-    # ========================================================================
-    puts "\n❄️ Nettoyage WRATH OF THE LICH KING"
-
-    if wotlk
-      wotlk_zones = [
-        "Fjord Hurlant", "Toundra Boréale", "Désolation des dragons",
-        "Grisonnes", "Zul'Drak", "Bassin de Sholazar", "Pic Foudroyé",
-        "Couronne de glace", "Norfendre", "Naxxramas", "Ulduar",
-        "Épreuve du croisé", "Citadelle de la Couronne", "Tournoi d'Argent",
-        "Lich King"
-      ]
-
-      wotlk_count = 0
-      wotlk_zones.each do |zone|
-        achs = Achievement.where("name LIKE ? OR category LIKE ? OR subcategory LIKE ?",
-                                "%#{zone}%", "%#{zone}%", "%#{zone}%")
-                         .where.not(expansion_id: wotlk.id)
-        count = achs.update_all(expansion_id: wotlk.id)
-        wotlk_count += count
-      end
-      puts "  ✅ #{wotlk_count} achievements → WotLK"
-      total_moved += wotlk_count
-    end
-
-    # ========================================================================
-    # CATACLYSM
-    # ========================================================================
-    puts "\n🌋 Nettoyage CATACLYSM"
-
-    if cata
-      cata_zones = [
-        "Vashj'ir", "Mont Hyjal", "Tréfonds", "Hautes Terres", "Crépuscule",
-        "Uldum", "Cataclysm", "Descente de l'Aile noire", "Bastion",
-        "Trône des quatre vents", "Âme-des-Dragons"
-      ]
-
-      cata_count = 0
-      cata_zones.each do |zone|
-        achs = Achievement.where("name LIKE ? OR category LIKE ? OR subcategory LIKE ?",
-                                "%#{zone}%", "%#{zone}%", "%#{zone}%")
-                         .where.not(expansion_id: cata.id)
-        count = achs.update_all(expansion_id: cata.id)
-        cata_count += count
-      end
-      puts "  ✅ #{cata_count} achievements → Cataclysm"
-      total_moved += cata_count
-    end
-
-    # ========================================================================
-    # TAGS SPÉCIAUX
-    # ========================================================================
-
-    # PvP
-    puts "\n⚔️ Marquage PvP"
-    pvp_keywords = [
-      "Joueur contre Joueur", "PvP", "Arena", "Arène", "Battleground", "Champs de bataille",
-      "Ashran", "A'shran", "Vallée d'Alterac", "Bassin Arathi", "Goulet des Chanteguerres",
-      "L'île des Conquérants", "Pics-Jumeaux", "Bataille de Gilnéas", "Terrain d'entraînement",
-      "Effort de guerre", "Gladiator", "Honneur", "Conquête"
-    ]
-
-    pvp_count = 0
-    pvp_keywords.each do |keyword|
-      achs = Achievement.where("category LIKE ? OR name LIKE ?", "%#{keyword}%", "%#{keyword}%")
-                       .where(is_feat_of_strength: false)
-                       .where(tags: nil)
-      pvp_count += achs.update_all(tags: 'pvp')
-    end
-    puts "  ✅ #{pvp_count} PvP marqués"
-    total_tagged += pvp_count
-
-    # Métiers
-    puts "\n🔨 Marquage Métiers"
-    profession_keywords = [
-      "Métier", "Profession", "Cuisine", "Cooking", "Pêche", "Fishing",
-      "Premiers secours", "First Aid", "Archéologie", "Archaeology",
-      "Alchimie", "Alchemy", "Forge", "Blacksmithing", "Enchantement", "Enchanting",
-      "Ingénierie", "Engineering", "Herboristerie", "Herbalism", "Calligraphie", "Inscription",
-      "Joaillerie", "Jewelcrafting", "Travail du cuir", "Leatherworking",
-      "Minage", "Mining", "Dépeçage", "Skinning", "Couture", "Tailoring"
-    ]
-
-    profession_count = 0
-    profession_keywords.each do |keyword|
-      achs = Achievement.where("category LIKE ? OR name LIKE ?", "%#{keyword}%", "%#{keyword}%")
-                       .where(is_feat_of_strength: false)
-                       .where(tags: nil)
-      profession_count += achs.update_all(tags: 'professions')
-    end
-    puts "  ✅ #{profession_count} Métiers marqués"
-    total_tagged += profession_count
-
-    # Mascottes
-    puts "\n🐾 Marquage Mascottes"
-    pet_keywords = ["Bataille de mascottes", "Pet Battle", "Bataille", "Mascotte"]
-
-    pet_count = 0
-    pet_keywords.each do |keyword|
-      achs = Achievement.where("category LIKE ? OR category = ?", "%#{keyword}%", keyword)
-                       .where(is_feat_of_strength: false)
-                       .where(tags: nil)
-      pet_count += achs.update_all(tags: 'pets')
-    end
-    puts "  ✅ #{pet_count} Mascottes marqués"
-    total_tagged += pet_count
-
-    # Événements
-    puts "\n🎉 Marquage Événements"
-    event_keywords = [
-      "Sanssaint", "Jardin des nobles", "Célébration d'anniversaire", "Fête lunaire",
-      "De l'amour dans l'air", "Voile d'hiver", "Solstice d'été", "Foire de Sombrelune",
-      "Brewfest", "Noblegarden", "Children's Week", "Pilgrim's Bounty"
-    ]
-
-    event_count = 0
-    event_keywords.each do |keyword|
-      achs = Achievement.where("category LIKE ?", "%#{keyword}%")
-                       .where(is_feat_of_strength: false)
-                       .where(tags: nil)
-      event_count += achs.update_all(tags: 'events')
-    end
-    puts "  ✅ #{event_count} Événements marqués"
-    total_tagged += event_count
-
-    # Collections
-    puts "\n🎨 Marquage Collections"
-    collection_keywords = ["Montures", "Collections", "Apparences", "Héritage", "Coffre à jouets", "Monnaies"]
-
-    collection_count = 0
-    collection_keywords.each do |keyword|
-      achs = Achievement.where("category LIKE ?", "%#{keyword}%")
-                       .where(is_feat_of_strength: false)
-                       .where(tags: nil)
-      collection_count += achs.update_all(tags: 'collections')
-    end
-    puts "  ✅ #{collection_count} Collections marqués"
-    total_tagged += collection_count
-
-    # Exploration
-    puts "\n🗺️ Marquage Exploration"
-    exploration_keywords = ["Vol dynamique", "Exploration", "Traque"]
-
-    exploration_count = 0
-    exploration_keywords.each do |keyword|
-      achs = Achievement.where("category LIKE ?", "%#{keyword}%")
-                       .where(is_feat_of_strength: false)
-                       .where(tags: nil)
-      exploration_count += achs.update_all(tags: 'exploration')
-    end
-    puts "  ✅ #{exploration_count} Exploration marqués"
-    total_tagged += exploration_count
-
-    # Général
-    puts "\n📋 Marquage Général"
-    general_keywords = ["Donjons et raids", "Personnages", "Personnage", "Niveau", "En extérieur"]
-
-    general_count = 0
-    general_keywords.each do |keyword|
-      achs = Achievement.where(category: keyword)
-                       .where(is_feat_of_strength: false)
-                       .where(tags: nil)
-      general_count += achs.update_all(tags: 'general')
-    end
-    puts "  ✅ #{general_count} Général marqués"
-    total_tagged += general_count
 
     # Tours de force
-    puts "\n🏆 Marquage Tours de force"
-    feat_keywords = ["Feats of Strength", "Tours de force", "Hauts faits de gloire", "Promotions"]
-
-    feat_count = 0
-    feat_keywords.each do |keyword|
-      achs = Achievement.where("category LIKE ?", "%#{keyword}%")
-                       .where(is_feat_of_strength: [false, nil])
-      feat_count += achs.update_all(is_feat_of_strength: true)
-    end
+    puts "\n🏆 Marquage des Tours de force..."
+    feat_count = Achievement.where("category LIKE ?", "%Feats of Strength%")
+                           .or(Achievement.where("category LIKE ?", "%Tours de force%"))
+                           .update_all(is_feat_of_strength: true)
     puts "  ✅ #{feat_count} Tours de force marqués"
-    total_tagged += feat_count
 
-    puts "\n✨ Nettoyage terminé !"
-    puts "📊 Résumé :"
-    puts "  - #{total_moved} achievements déplacés"
-    puts "  - #{total_tagged} achievements tagués"
+    puts "\n✨ Réorganisation terminée !"
+    puts "📊 Total achievements déplacés : #{total_moved}"
+    puts "📊 Total achievements tagués : #{total_tagged}"
 
     puts "\n📚 Par extension :"
     Expansion.ordered.each do |exp|
@@ -584,18 +467,13 @@ namespace :blizzard do
 
     puts "\n🏷️ Par tag :"
     puts "  - Tours de force : #{Achievement.where(is_feat_of_strength: true).count}"
-    puts "  - PvP : #{Achievement.pvp.count}"
-    puts "  - Métiers : #{Achievement.professions.count}"
-    puts "  - Mascottes : #{Achievement.pets.count}"
+    puts "  - PvP : #{Achievement.where(tags: 'pvp').count}"
+    puts "  - Métiers : #{Achievement.where(tags: 'professions').count}"
+    puts "  - Mascottes : #{Achievement.where(tags: 'pets').count}"
     puts "  - Collections : #{Achievement.where(tags: 'collections').count}"
     puts "  - Exploration : #{Achievement.where(tags: 'exploration').count}"
-    puts "  - Événements : #{Achievement.events.count}"
-    puts "  - Général : #{Achievement.where(tags: 'general').count}"
+    puts "  - Événements : #{Achievement.where(tags: 'events').count}"
   end
-
-  # ============================================================================
-  # ANALYSE
-  # ============================================================================
 
   desc "Analyser les catégories restantes dans Classic"
   task analyze_classic: :environment do
@@ -643,45 +521,294 @@ namespace :blizzard do
 
     Expansion.find_by(code: 'classic')
   end
+  desc "Diagnostiquer un achievement spécifique pour un personnage"
+  task diagnose_achievement: :environment do
+    character_name = ENV['CHARACTER'] || 'inbox'
+    realm = ENV['REALM'] || 'dalaran'
+    region = ENV['REGION'] || 'eu'
+    achievement_id = ENV['ACHIEVEMENT_ID'] || '2046' # Le croisé ardent
 
-  desc "Exporter toutes les catégories dans un CSV pour tri manuel"
-  task export_categories_csv: :environment do
-    require 'csv'
+    puts "🔍 Diagnostic pour #{character_name}-#{realm} (#{region.upcase})"
+    puts "🎯 Achievement ID: #{achievement_id}"
 
-    puts "📤 Export des catégories en CSV..."
+    service = BlizzardApiService.new(region: region)
 
-    csv_path = Rails.root.join('tmp', 'achievements_categories.csv')
+    unless service.authenticate
+      puts "❌ Échec authentification"
+      exit
+    end
 
-    CSV.open(csv_path, 'w', write_headers: true, headers: ['CATEGORIE', 'SOUS_CATEGORIE', 'NOMBRE', 'EXTENSION_ACTUELLE', 'EXTENSION_CORRECTE', 'TAG']) do |csv|
+    # 1. Vérifier si l'achievement existe en BDD
+    ach = Achievement.find_by(blizzard_id: achievement_id)
+    if ach
+      puts "\n✅ Achievement en BDD:"
+      puts "  - Nom: #{ach.name}"
+      puts "  - Extension: #{ach.expansion&.name}"
+      puts "  - Catégorie: #{ach.category}"
+    else
+      puts "\n❌ Achievement NOT found en BDD"
+    end
 
-      # Grouper par catégorie + sous-catégorie
-      Achievement.where(is_feat_of_strength: false)
-                 .group(:category, :subcategory)
-                 .count
-                 .sort_by { |(cat, subcat), count| [cat || "ZZZ", subcat || "ZZZ"] }
-                 .each do |(category, subcategory), count|
+    # 2. Récupérer les achievements du personnage via API
+    puts "\n📥 Récupération des achievements du personnage..."
+    data = service.get_character_achievements(realm, character_name)
 
-        # Trouver l'extension actuelle
-        sample = Achievement.where(category: category, subcategory: subcategory).first
-        current_expansion = sample&.expansion&.code || "aucune"
+    if data.nil?
+      puts "❌ Personnage introuvable"
+      exit
+    end
 
-        csv << [
-          category || "",
-          subcategory || "",
-          count,
-          current_expansion,
-          "", # À REMPLIR : classic, tbc, wotlk, cata, mop, wod, legion, bfa, sl, df, tww
-          ""  # À REMPLIR : pvp, professions, events, collections, exploration, pets, general (ou vide)
-        ]
+    # 3. Extraire tous les IDs
+    completed_ids = []
+    if data['achievements']
+      data['achievements'].each do |achievement_data|
+        completed_ids << achievement_data['id'] if achievement_data['id']
+
+        if achievement_data['achievements']
+          achievement_data['achievements'].each do |sub_ach|
+            completed_ids << sub_ach['id'] if sub_ach['id']
+          end
+        end
       end
     end
 
-    puts "✅ Fichier généré : #{csv_path}"
-    puts "\n📋 Instructions :"
-    puts "1. Ouvre tmp/achievements_categories.csv dans Excel"
-    puts "2. Colonne EXTENSION_CORRECTE : classic, tbc, wotlk, cata, mop, wod, legion, bfa, sl, df, tww"
-    puts "3. Colonne TAG : pvp, professions, events, collections, exploration, pets, general (ou vide)"
-    puts "4. Sauvegarde le fichier"
-    puts "5. Lance : rake blizzard:import_categories_csv"
+    completed_ids.uniq!
+
+    puts "\n📊 Total achievements retournés par l'API: #{completed_ids.count}"
+
+    # 4. Vérifier si notre achievement est dedans
+    if completed_ids.include?(achievement_id.to_i)
+      puts "\n✅ L'achievement #{achievement_id} EST dans les données API"
+    else
+      puts "\n❌ L'achievement #{achievement_id} N'EST PAS dans les données API"
+      puts "\n💡 Possible raison: Achievement account-wide pas retourné par l'API character"
+    end
+
+    # 5. Vérifier la dernière synchro en BDD
+    sync = User.find_by(email: 'ton_email@example.com')&.user_achievement_syncs&.last
+    if sync
+      puts "\n📋 Dernière synchro en BDD:"
+      puts "  - Personnage: #{sync.character_name}"
+      puts "  - Serveur: #{sync.realm}"
+      puts "  - Date: #{sync.synced_at}"
+      puts "  - Total achievements: #{sync.achievement_ids.count}"
+
+      if sync.achievement_ids.include?(achievement_id.to_i)
+        puts "  - ✅ L'achievement #{achievement_id} est dans la synchro"
+      else
+        puts "  - ❌ L'achievement #{achievement_id} n'est PAS dans la synchro"
+      end
+    end
+
+    puts "\n🔧 Pour tester un autre achievement:"
+    puts "ACHIEVEMENT_ID=12345 CHARACTER=inbox REALM=dalaran REGION=eu rake blizzard:diagnose_achievement"
   end
+
+  desc "Supprimer les achievements en double (garder le plus grand ID Blizzard)"
+  task remove_duplicate_achievements: :environment do
+    puts "🧹 Nettoyage des achievements en double..."
+
+    total_deleted = 0
+
+    # Trouver tous les noms qui apparaissent plusieurs fois
+    duplicate_names = Achievement.select(:name)
+                                 .group(:name)
+                                 .having('count(*) > 1')
+                                 .count
+                                 .keys
+
+    puts "📊 Trouvé #{duplicate_names.count} noms en double"
+
+    duplicate_names.each do |name|
+      achievements = Achievement.where(name: name).order(:blizzard_id)
+
+      if achievements.count > 1
+        # Garder celui avec le plus grand blizzard_id
+        to_keep = achievements.last
+        to_delete = achievements[0..-2]
+
+        puts "\n📋 '#{name}' (#{achievements.count} doublons)"
+        puts "  ✅ Garde : ID #{to_keep.blizzard_id} (#{to_keep.expansion&.name})"
+
+        to_delete.each do |ach|
+          puts "  ❌ Supprime : ID #{ach.blizzard_id} (#{ach.expansion&.name})"
+          ach.destroy
+          total_deleted += 1
+        end
+      end
+    end
+
+    puts "\n✨ Nettoyage terminé !"
+    puts "📊 #{total_deleted} achievements supprimés"
+    puts "💾 #{Achievement.count} achievements restants"
+  end
+
+  desc "Supprimer TOUS les achievements pour réimport propre"
+task delete_all_achievements: :environment do
+  puts "⚠️  ATTENTION : Suppression TOTALE de tous les achievements !"
+  puts "Continuer ? (y/n)"
+
+  response = STDIN.gets.chomp
+
+  if response.downcase == 'y'
+    count = Achievement.count
+    Achievement.destroy_all
+    UserAchievementSync.destroy_all
+
+    puts "✅ #{count} achievements supprimés"
+    puts "✅ Toutes les synchros utilisateur supprimées"
+    puts "🚀 Prêt pour le réimport propre"
+  else
+    puts "❌ Annulé"
+  end
+end
+desc "Réimport COMPLET avec mapping correct depuis l'API Blizzard"
+task reimport_achievements_clean: :environment do
+  puts "🏆 Réimport PROPRE de tous les achievements..."
+
+  service = BlizzardApiService.new
+  unless service.authenticate
+    puts "❌ Échec authentification"
+    exit
+  end
+
+  puts "📥 Récupération des catégories..."
+  categories_data = service.get_achievement_categories
+
+  unless categories_data && categories_data['categories']
+    puts "❌ Erreur API"
+    exit
+  end
+
+  # Mapping COMPLET et PRÉCIS
+  expansion_mapping = {
+    'tww' => ['War Within', 'The War Within'],
+    'df' => ['Dragonflight', 'Dragon Isles', 'Îles aux Dragons'],
+    'sl' => ['Shadowlands', 'Ombreterre', 'Maldraxxus', 'Revendreth', 'Bastion',
+             'Ardenweald', 'Gouffres', 'Sanctums', 'Tourment'],
+    'bfa' => ['Battle for Azeroth', 'Kul Tiras', 'Zandalar', 'Vision', 'N\'Zoth'],
+    'legion' => ['Legion', 'Îles Brisées', 'Broken Isles'],
+    'wod' => ['Warlords of Draenor', 'Draenor', 'Fief', 'Garrison'],
+    'mop' => ['Mists of Pandaria', 'Pandarie', 'Pandaria'],
+    'cata' => ['Cataclysm', 'Cataclysme', 'Vashj\'ir', 'Mont Hyjal', 'Tréfonds',
+               'Uldum', 'Profondeurs'],
+    'wotlk' => ['Lich King', 'Norfendre', 'Northrend', 'Wrath', 'Tournoi d\'Argent'],
+    'tbc' => ['Burning Crusade', 'Outreterre', 'Outland'],
+    'classic' => ['Classic', 'Royaumes de l\'Est', 'Kalimdor']
+  }
+
+  # Tags spéciaux
+  tag_mapping = {
+    'pvp' => ['Player vs. Player', 'PvP', 'Arena', 'Battleground', 'Bataille',
+              'Champs de bataille', 'En extérieur', 'Ashran', 'Alterac'],
+    'professions' => ['Profession', 'Métier', 'Cooking', 'Cuisine', 'Fishing',
+                      'Pêche', 'Archéologie', 'Archaeology', 'Alchemy', 'Forge'],
+    'events' => ['World Event', 'Événement', 'Holiday', 'Fête', 'Foire de Sombrelune',
+                 'Sanssaint', 'Solstice', 'Noblegarden'],
+    'collections' => ['Collection', 'Mount', 'Monture', 'Apparence', 'Héritage',
+                      'Coffre à jouets'],
+    'pets' => ['Pet Battle', 'Mascotte', 'Bataille de mascottes'],
+    'exploration' => ['Exploration', 'Vol dynamique', 'Dragonriding']
+  }
+
+  total_imported = 0
+
+  categories_data['categories'].each_with_index do |category, index|
+    category_id = category['id']
+    category_name = category['name']
+
+    puts "\n[#{index + 1}/#{categories_data['categories'].count}] 📂 #{category_name}"
+
+    # Skip Feats of Strength
+    if category_name.include?('Feats of Strength') || category_name.include?('Tours de force')
+      puts "  ⏭️  Skipped (Feats of Strength)"
+      next
+    end
+
+    category_details = service.get_achievement_category(category_id)
+    next unless category_details && category_details['achievements']
+
+    # Déterminer extension OU tag
+    target_expansion = nil
+    target_tag = nil
+
+    # Vérifier d'abord les tags spéciaux
+    tag_mapping.each do |tag, keywords|
+      if keywords.any? { |kw| category_name.include?(kw) }
+        target_tag = tag
+        break
+      end
+    end
+
+    # Si pas de tag, chercher l'extension
+    unless target_tag
+      expansion_mapping.each do |exp_code, keywords|
+        if keywords.any? { |kw| category_name.include?(kw) }
+          target_expansion = Expansion.find_by(code: exp_code)
+          break
+        end
+      end
+    end
+
+    # Par défaut : Classic
+    target_expansion ||= Expansion.find_by(code: 'classic') unless target_tag
+
+    # Importer les achievements
+    category_details['achievements'].each do |ach_data|
+      ach_id = ach_data['id']
+
+      full_ach_data = service.get_achievement(ach_id)
+      next unless full_ach_data
+
+      achievement = Achievement.new(
+        blizzard_id: ach_id,
+        name: full_ach_data['name'],
+        description: full_ach_data['description'] || '',
+        points: full_ach_data['points'] || 0,
+        category: category_name,
+        subcategory: category_details['parent_category'] ? category_details['parent_category']['name'] : nil
+      )
+
+      # Assigner extension ou tag
+      if target_tag
+        achievement.tags = target_tag
+        achievement.expansion = Expansion.find_by(code: 'classic') # Fallback
+      else
+        achievement.expansion = target_expansion
+      end
+
+      # Récupérer icône
+      if full_ach_data['media'] && full_ach_data['media']['id']
+        media_data = service.get_achievement_media(full_ach_data['media']['id'])
+        if media_data && media_data['assets']
+          icon_asset = media_data['assets'].find { |a| a['key'] == 'icon' }
+          if icon_asset && icon_asset['value']
+            icon_name = icon_asset['value'].split('/').last.gsub('.jpg', '')
+            achievement.icon = icon_name
+          end
+        end
+      end
+
+      if achievement.save
+        total_imported += 1
+        print "✓"
+      else
+        print "✗"
+      end
+
+      sleep(0.1)
+    end
+
+    puts " (#{category_details['achievements'].count} achievements)"
+  end
+
+  puts "\n\n✨ Réimport terminé !"
+  puts "📊 #{total_imported} achievements importés"
+
+  puts "\n📚 Par extension :"
+  Expansion.ordered.each do |exp|
+    count = exp.achievements.where(is_feat_of_strength: false).count
+    puts "  - #{exp.name.ljust(25)} : #{count}" if count > 0
+  end
+end
 end
