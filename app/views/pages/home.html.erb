@@ -1,60 +1,11 @@
-<!-- Hero centré -->
+<!-- Hero -->
 <div class="home-hero">
   <%= image_tag "logo.png", class: "hero-logo", alt: "Logo" %>
   <h1 class="hero-title">Highway to Wipe</h1>
   <p class="hero-tagline">Guilde PvE • Alliance • Eitrigg</p>
 </div>
 
-<!-- Stats juste en dessous du hero -->
-<div class="home-stats">
-  <div class="stat-card">
-    <div class="stat-icon">👥</div>
-    <div class="stat-number"><%= @members_count %></div>
-    <div class="stat-label">Membres</div>
-  </div>
-
-  <div class="stat-card">
-    <div class="stat-icon">⚔️</div>
-    <div class="stat-number"><%= @characters_count %></div>
-    <div class="stat-label">Personnages</div>
-  </div>
-</div>
-
-<!-- Prochain Event - Mise en avant -->
-<% if @next_event.present? %>
-  <div class="next-event-container">
-    <div class="next-event-card">
-      <div class="event-emoji"><%= @next_event.event_type_emoji %></div>
-      <h2 class="event-title"><%= @next_event.title %></h2>
-      <p class="event-date"><%= @next_event.start_time.strftime("%A %d %B à %Hh%M") %></p>
-
-      <div class="countdown" data-event-date="<%= @next_event.start_time.iso8601 %>">
-        <div class="countdown-block">
-          <span class="countdown-number" data-countdown="days">-</span>
-          <span class="countdown-label">Jours</span>
-        </div>
-        <div class="countdown-block">
-          <span class="countdown-number" data-countdown="hours">-</span>
-          <span class="countdown-label">Heures</span>
-        </div>
-        <div class="countdown-block">
-          <span class="countdown-number" data-countdown="minutes">-</span>
-          <span class="countdown-label">Minutes</span>
-        </div>
-        <div class="countdown-block">
-          <span class="countdown-number" data-countdown="seconds">-</span>
-          <span class="countdown-label">Secondes</span>
-        </div>
-      </div>
-
-      <p class="event-participants"><%= @next_event_participants %> inscrit<%= @next_event_participants > 1 ? 's' : '' %></p>
-
-      <%= link_to "S'inscrire", event_path(@next_event), class: "event-cta-btn" %>
-    </div>
-  </div>
-<% end %>
-
-<!-- Action cards - Navigation principale -->
+<!-- Action cards -->
 <div class="home-actions">
   <%= link_to characters_path, class: "action-card" do %>
     <div class="action-icon">⚔️</div>
@@ -67,130 +18,10 @@
     <h3>Calendrier</h3>
     <p>Événements de la guilde</p>
   <% end %>
-
-  <%= link_to farm_path, class: "action-card" do %>
-    <div class="action-icon">🌾</div>
-    <h3>Farm</h3>
-    <p>Objectifs collectifs</p>
-  <% end %>
-
-  <%= link_to achievements_path, class: "action-card" do %>
-    <div class="action-icon">🏆</div>
-    <h3>Hauts Faits</h3>
-    <p>Progression</p>
-  <% end %>
 </div>
 
-<!-- Activité Récente - En bas avant le footer -->
-<div class="activity-container">
-  <h2 class="activity-main-title">⚡ Activité Récente</h2>
-
-  <div class="activity-grid">
-
-    <!-- Colonne 1 : Inscriptions -->
-    <div class="activity-panel">
-      <h3 class="activity-panel-title">📋 Inscriptions</h3>
-      <% if @recent_participations.any? %>
-        <% @recent_participations.each do |participation| %>
-          <div class="activity-item">
-            <div class="activity-icon">
-              <%= participation.role == 'Tank' ? '🛡️' : participation.role == 'Healer' ? '✨' : '⚔️' %>
-            </div>
-            <div class="activity-content">
-              <div class="activity-name"><%= participation.character.pseudo %></div>
-              <div class="activity-detail">
-                <%= participation.character.wow_class&.name %>
-                • <%= participation.event.title %>
-              </div>
-            </div>
-          </div>
-        <% end %>
-      <% else %>
-        <p class="activity-empty">Aucune inscription récente</p>
-      <% end %>
-    </div>
-
-    <!-- Colonne 2 : Roster -->
-    <div class="activity-panel">
-      <h3 class="activity-panel-title">🎮 Roster</h3>
-      <% if @recent_characters.any? %>
-        <% @recent_characters.each do |character| %>
-          <div class="activity-item">
-            <div class="activity-icon">
-              <%= character.specialization&.role == 'Tank' ? '🛡️' : character.specialization&.role == 'Healer' ? '✨' : '⚔️' %>
-            </div>
-            <div class="activity-content">
-              <div class="activity-name"><%= character.pseudo %></div>
-              <div class="activity-detail">
-                <%= character.wow_class&.name %>
-                <%= character.specialization&.name %>
-              </div>
-            </div>
-          </div>
-        <% end %>
-      <% else %>
-        <p class="activity-empty">Aucun personnage récent</p>
-      <% end %>
-    </div>
-
-    <!-- Colonne 3 : Farm -->
-    <div class="activity-panel">
-      <h3 class="activity-panel-title">🌾 Farm</h3>
-      <% if @recent_contributions.any? %>
-        <% @recent_contributions.each do |contribution| %>
-          <div class="activity-item">
-            <div class="activity-icon">📦</div>
-            <div class="activity-content">
-              <div class="activity-name"><%= contribution.user.display_name %></div>
-              <div class="activity-detail">
-                <%= contribution.quantity %> <%= contribution.ingredient.name %>
-              </div>
-            </div>
-          </div>
-        <% end %>
-      <% else %>
-        <p class="activity-empty">Aucune contribution récente</p>
-      <% end %>
-    </div>
-
-  </div>
-</div>
-
-<!-- Info - Footer -->
+<!-- Info -->
 <div class="home-info">
   <h2>À propos</h2>
   <p>Highway to Wipe est une guilde PvE sur le serveur Eitrigg. On raid dans la bonne humeur tout en visant le contenu endgame.</p>
 </div>
-
-<!-- JavaScript compte à rebours -->
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const countdownElement = document.querySelector('[data-event-date]');
-    if (!countdownElement) return;
-
-    const eventDate = new Date(countdownElement.dataset.eventDate).getTime();
-
-    function updateCountdown() {
-      const now = new Date().getTime();
-      const distance = eventDate - now;
-
-      if (distance < 0) {
-        countdownElement.innerHTML = '<p style="color: #ffd700; font-size: 24px;">C\'est parti ! 🎉</p>';
-        return;
-      }
-
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-      document.querySelector('[data-countdown="days"]').textContent = days;
-      document.querySelector('[data-countdown="hours"]').textContent = hours;
-      document.querySelector('[data-countdown="minutes"]').textContent = minutes;
-      document.querySelector('[data-countdown="seconds"]').textContent = seconds;
-    }
-
-    updateCountdown();
-    setInterval(updateCountdown, 1000);
-  });
-</script>
