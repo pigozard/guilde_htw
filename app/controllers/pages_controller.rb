@@ -54,8 +54,8 @@ class PagesController < ApplicationController
 
   def fallback_warcraftlogs_data
     @warcraftlogs_progression = {
-      normal: { killed: 8, total: 8 },
-      heroic: { killed: 8, total: 8 },
+      normal: { killed: 0, total: 8 },
+      heroic: { killed: 0, total: 8 },
       mythic: { killed: 0, total: 8 },
       raid_name: "Nerub-ar Palace"
     }

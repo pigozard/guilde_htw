@@ -24,6 +24,8 @@ class RaiderIoService
 
     members = response.dig('members') || []
 
+    Rails.logger.info "✅ Raider.io: #{members.size} membres trouvés"
+
     # Pour chaque membre, récupérer son score M+
     player_scores = members.map do |member|
       character_name = member['character']['name']
@@ -50,7 +52,11 @@ class RaiderIoService
     end.compact
 
     # Trier par score décroissant et garder le top 5
-    player_scores.sort_by { |p| -p[:score] }.first(5)
+    top_players = player_scores.sort_by { |p| -p[:score] }.first(5)
+
+    Rails.logger.info "✅ Raider.io: Top 5 calculé (meilleur score: #{top_players.first[:score]})" if top_players.any?
+
+    top_players
 
   rescue => e
     Rails.logger.error "Raider.io API Error: #{e.message}"
@@ -60,6 +66,7 @@ class RaiderIoService
   private
 
   def mock_data
+    Rails.logger.warn "⚠️ Raider.io: Utilisation des données mock"
     [
       { name: "Inboxfear", score: 3245, class: "Paladin", spec: "Protection" },
       { name: "Shadowblade", score: 3180, class: "Rogue", spec: "Subtlety" },
