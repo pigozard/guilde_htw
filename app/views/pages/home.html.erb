@@ -1,27 +1,284 @@
 <!-- Hero -->
-<div class="home-hero">
-  <%= image_tag "logo.png", class: "hero-logo", alt: "Logo" %>
-  <h1 class="hero-title">Highway to Wipe</h1>
-  <p class="hero-tagline">Guilde PvE • Alliance • Eitrigg</p>
+<div class="hw-hero">
+  <%= image_tag "logo.png", class: "hw-hero-logo", alt: "Highway to Wipe" %>
+  <h1 class="hw-hero-title">Highway to Wipe</h1>
+  <p class="hw-hero-subtitle">Guilde PvE • Alliance • Eitrigg</p>
 </div>
 
-<!-- Action cards -->
-<div class="home-actions">
-  <%= link_to characters_path, class: "action-card" do %>
-    <div class="action-icon">⚔️</div>
-    <h3>Roster</h3>
-    <p>Choix de classes pour Midnight</p>
-  <% end %>
+<!-- PROGRESSION RAID - HERO SECTION -->
+<div class="hw-progression-hero">
+  <div class="hw-container">
+    <div class="hw-prog-card">
+      <div class="hw-prog-header">
+        <div class="hw-prog-icon">⚔️</div>
+        <div class="hw-prog-info">
+          <h2 class="hw-prog-raid-name"><%= @warcraftlogs_progression[:raid_name] %></h2>
+          <p class="hw-prog-difficulty"><%= @warcraftlogs_progression[:difficulty] %></p>
+        </div>
+      </div>
 
-  <%= link_to events_path, class: "action-card" do %>
-    <div class="action-icon">📅</div>
-    <h3>Calendrier</h3>
-    <p>Événements de la guilde</p>
-  <% end %>
+      <div class="hw-prog-main">
+        <div class="hw-prog-score">
+          <span class="hw-prog-number"><%= @warcraftlogs_progression[:bosses_killed] %></span>
+          <span class="hw-prog-separator">/</span>
+          <span class="hw-prog-total"><%= @warcraftlogs_progression[:total_bosses] %></span>
+        </div>
+        <p class="hw-prog-label">Boss Mythiques</p>
+      </div>
+
+      <div class="hw-prog-ranks">
+        <div class="hw-prog-rank-item">
+          <span class="hw-prog-rank-number">#<%= @warcraftlogs_progression[:server_rank] %></span>
+          <span class="hw-prog-rank-label">Serveur</span>
+        </div>
+        <div class="hw-prog-rank-item">
+          <span class="hw-prog-rank-number">#<%= @warcraftlogs_progression[:region_rank] %></span>
+          <span class="hw-prog-rank-label">Région</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<!-- Info -->
-<div class="home-info">
-  <h2>À propos</h2>
-  <p>Highway to Wipe est une guilde PvE sur le serveur Eitrigg. On raid dans la bonne humeur tout en visant le contenu endgame.</p>
+<!-- PROCHAIN EVENT -->
+<% if @next_event.present? %>
+  <div class="hw-next-event">
+    <div class="hw-container">
+      <div class="hw-event-card">
+        <div class="hw-event-header">
+          <div class="hw-event-icon"><%= @next_event.event_type_emoji %></div>
+          <div class="hw-event-info">
+            <h2 class="hw-event-title"><%= @next_event.title %></h2>
+            <p class="hw-event-date"><%= @next_event.start_time.strftime("%A %d %B à %Hh%M") %></p>
+          </div>
+          <%= link_to "S'inscrire →", event_path(@next_event), class: "hw-event-cta" %>
+        </div>
+
+        <div class="hw-event-body">
+          <div class="hw-countdown" data-event-date="<%= @next_event.start_time.iso8601 %>">
+            <div class="hw-countdown-item">
+              <span class="hw-countdown-number" data-countdown="days">-</span>
+              <span class="hw-countdown-label">Jours</span>
+            </div>
+            <div class="hw-countdown-item">
+              <span class="hw-countdown-number" data-countdown="hours">-</span>
+              <span class="hw-countdown-label">Heures</span>
+            </div>
+            <div class="hw-countdown-item">
+              <span class="hw-countdown-number" data-countdown="minutes">-</span>
+              <span class="hw-countdown-label">Minutes</span>
+            </div>
+            <div class="hw-countdown-item">
+              <span class="hw-countdown-number" data-countdown="seconds">-</span>
+              <span class="hw-countdown-label">Secondes</span>
+            </div>
+          </div>
+
+          <div class="hw-event-participants">
+            <span class="hw-event-part-number"><%= @next_event_participants %></span>
+            <span class="hw-event-part-label">inscrit<%= @next_event_participants > 1 ? 's' : '' %></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<!-- STATS RAPIDES -->
+<div class="hw-stats-grid">
+  <div class="hw-container">
+    <div class="hw-stats-row">
+
+      <!-- Membres -->
+      <div class="hw-stat-card">
+        <div class="hw-stat-icon">👥</div>
+        <div class="hw-stat-content">
+          <div class="hw-stat-number"><%= @members_count %></div>
+          <div class="hw-stat-label">Membres</div>
+        </div>
+      </div>
+
+      <!-- Composition -->
+      <div class="hw-stat-card hw-stat-card-compo">
+        <div class="hw-stat-label-top">Composition</div>
+        <div class="hw-compo-grid">
+          <div class="hw-compo-item">
+            <span class="hw-compo-icon">🛡️</span>
+            <span class="hw-compo-number"><%= @tank_count %></span>
+            <span class="hw-compo-label">Tanks</span>
+          </div>
+          <div class="hw-compo-item">
+            <span class="hw-compo-icon">✨</span>
+            <span class="hw-compo-number"><%= @healer_count %></span>
+            <span class="hw-compo-label">Heals</span>
+          </div>
+          <div class="hw-compo-item">
+            <span class="hw-compo-icon">⚔️</span>
+            <span class="hw-compo-number"><%= @dps_count %></span>
+            <span class="hw-compo-label">DPS</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Events semaine -->
+      <div class="hw-stat-card">
+        <div class="hw-stat-icon">📅</div>
+        <div class="hw-stat-content">
+          <div class="hw-stat-number"><%= @events_this_week_count %></div>
+          <div class="hw-stat-label">Events cette semaine</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>
+
+<!-- ACTIVITÉ RÉCENTE -->
+<div class="hw-activity-section">
+  <div class="hw-container">
+    <h2 class="hw-section-title">⚡ Activité Récente</h2>
+
+    <div class="hw-activity-grid">
+
+      <!-- Kills récents (Warcraft Logs) -->
+      <div class="hw-activity-panel">
+        <h3 class="hw-activity-panel-title">🏆 Kills Récents</h3>
+        <% @warcraftlogs_recent_kills.each do |kill| %>
+          <div class="hw-activity-item">
+            <div class="hw-activity-icon">💀</div>
+            <div class="hw-activity-content">
+              <div class="hw-activity-name"><%= kill[:boss] %></div>
+              <div class="hw-activity-detail">
+                <%= kill[:difficulty] %> • Il y a <%= time_ago_in_words(kill[:date]) %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Inscriptions -->
+      <div class="hw-activity-panel">
+        <h3 class="hw-activity-panel-title">📋 Inscriptions</h3>
+        <% if @recent_participations.any? %>
+          <% @recent_participations.each do |participation| %>
+            <div class="hw-activity-item">
+              <div class="hw-activity-icon">
+                <%= participation.role == 'Tank' ? '🛡️' : participation.role == 'Healer' ? '✨' : '⚔️' %>
+              </div>
+              <div class="hw-activity-content">
+                <div class="hw-activity-name"><%= participation.character.pseudo %></div>
+                <div class="hw-activity-detail">
+                  <%= participation.character.wow_class&.name %>
+                  • <%= participation.event.title %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        <% else %>
+          <p class="hw-activity-empty">Aucune inscription récente</p>
+        <% end %>
+      </div>
+
+      <!-- Roster -->
+      <div class="hw-activity-panel">
+        <h3 class="hw-activity-panel-title">🎮 Roster</h3>
+        <% if @recent_characters.any? %>
+          <% @recent_characters.each do |character| %>
+            <div class="hw-activity-item">
+              <div class="hw-activity-icon">
+                <%= character.specialization&.role == 'Tank' ? '🛡️' : character.specialization&.role == 'Healer' ? '✨' : '⚔️' %>
+              </div>
+              <div class="hw-activity-content">
+                <div class="hw-activity-name"><%= character.pseudo %></div>
+                <div class="hw-activity-detail">
+                  <%= character.wow_class&.name %>
+                  <%= character.specialization&.name %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        <% else %>
+          <p class="hw-activity-empty">Aucun personnage récent</p>
+        <% end %>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- NAVIGATION -->
+<div class="hw-navigation">
+  <div class="hw-container">
+    <div class="hw-nav-grid">
+
+      <%= link_to characters_path, class: "hw-nav-card" do %>
+        <div class="hw-nav-icon">⚔️</div>
+        <h3 class="hw-nav-title">Roster</h3>
+        <p class="hw-nav-desc">Choix de classes pour Midnight</p>
+      <% end %>
+
+      <%= link_to events_path, class: "hw-nav-card" do %>
+        <div class="hw-nav-icon">📅</div>
+        <h3 class="hw-nav-title">Calendrier</h3>
+        <p class="hw-nav-desc">Événements de la guilde</p>
+      <% end %>
+
+      <%= link_to farm_path, class: "hw-nav-card" do %>
+        <div class="hw-nav-icon">🌾</div>
+        <h3 class="hw-nav-title">Farm</h3>
+        <p class="hw-nav-desc">Objectifs collectifs</p>
+      <% end %>
+
+      <%= link_to achievements_path, class: "hw-nav-card" do %>
+        <div class="hw-nav-icon">🏆</div>
+        <h3 class="hw-nav-title">Hauts Faits</h3>
+        <p class="hw-nav-desc">Progression personnelle</p>
+      <% end %>
+
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="hw-footer">
+  <div class="hw-container">
+    <h2 class="hw-footer-title">À propos</h2>
+    <p class="hw-footer-text">
+      Highway to Wipe est une guilde PvE sur le serveur Eitrigg.
+      On raid dans la bonne humeur tout en visant le contenu endgame.
+    </p>
+  </div>
+</div>
+
+<!-- JavaScript Countdown -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const countdownElement = document.querySelector('[data-event-date]');
+    if (!countdownElement) return;
+
+    const eventDate = new Date(countdownElement.dataset.eventDate).getTime();
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const distance = eventDate - now;
+
+      if (distance < 0) {
+        countdownElement.innerHTML = '<p style="color: #ffd700; font-size: 24px; text-align: center;">C\'est parti ! 🎉</p>';
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      document.querySelector('[data-countdown="days"]').textContent = days;
+      document.querySelector('[data-countdown="hours"]').textContent = hours;
+      document.querySelector('[data-countdown="minutes"]').textContent = minutes;
+      document.querySelector('[data-countdown="seconds"]').textContent = seconds;
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  });
+</script>
