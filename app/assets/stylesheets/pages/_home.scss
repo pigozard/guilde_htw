@@ -1,5 +1,5 @@
 /* ============================================
-   HIGHWAY TO WIPE - HOME PAGE STYLES
+   HIGHWAY TO WIPE - HOME PAGE STYLES COMPLET
    ============================================ */
 
 /* Container */
@@ -39,7 +39,7 @@
   margin: 0;
 }
 
-/* ====== PROGRESSION RAID HERO ====== */
+/* ====== PROGRESSION RAID COMPLÈTE ====== */
 .hw-progression-hero {
   padding: 20px 0 40px;
 }
@@ -56,7 +56,8 @@
   display: flex;
   align-items: center;
   gap: 20px;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
+  justify-content: center;
 }
 
 .hw-prog-icon {
@@ -77,65 +78,104 @@
   margin: 4px 0 0 0;
 }
 
-.hw-prog-main {
-  text-align: center;
-  margin-bottom: 24px;
+/* Grille des 3 difficultés */
+.hw-prog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
 }
 
-.hw-prog-score {
-  font-size: 80px;
+.hw-prog-difficulty-card {
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid;
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.hw-prog-difficulty-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.hw-prog-normal {
+  border-color: #4CAF50;
+}
+
+.hw-prog-heroic {
+  border-color: #2196F3;
+}
+
+.hw-prog-mythic {
+  border-color: #FF6B6B;
+}
+
+.hw-prog-diff-label {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.hw-prog-normal .hw-prog-diff-label {
+  color: #4CAF50;
+}
+
+.hw-prog-heroic .hw-prog-diff-label {
+  color: #2196F3;
+}
+
+.hw-prog-mythic .hw-prog-diff-label {
+  color: #FF6B6B;
+}
+
+.hw-prog-diff-score {
+  font-size: 48px;
   font-weight: bold;
   line-height: 1;
-  margin-bottom: 8px;
+  margin-bottom: 16px;
 }
 
-.hw-prog-number {
-  color: #ffd700;
-}
-
-.hw-prog-separator {
-  color: #666;
-  margin: 0 8px;
-}
-
-.hw-prog-total {
+.hw-prog-diff-killed {
   color: #fff;
 }
 
-.hw-prog-label {
-  color: #b0b0b0;
-  font-size: 18px;
-  margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 2px;
+.hw-prog-diff-sep {
+  color: #666;
+  margin: 0 4px;
 }
 
-.hw-prog-ranks {
-  display: flex;
-  justify-content: center;
-  gap: 48px;
-  padding-top: 20px;
-  border-top: 1px solid rgba(255, 215, 0, 0.2);
-}
-
-.hw-prog-rank-item {
-  text-align: center;
-}
-
-.hw-prog-rank-number {
-  display: block;
-  font-size: 32px;
-  font-weight: bold;
-  color: #ffd700;
-  line-height: 1;
-  margin-bottom: 4px;
-}
-
-.hw-prog-rank-label {
-  display: block;
-  font-size: 13px;
+.hw-prog-diff-total {
   color: #888;
-  text-transform: uppercase;
+  font-size: 36px;
+}
+
+.hw-prog-diff-bar {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 12px;
+}
+
+.hw-prog-diff-fill {
+  height: 100%;
+  transition: width 0.5s ease;
+  border-radius: 4px;
+}
+
+.hw-prog-normal .hw-prog-diff-fill {
+  background: linear-gradient(90deg, #4CAF50 0%, #66BB6A 100%);
+}
+
+.hw-prog-heroic .hw-prog-diff-fill {
+  background: linear-gradient(90deg, #2196F3 0%, #42A5F5 100%);
+}
+
+.hw-prog-mythic .hw-prog-diff-fill {
+  background: linear-gradient(90deg, #FF6B6B 0%, #FF8787 100%);
 }
 
 /* ====== PROCHAIN EVENT ====== */
@@ -344,6 +384,116 @@
   color: #888;
 }
 
+/* ====== LEADERBOARDS (M+ + Deaths) ====== */
+.hw-leaderboards {
+  padding: 40px 20px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.hw-leaderboards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 24px;
+}
+
+.hw-leaderboard-panel {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.hw-leaderboard-deaths {
+  border-color: rgba(255, 107, 107, 0.3);
+}
+
+.hw-leaderboard-title {
+  font-family: 'Cinzel', serif;
+  color: #ffd700;
+  font-size: 20px;
+  margin: 0 0 20px 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+  text-transform: uppercase;
+}
+
+.hw-leaderboard-deaths .hw-leaderboard-title {
+  color: #FF6B6B;
+  border-bottom-color: rgba(255, 107, 107, 0.3);
+}
+
+.hw-leaderboard-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  margin-bottom: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.hw-leaderboard-item:last-child {
+  margin-bottom: 0;
+}
+
+.hw-leaderboard-item:hover {
+  background: rgba(255, 215, 0, 0.08);
+  transform: translateX(4px);
+}
+
+.hw-leaderboard-rank {
+  font-size: 20px;
+  font-weight: bold;
+  color: #ffd700;
+  min-width: 40px;
+  text-align: center;
+}
+
+.hw-leaderboard-player {
+  flex: 1;
+  min-width: 0;
+}
+
+.hw-leaderboard-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hw-leaderboard-detail {
+  font-size: 13px;
+  color: #888;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hw-leaderboard-score {
+  font-size: 20px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.hw-score-mythic {
+  color: #00D9FF;
+}
+
+.hw-score-deaths {
+  color: #FF6B6B;
+}
+
+.hw-leaderboard-empty {
+  color: #666;
+  font-style: italic;
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 14px;
+}
+
 /* ====== ACTIVITÉ RÉCENTE ====== */
 .hw-activity-section {
   background: rgba(255, 255, 255, 0.02);
@@ -517,8 +667,9 @@
     font-size: 24px;
   }
 
-  .hw-prog-score {
-    font-size: 56px;
+  .hw-prog-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
 
   .hw-event-header {
@@ -544,6 +695,10 @@
   }
 
   .hw-stats-row {
+    grid-template-columns: 1fr;
+  }
+
+  .hw-leaderboards-grid {
     grid-template-columns: 1fr;
   }
 

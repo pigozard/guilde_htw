@@ -1,11 +1,11 @@
-<!-- Hero -->
+<!-- Hero compact -->
 <div class="hw-hero">
   <%= image_tag "logo.png", class: "hw-hero-logo", alt: "Highway to Wipe" %>
   <h1 class="hw-hero-title">Highway to Wipe</h1>
   <p class="hw-hero-subtitle">Guilde PvE • Alliance • Eitrigg</p>
 </div>
 
-<!-- PROGRESSION RAID - HERO SECTION -->
+<!-- PROGRESSION RAID COMPLÈTE (Normal + Héroïque + Mythique) -->
 <div class="hw-progression-hero">
   <div class="hw-container">
     <div class="hw-prog-card">
@@ -13,28 +13,52 @@
         <div class="hw-prog-icon">⚔️</div>
         <div class="hw-prog-info">
           <h2 class="hw-prog-raid-name"><%= @warcraftlogs_progression[:raid_name] %></h2>
-          <p class="hw-prog-difficulty"><%= @warcraftlogs_progression[:difficulty] %></p>
+          <p class="hw-prog-difficulty">Progression Complète</p>
         </div>
       </div>
 
-      <div class="hw-prog-main">
-        <div class="hw-prog-score">
-          <span class="hw-prog-number"><%= @warcraftlogs_progression[:bosses_killed] %></span>
-          <span class="hw-prog-separator">/</span>
-          <span class="hw-prog-total"><%= @warcraftlogs_progression[:total_bosses] %></span>
-        </div>
-        <p class="hw-prog-label">Boss Mythiques</p>
-      </div>
+      <!-- Grille des 3 difficultés -->
+      <div class="hw-prog-grid">
 
-      <div class="hw-prog-ranks">
-        <div class="hw-prog-rank-item">
-          <span class="hw-prog-rank-number">#<%= @warcraftlogs_progression[:server_rank] %></span>
-          <span class="hw-prog-rank-label">Serveur</span>
+        <!-- Normal -->
+        <div class="hw-prog-difficulty-card hw-prog-normal">
+          <div class="hw-prog-diff-label">Normal</div>
+          <div class="hw-prog-diff-score">
+            <span class="hw-prog-diff-killed"><%= @warcraftlogs_progression[:normal][:killed] %></span>
+            <span class="hw-prog-diff-sep">/</span>
+            <span class="hw-prog-diff-total"><%= @warcraftlogs_progression[:normal][:total] %></span>
+          </div>
+          <div class="hw-prog-diff-bar">
+            <div class="hw-prog-diff-fill" style="width: <%= (@warcraftlogs_progression[:normal][:killed].to_f / @warcraftlogs_progression[:normal][:total] * 100).round %>%;"></div>
+          </div>
         </div>
-        <div class="hw-prog-rank-item">
-          <span class="hw-prog-rank-number">#<%= @warcraftlogs_progression[:region_rank] %></span>
-          <span class="hw-prog-rank-label">Région</span>
+
+        <!-- Héroïque -->
+        <div class="hw-prog-difficulty-card hw-prog-heroic">
+          <div class="hw-prog-diff-label">Héroïque</div>
+          <div class="hw-prog-diff-score">
+            <span class="hw-prog-diff-killed"><%= @warcraftlogs_progression[:heroic][:killed] %></span>
+            <span class="hw-prog-diff-sep">/</span>
+            <span class="hw-prog-diff-total"><%= @warcraftlogs_progression[:heroic][:total] %></span>
+          </div>
+          <div class="hw-prog-diff-bar">
+            <div class="hw-prog-diff-fill" style="width: <%= (@warcraftlogs_progression[:heroic][:killed].to_f / @warcraftlogs_progression[:heroic][:total] * 100).round %>%;"></div>
+          </div>
         </div>
+
+        <!-- Mythique -->
+        <div class="hw-prog-difficulty-card hw-prog-mythic">
+          <div class="hw-prog-diff-label">Mythique</div>
+          <div class="hw-prog-diff-score">
+            <span class="hw-prog-diff-killed"><%= @warcraftlogs_progression[:mythic][:killed] %></span>
+            <span class="hw-prog-diff-sep">/</span>
+            <span class="hw-prog-diff-total"><%= @warcraftlogs_progression[:mythic][:total] %></span>
+          </div>
+          <div class="hw-prog-diff-bar">
+            <div class="hw-prog-diff-fill" style="width: <%= (@warcraftlogs_progression[:mythic][:killed].to_f / @warcraftlogs_progression[:mythic][:total] * 100).round %>%;"></div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -133,6 +157,53 @@
   </div>
 </div>
 
+<!-- LEADERBOARDS (M+ + Deaths) -->
+<div class="hw-leaderboards">
+  <div class="hw-container">
+    <div class="hw-leaderboards-grid">
+
+      <!-- TOP M+ -->
+      <div class="hw-leaderboard-panel">
+        <h3 class="hw-leaderboard-title">🔑 Top Mythic+</h3>
+        <% if @raiderio_top_players.any? %>
+          <% @raiderio_top_players.each_with_index do |player, index| %>
+            <div class="hw-leaderboard-item">
+              <div class="hw-leaderboard-rank">#<%= index + 1 %></div>
+              <div class="hw-leaderboard-player">
+                <div class="hw-leaderboard-name"><%= player[:name] %></div>
+                <div class="hw-leaderboard-detail"><%= player[:class] %> <%= player[:spec] %></div>
+              </div>
+              <div class="hw-leaderboard-score hw-score-mythic"><%= player[:score] %></div>
+            </div>
+          <% end %>
+        <% else %>
+          <p class="hw-leaderboard-empty">Aucune donnée Raider.io disponible</p>
+        <% end %>
+      </div>
+
+      <!-- WALL OF SHAME (Deaths) -->
+      <div class="hw-leaderboard-panel hw-leaderboard-deaths">
+        <h3 class="hw-leaderboard-title">💀 Wall of Shame</h3>
+        <% if @warcraftlogs_death_stats.any? %>
+          <% @warcraftlogs_death_stats.each_with_index do |player, index| %>
+            <div class="hw-leaderboard-item">
+              <div class="hw-leaderboard-rank">#<%= index + 1 %></div>
+              <div class="hw-leaderboard-player">
+                <div class="hw-leaderboard-name"><%= player[:player] %></div>
+                <div class="hw-leaderboard-detail"><%= player[:class] %></div>
+              </div>
+              <div class="hw-leaderboard-score hw-score-deaths"><%= player[:deaths] %> 💀</div>
+            </div>
+          <% end %>
+        <% else %>
+          <p class="hw-leaderboard-empty">Aucune mort enregistrée (impossible ! 😏)</p>
+        <% end %>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <!-- ACTIVITÉ RÉCENTE -->
 <div class="hw-activity-section">
   <div class="hw-container">
@@ -140,19 +211,23 @@
 
     <div class="hw-activity-grid">
 
-      <!-- Kills récents (Warcraft Logs) -->
+      <!-- Kills récents -->
       <div class="hw-activity-panel">
         <h3 class="hw-activity-panel-title">🏆 Kills Récents</h3>
-        <% @warcraftlogs_recent_kills.each do |kill| %>
-          <div class="hw-activity-item">
-            <div class="hw-activity-icon">💀</div>
-            <div class="hw-activity-content">
-              <div class="hw-activity-name"><%= kill[:boss] %></div>
-              <div class="hw-activity-detail">
-                <%= kill[:difficulty] %> • Il y a <%= time_ago_in_words(kill[:date]) %>
+        <% if @warcraftlogs_recent_kills.any? %>
+          <% @warcraftlogs_recent_kills.each do |kill| %>
+            <div class="hw-activity-item">
+              <div class="hw-activity-icon">💀</div>
+              <div class="hw-activity-content">
+                <div class="hw-activity-name"><%= kill[:boss] %></div>
+                <div class="hw-activity-detail">
+                  <%= kill[:difficulty] %> • <%= kill[:date].strftime("%d/%m à %Hh%M") %>
+                </div>
               </div>
             </div>
-          </div>
+          <% end %>
+        <% else %>
+          <p class="hw-activity-empty">Aucun kill récent</p>
         <% end %>
       </div>
 
