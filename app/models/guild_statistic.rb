@@ -3,7 +3,16 @@ class GuildStatistic < ApplicationRecord
 
   # Méthodes helper pour accéder aux différents types de stats
   def self.warcraft_logs_data
-    find_by(stat_type: 'warcraft_logs')&.data || default_warcraft_logs_data
+    data = find_by(stat_type: 'warcraft_logs')&.data || default_warcraft_logs_data
+
+    # Convertir les dates strings en objets Time pour recent_kills
+    if data['recent_kills']
+      data['recent_kills'].each do |kill|
+        kill['date'] = Time.parse(kill['date']) if kill['date'].is_a?(String)
+      end
+    end
+
+    data
   end
 
   def self.raider_io_data

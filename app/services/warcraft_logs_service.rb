@@ -131,10 +131,14 @@ class WarcraftLogsService
 
     Rails.logger.info "=== NOMBRE DE REPORTS TROUVÉS: #{reports.size} ==="
 
+    # 🔍 DEBUG - Afficher les Zone IDs
     if reports.any?
-      reports.first(3).each do |report|
+      reports.first(10).each do |report|
         date = Time.at(report['startTime'] / 1000) rescue 'date inconnue'
-        Rails.logger.info "📊 Report: #{report['title']} | Zone: #{report.dig('zone', 'name')} | Date: #{date}"
+        zone_id = report.dig('zone', 'id')
+        zone_name = report.dig('zone', 'name')
+        fights_count = report['fights']&.size || 0
+        Rails.logger.info "📊 Zone ID: #{zone_id} | Zone Name: '#{zone_name}' | Fights: #{fights_count} | Date: #{date}"
       end
     else
       Rails.logger.warn "⚠️ Aucun report trouvé - Vérifiez que la guilde a uploadé des logs"
@@ -182,8 +186,9 @@ class WarcraftLogsService
       zone_id = report.dig('zone', 'id')
       zone_name = report.dig('zone', 'name')
 
-      # Raids TWW: Manaforge Omega (40), Liberation of Undermine (39), Nerub-ar Palace (38)
-      next unless [40, 39, 38].include?(zone_id)
+      # Raids TWW: Manaforge Omega (44), Liberation of Undermine (39), Nerub-ar Palace (38)
+      # On va logger tous les IDs pour trouver le bon
+      next unless [44, 39, 38].include?(zone_id)
 
       fights = report['fights'] || []
       has_kills = false
@@ -238,8 +243,8 @@ class WarcraftLogsService
 
     reports.each do |report|
       zone_id = report.dig('zone', 'id')
-      # Raids TWW: Manaforge Omega (40), Liberation of Undermine (39), Nerub-ar Palace (38)
-      next unless [40, 39, 38].include?(zone_id)
+      # Raids TWW: Manaforge Omega (44), Liberation of Undermine (39), Nerub-ar Palace (38)
+      next unless [44, 39, 38].include?(zone_id)
 
       fights = report['fights'] || []
 
@@ -285,6 +290,4 @@ class WarcraftLogsService
       death_stats: mock_death_stats
     }
   end
-
-  
 end
