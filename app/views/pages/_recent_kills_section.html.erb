@@ -1,0 +1,19 @@
+<!-- Kills récents -->
+<div class="hw-activity-panel">
+  <h3 class="hw-activity-panel-title">🏆 Kills Récents</h3>
+  <% if recent_kills.any? %>
+    <% recent_kills.each do |kill| %>
+      <div class="hw-activity-item">
+        <div class="hw-activity-icon">💀</div>
+        <div class="hw-activity-content">
+          <div class="hw-activity-name"><%= kill[:boss] %></div>
+          <div class="hw-activity-detail">
+            <%= kill[:difficulty] %> • <%= kill[:date].strftime("%d/%m à %Hh%M") %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <p class="hw-activity-empty">Aucun kill récent</p>
+  <% end %>
+</div>

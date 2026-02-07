@@ -5,63 +5,9 @@
   <p class="hw-hero-subtitle">Guilde PvE • Alliance • Eitrigg</p>
 </div>
 
-<!-- PROGRESSION RAID COMPLÈTE (Normal + Héroïque + Mythique) -->
-<div class="hw-progression-hero">
-  <div class="hw-container">
-    <div class="hw-prog-card">
-      <div class="hw-prog-header">
-        <div class="hw-prog-icon">⚔️</div>
-        <div class="hw-prog-info">
-          <h2 class="hw-prog-raid-name"><%= @warcraftlogs_progression[:raid_name] %></h2>
-          <p class="hw-prog-difficulty">Progression Complète</p>
-        </div>
-      </div>
-
-      <!-- Grille des 3 difficultés -->
-      <div class="hw-prog-grid">
-
-        <!-- Normal -->
-        <div class="hw-prog-difficulty-card hw-prog-normal">
-          <div class="hw-prog-diff-label">Normal</div>
-          <div class="hw-prog-diff-score">
-            <span class="hw-prog-diff-killed"><%= @warcraftlogs_progression[:normal][:killed] %></span>
-            <span class="hw-prog-diff-sep">/</span>
-            <span class="hw-prog-diff-total"><%= @warcraftlogs_progression[:normal][:total] %></span>
-          </div>
-          <div class="hw-prog-diff-bar">
-            <div class="hw-prog-diff-fill" style="width: <%= (@warcraftlogs_progression[:normal][:killed].to_f / @warcraftlogs_progression[:normal][:total] * 100).round %>%;"></div>
-          </div>
-        </div>
-
-        <!-- Héroïque -->
-        <div class="hw-prog-difficulty-card hw-prog-heroic">
-          <div class="hw-prog-diff-label">Héroïque</div>
-          <div class="hw-prog-diff-score">
-            <span class="hw-prog-diff-killed"><%= @warcraftlogs_progression[:heroic][:killed] %></span>
-            <span class="hw-prog-diff-sep">/</span>
-            <span class="hw-prog-diff-total"><%= @warcraftlogs_progression[:heroic][:total] %></span>
-          </div>
-          <div class="hw-prog-diff-bar">
-            <div class="hw-prog-diff-fill" style="width: <%= (@warcraftlogs_progression[:heroic][:killed].to_f / @warcraftlogs_progression[:heroic][:total] * 100).round %>%;"></div>
-          </div>
-        </div>
-
-        <!-- Mythique -->
-        <div class="hw-prog-difficulty-card hw-prog-mythic">
-          <div class="hw-prog-diff-label">Mythique</div>
-          <div class="hw-prog-diff-score">
-            <span class="hw-prog-diff-killed"><%= @warcraftlogs_progression[:mythic][:killed] %></span>
-            <span class="hw-prog-diff-sep">/</span>
-            <span class="hw-prog-diff-total"><%= @warcraftlogs_progression[:mythic][:total] %></span>
-          </div>
-          <div class="hw-prog-diff-bar">
-            <div class="hw-prog-diff-fill" style="width: <%= (@warcraftlogs_progression[:mythic][:killed].to_f / @warcraftlogs_progression[:mythic][:total] * 100).round %>%;"></div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
+<!-- PROGRESSION RAID - Chargement asynchrone -->
+<div id="warcraft-logs-content">
+  <%= render 'pages/warcraft_logs_section', progression: @warcraftlogs_progression %>
 </div>
 
 <!-- PROCHAIN EVENT -->
@@ -181,23 +127,9 @@
         <% end %>
       </div>
 
-      <!-- WALL OF SHAME (Deaths) -->
-      <div class="hw-leaderboard-panel hw-leaderboard-deaths">
-        <h3 class="hw-leaderboard-title">💀 Wall of Shame</h3>
-        <% if @warcraftlogs_death_stats.any? %>
-          <% @warcraftlogs_death_stats.each_with_index do |player, index| %>
-            <div class="hw-leaderboard-item">
-              <div class="hw-leaderboard-rank">#<%= index + 1 %></div>
-              <div class="hw-leaderboard-player">
-                <div class="hw-leaderboard-name"><%= player[:player] %></div>
-                <div class="hw-leaderboard-detail"><%= player[:class] %></div>
-              </div>
-              <div class="hw-leaderboard-score hw-score-deaths"><%= player[:deaths] %> 💀</div>
-            </div>
-          <% end %>
-        <% else %>
-          <p class="hw-leaderboard-empty">Aucune mort enregistrée (impossible ! 😏)</p>
-        <% end %>
+      <!-- WALL OF SHAME - Chargement asynchrone -->
+      <div id="death-stats-content">
+        <%= render 'pages/death_stats_section', death_stats: @warcraftlogs_death_stats %>
       </div>
 
     </div>
@@ -211,24 +143,9 @@
 
     <div class="hw-activity-grid">
 
-      <!-- Kills récents -->
-      <div class="hw-activity-panel">
-        <h3 class="hw-activity-panel-title">🏆 Kills Récents</h3>
-        <% if @warcraftlogs_recent_kills.any? %>
-          <% @warcraftlogs_recent_kills.each do |kill| %>
-            <div class="hw-activity-item">
-              <div class="hw-activity-icon">💀</div>
-              <div class="hw-activity-content">
-                <div class="hw-activity-name"><%= kill[:boss] %></div>
-                <div class="hw-activity-detail">
-                  <%= kill[:difficulty] %> • <%= kill[:date].strftime("%d/%m à %Hh%M") %>
-                </div>
-              </div>
-            </div>
-          <% end %>
-        <% else %>
-          <p class="hw-activity-empty">Aucun kill récent</p>
-        <% end %>
+      <!-- Kills récents - Chargement asynchrone -->
+      <div id="recent-kills-content">
+        <%= render 'pages/recent_kills_section', recent_kills: @warcraftlogs_recent_kills %>
       </div>
 
       <!-- Inscriptions -->
@@ -324,6 +241,9 @@
     </p>
   </div>
 </div>
+
+<!-- Chargement asynchrone des données Warcraft Logs -->
+<%= turbo_frame_tag "warcraft_logs_async", src: warcraft_logs_widget_path, loading: :lazy %>
 
 <!-- JavaScript Countdown -->
 <script>

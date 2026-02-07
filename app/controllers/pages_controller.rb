@@ -23,32 +23,30 @@ class PagesController < ApplicationController
     @recent_characters = Character.permanent.includes(:user, :wow_class, :specialization).order(created_at: :desc).limit(3)
     @recent_contributions = FarmContribution.includes(:user, :ingredient).order(created_at: :desc).limit(3)
 
-    # WARCRAFT LOGS - Progression complète + Deaths
-    fetch_warcraft_logs_data
+    # WARCRAFT LOGS - Depuis la DB (instantané !)
+    load_warcraft_logs_from_db
 
-    # RAIDER.IO - Top M+
-    fetch_raider_io_data
+    # RAIDER.IO - Depuis la DB (instantané !)
+    load_raider_io_from_db
   end
 
   private
 
-  def fetch_warcraft_logs_data
-    warcraftlogs = WarcraftLogsService.new
-    data = warcraftlogs.guild_data
+  def load_warcraft_logs_from_db
+    wcl_data = GuildStatistic.warcraft_logs_data
 
-    @warcraftlogs_progression = data[:progression]
-    @warcraftlogs_recent_kills = data[:recent_kills]
-    @warcraftlogs_death_stats = data[:death_stats]
+    @warcraftlogs_progression = wcl_data['progression'].deep_symbolize_keys
+    @warcraftlogs_recent_kills = wcl_data['recent_kills'].map(&:deep_symbolize_keys)
+    @warcraftlogs_death_stats = wcl_data['death_stats'].map(&:deep_symbolize_keys)
   rescue => e
-    Rails.logger.error "Failed to fetch Warcraft Logs: #{e.message}"
+    Rails.logger.error "Failed to load Warcraft Logs from DB: #{e.message}"
     fallback_warcraftlogs_data
   end
 
-  def fetch_raider_io_data
-    raiderio = RaiderIoService.new
-    @raiderio_top_players = raiderio.top_mythic_plus_players
+  def load_raider_io_from_db
+    @raiderio_top_players = GuildStatistic.raider_io_data.map(&:deep_symbolize_keys)
   rescue => e
-    Rails.logger.error "Failed to fetch Raider.io: #{e.message}"
+    Rails.logger.error "Failed to load Raider.io from DB: #{e.message}"
     @raiderio_top_players = []
   end
 
@@ -57,7 +55,7 @@ class PagesController < ApplicationController
       normal: { killed: 0, total: 8 },
       heroic: { killed: 0, total: 8 },
       mythic: { killed: 0, total: 8 },
-      raid_name: "Nerub-ar Palace"
+      raid_name: "Manaforge Omega"
     }
     @warcraftlogs_recent_kills = []
     @warcraftlogs_death_stats = []

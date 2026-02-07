@@ -1,0 +1,18 @@
+<!-- WALL OF SHAME (Deaths) -->
+<div class="hw-leaderboard-panel hw-leaderboard-deaths">
+  <h3 class="hw-leaderboard-title">💀 Wall of Shame</h3>
+  <% if death_stats.any? %>
+    <% death_stats.each_with_index do |player, index| %>
+      <div class="hw-leaderboard-item">
+        <div class="hw-leaderboard-rank">#<%= index + 1 %></div>
+        <div class="hw-leaderboard-player">
+          <div class="hw-leaderboard-name"><%= player[:player] %></div>
+          <div class="hw-leaderboard-detail"><%= player[:class] %></div>
+        </div>
+        <div class="hw-leaderboard-score hw-score-deaths"><%= player[:deaths] %> 💀</div>
+      </div>
+    <% end %>
+  <% else %>
+    <p class="hw-leaderboard-empty">Aucune mort enregistrée (impossible ! 😏)</p>
+  <% end %>
+</div>

@@ -1,0 +1,58 @@
+<!-- PROGRESSION RAID COMPLÈTE (Normal + Héroïque + Mythique) -->
+<div class="hw-progression-hero">
+  <div class="hw-container">
+    <div class="hw-prog-card">
+      <div class="hw-prog-header">
+        <div class="hw-prog-icon">⚔️</div>
+        <div class="hw-prog-info">
+          <h2 class="hw-prog-raid-name"><%= progression[:raid_name] %></h2>
+          <p class="hw-prog-difficulty">Progression Complète</p>
+        </div>
+      </div>
+
+      <!-- Grille des 3 difficultés -->
+      <div class="hw-prog-grid">
+
+        <!-- Normal -->
+        <div class="hw-prog-difficulty-card hw-prog-normal">
+          <div class="hw-prog-diff-label">Normal</div>
+          <div class="hw-prog-diff-score">
+            <span class="hw-prog-diff-killed"><%= progression[:normal][:killed] %></span>
+            <span class="hw-prog-diff-sep">/</span>
+            <span class="hw-prog-diff-total"><%= progression[:normal][:total] %></span>
+          </div>
+          <div class="hw-prog-diff-bar">
+            <div class="hw-prog-diff-fill" style="width: <%= (progression[:normal][:killed].to_f / progression[:normal][:total] * 100).round %>%;"></div>
+          </div>
+        </div>
+
+        <!-- Héroïque -->
+        <div class="hw-prog-difficulty-card hw-prog-heroic">
+          <div class="hw-prog-diff-label">Héroïque</div>
+          <div class="hw-prog-diff-score">
+            <span class="hw-prog-diff-killed"><%= progression[:heroic][:killed] %></span>
+            <span class="hw-prog-diff-sep">/</span>
+            <span class="hw-prog-diff-total"><%= progression[:heroic][:total] %></span>
+          </div>
+          <div class="hw-prog-diff-bar">
+            <div class="hw-prog-diff-fill" style="width: <%= (progression[:heroic][:killed].to_f / progression[:heroic][:total] * 100).round %>%;"></div>
+          </div>
+        </div>
+
+        <!-- Mythique -->
+        <div class="hw-prog-difficulty-card hw-prog-mythic">
+          <div class="hw-prog-diff-label">Mythique</div>
+          <div class="hw-prog-diff-score">
+            <span class="hw-prog-diff-killed"><%= progression[:mythic][:killed] %></span>
+            <span class="hw-prog-diff-sep">/</span>
+            <span class="hw-prog-diff-total"><%= progression[:mythic][:total] %></span>
+          </div>
+          <div class="hw-prog-diff-bar">
+            <div class="hw-prog-diff-fill" style="width: <%= (progression[:mythic][:killed].to_f / progression[:mythic][:total] * 100).round %>%;"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
