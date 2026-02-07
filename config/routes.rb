@@ -22,7 +22,4 @@ Rails.application.routes.draw do
   # Page dédiée Hauts Faits
   get 'achievements', to: 'achievements#index'
   post 'achievements/sync', to: 'achievements#sync', as: :sync_achievements
-
-  # Ajoute cette ligne avec tes autres routes
-get 'warcraft_logs_widget', to: 'pages#warcraft_logs_widget'
 end

@@ -1,279 +1,178 @@
-<!-- Hero compact -->
+<!-- Hero -->
 <div class="hw-hero">
   <%= image_tag "logo.png", class: "hw-hero-logo", alt: "Highway to Wipe" %>
   <h1 class="hw-hero-title">Highway to Wipe</h1>
   <p class="hw-hero-subtitle">Guilde PvE • Alliance • Eitrigg</p>
 </div>
 
-<!-- PROGRESSION RAID - Chargement asynchrone -->
-<div id="warcraft-logs-content">
-  <%= render 'pages/warcraft_logs_section', progression: @warcraftlogs_progression %>
-</div>
+<div class="hw-container">
 
-<!-- PROCHAIN EVENT -->
-<% if @next_event.present? %>
-  <div class="hw-next-event">
-    <div class="hw-container">
-      <div class="hw-event-card">
-        <div class="hw-event-header">
-          <div class="hw-event-icon"><%= @next_event.event_type_emoji %></div>
-          <div class="hw-event-info">
-            <h2 class="hw-event-title"><%= @next_event.title %></h2>
-            <p class="hw-event-date"><%= @next_event.start_time.strftime("%A %d %B à %Hh%M") %></p>
-          </div>
-          <%= link_to "S'inscrire →", event_path(@next_event), class: "hw-event-cta" %>
-        </div>
+  <!-- Grille principale : Progression + Prochain Event -->
+  <div class="hw-main-grid">
 
-        <div class="hw-event-body">
-          <div class="hw-countdown" data-event-date="<%= @next_event.start_time.iso8601 %>">
-            <div class="hw-countdown-item">
-              <span class="hw-countdown-number" data-countdown="days">-</span>
-              <span class="hw-countdown-label">Jours</span>
-            </div>
-            <div class="hw-countdown-item">
-              <span class="hw-countdown-number" data-countdown="hours">-</span>
-              <span class="hw-countdown-label">Heures</span>
-            </div>
-            <div class="hw-countdown-item">
-              <span class="hw-countdown-number" data-countdown="minutes">-</span>
-              <span class="hw-countdown-label">Minutes</span>
-            </div>
-            <div class="hw-countdown-item">
-              <span class="hw-countdown-number" data-countdown="seconds">-</span>
-              <span class="hw-countdown-label">Secondes</span>
-            </div>
-          </div>
+    <!-- PROGRESSION RAID -->
+    <div class="hw-card">
+      <div class="hw-card-header">
+        <span class="hw-card-icon">⚔️</span>
+        <h2 class="hw-card-title"><%= @warcraftlogs_progression[:raid_name] %></h2>
+      </div>
+      <div class="hw-card-body">
+        <%
+          # Trouve la plus haute difficulté avec des kills
+          highest = nil
+          if @warcraftlogs_progression[:mythic][:killed] > 0
+            highest = { label: "Mythique", killed: @warcraftlogs_progression[:mythic][:killed], total: @warcraftlogs_progression[:mythic][:total], color: "#f44336" }
+          elsif @warcraftlogs_progression[:heroic][:killed] > 0
+            highest = { label: "Héroïque", killed: @warcraftlogs_progression[:heroic][:killed], total: @warcraftlogs_progression[:heroic][:total], color: "#2196f3" }
+          elsif @warcraftlogs_progression[:normal][:killed] > 0
+            highest = { label: "Normal", killed: @warcraftlogs_progression[:normal][:killed], total: @warcraftlogs_progression[:normal][:total], color: "#4caf50" }
+          end
+        %>
 
-          <div class="hw-event-participants">
-            <span class="hw-event-part-number"><%= @next_event_participants %></span>
-            <span class="hw-event-part-label">inscrit<%= @next_event_participants > 1 ? 's' : '' %></span>
+        <% if highest %>
+          <div class="hw-prog-main">
+            <div class="hw-prog-difficulty-name" style="color: <%= highest[:color] %>">
+              <%= highest[:label] %>
+            </div>
+            <div class="hw-prog-score">
+              <span class="hw-prog-killed"><%= highest[:killed] %></span>
+              <span class="hw-prog-sep">/</span>
+              <span class="hw-prog-total"><%= highest[:total] %></span>
+            </div>
+            <div class="hw-prog-bar">
+              <div class="hw-prog-fill" style="width: <%= (highest[:killed].to_f / highest[:total] * 100).round %>%; background: <%= highest[:color] %>;"></div>
+            </div>
           </div>
-        </div>
+        <% else %>
+          <p class="hw-empty">Aucune progression enregistrée</p>
+        <% end %>
       </div>
     </div>
+
+    <!-- PROCHAIN EVENT -->
+    <% if @next_event.present? %>
+      <div class="hw-card hw-event-card">
+        <div class="hw-card-header">
+          <span class="hw-card-icon">📅</span>
+          <h2 class="hw-card-title">Prochain Event</h2>
+        </div>
+        <div class="hw-card-body">
+          <div class="hw-event-content">
+            <span class="hw-event-icon-main"><%= @next_event.event_type_emoji %></span>
+            <div class="hw-event-main">
+              <div class="hw-event-name"><%= @next_event.title %></div>
+              <div class="hw-event-datetime">
+                <%= @next_event.start_time.strftime("%d %B") %> • <%= @next_event.start_time.strftime("%Hh%M") %>
+              </div>
+            </div>
+            <div class="hw-event-participants-compact">
+              <span class="hw-event-part-num"><%= @next_event_participants %></span> inscrit<%= @next_event_participants > 1 ? 's' : '' %>
+            </div>
+            <%= link_to event_path(@next_event), class: "hw-event-btn-round" do %>
+              →
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% else %>
+      <div class="hw-card">
+        <div class="hw-card-header">
+          <span class="hw-card-icon">📅</span>
+          <h2 class="hw-card-title">Prochain Event</h2>
+        </div>
+        <div class="hw-card-body">
+          <p class="hw-empty">Aucun événement prévu</p>
+        </div>
+      </div>
+    <% end %>
+
   </div>
-<% end %>
 
-<!-- STATS RAPIDES -->
-<div class="hw-stats-grid">
-  <div class="hw-container">
-    <div class="hw-stats-row">
+  <!-- Grille activité : Kills + M+ + Deaths -->
+  <div class="hw-activity-grid">
 
-      <!-- Membres -->
-      <div class="hw-stat-card">
-        <div class="hw-stat-icon">👥</div>
-        <div class="hw-stat-content">
-          <div class="hw-stat-number"><%= @members_count %></div>
-          <div class="hw-stat-label">Membres</div>
-        </div>
+    <!-- KILLS RÉCENTS -->
+    <div class="hw-card">
+      <div class="hw-card-header">
+        <span class="hw-card-icon">🏆</span>
+        <h3 class="hw-card-title">Kills Récents</h3>
       </div>
-
-      <!-- Composition -->
-      <div class="hw-stat-card hw-stat-card-compo">
-        <div class="hw-stat-label-top">Composition</div>
-        <div class="hw-compo-grid">
-          <div class="hw-compo-item">
-            <span class="hw-compo-icon">🛡️</span>
-            <span class="hw-compo-number"><%= @tank_count %></span>
-            <span class="hw-compo-label">Tanks</span>
-          </div>
-          <div class="hw-compo-item">
-            <span class="hw-compo-icon">✨</span>
-            <span class="hw-compo-number"><%= @healer_count %></span>
-            <span class="hw-compo-label">Heals</span>
-          </div>
-          <div class="hw-compo-item">
-            <span class="hw-compo-icon">⚔️</span>
-            <span class="hw-compo-number"><%= @dps_count %></span>
-            <span class="hw-compo-label">DPS</span>
-          </div>
-        </div>
+      <div class="hw-card-body hw-card-list">
+        <% if @warcraftlogs_recent_kills.any? %>
+          <% @warcraftlogs_recent_kills.first(5).each do |kill| %>
+            <div class="hw-list-item">
+              <div class="hw-list-icon">💀</div>
+              <div class="hw-list-content">
+                <div class="hw-list-name"><%= kill[:boss] %></div>
+                <div class="hw-list-detail"><%= kill[:difficulty] %> • <%= kill[:date].strftime("%d/%m") %></div>
+              </div>
+            </div>
+          <% end %>
+        <% else %>
+          <p class="hw-empty">Aucun kill récent</p>
+        <% end %>
       </div>
-
-      <!-- Events semaine -->
-      <div class="hw-stat-card">
-        <div class="hw-stat-icon">📅</div>
-        <div class="hw-stat-content">
-          <div class="hw-stat-number"><%= @events_this_week_count %></div>
-          <div class="hw-stat-label">Events cette semaine</div>
-        </div>
-      </div>
-
     </div>
-  </div>
-</div>
 
-<!-- LEADERBOARDS (M+ + Deaths) -->
-<div class="hw-leaderboards">
-  <div class="hw-container">
-    <div class="hw-leaderboards-grid">
-
-      <!-- TOP M+ -->
-      <div class="hw-leaderboard-panel">
-        <h3 class="hw-leaderboard-title">🔑 Top Mythic+</h3>
+    <!-- TOP MYTHIC+ -->
+    <div class="hw-card">
+      <div class="hw-card-header">
+        <span class="hw-card-icon">🔑</span>
+        <h3 class="hw-card-title">Top Mythic+</h3>
+      </div>
+      <div class="hw-card-body hw-card-list">
         <% if @raiderio_top_players.any? %>
-          <% @raiderio_top_players.each_with_index do |player, index| %>
-            <div class="hw-leaderboard-item">
-              <div class="hw-leaderboard-rank">#<%= index + 1 %></div>
-              <div class="hw-leaderboard-player">
-                <div class="hw-leaderboard-name"><%= player[:name] %></div>
-                <div class="hw-leaderboard-detail"><%= player[:class] %> <%= player[:spec] %></div>
+          <% @raiderio_top_players.first(5).each_with_index do |player, index| %>
+            <div class="hw-list-item">
+              <div class="hw-list-rank">#<%= index + 1 %></div>
+              <div class="hw-list-content">
+                <div class="hw-list-name"><%= player[:name] %></div>
+                <div class="hw-list-detail"><%= player[:class] %> <%= player[:spec] %></div>
               </div>
-              <div class="hw-leaderboard-score hw-score-mythic"><%= player[:score] %></div>
+              <div class="hw-list-score" style="color: #64b5f6;"><%= player[:score] %></div>
             </div>
           <% end %>
         <% else %>
-          <p class="hw-leaderboard-empty">Aucune donnée Raider.io disponible</p>
+          <p class="hw-empty">Aucune donnée M+</p>
         <% end %>
       </div>
-
-      <!-- WALL OF SHAME - Chargement asynchrone -->
-      <div id="death-stats-content">
-        <%= render 'pages/death_stats_section', death_stats: @warcraftlogs_death_stats %>
-      </div>
-
     </div>
-  </div>
-</div>
 
-<!-- ACTIVITÉ RÉCENTE -->
-<div class="hw-activity-section">
-  <div class="hw-container">
-    <h2 class="hw-section-title">⚡ Activité Récente</h2>
-
-    <div class="hw-activity-grid">
-
-      <!-- Kills récents - Chargement asynchrone -->
-      <div id="recent-kills-content">
-        <%= render 'pages/recent_kills_section', recent_kills: @warcraftlogs_recent_kills %>
+    <!-- WALL OF SHAME -->
+    <div class="hw-card">
+      <div class="hw-card-header">
+        <span class="hw-card-icon">💀</span>
+        <h3 class="hw-card-title">Wall of Shame</h3>
       </div>
-
-      <!-- Inscriptions -->
-      <div class="hw-activity-panel">
-        <h3 class="hw-activity-panel-title">📋 Inscriptions</h3>
-        <% if @recent_participations.any? %>
-          <% @recent_participations.each do |participation| %>
-            <div class="hw-activity-item">
-              <div class="hw-activity-icon">
-                <%= participation.role == 'Tank' ? '🛡️' : participation.role == 'Healer' ? '✨' : '⚔️' %>
+      <div class="hw-card-body hw-card-list">
+        <% if @warcraftlogs_death_stats.any? %>
+          <% @warcraftlogs_death_stats.first(5).each_with_index do |player, index| %>
+            <div class="hw-list-item">
+              <div class="hw-list-rank">#<%= index + 1 %></div>
+              <div class="hw-list-content">
+                <div class="hw-list-name"><%= player[:player] %></div>
+                <div class="hw-list-detail"><%= player[:class] %></div>
               </div>
-              <div class="hw-activity-content">
-                <div class="hw-activity-name"><%= participation.character.pseudo %></div>
-                <div class="hw-activity-detail">
-                  <%= participation.character.wow_class&.name %>
-                  • <%= participation.event.title %>
-                </div>
-              </div>
+              <div class="hw-list-score" style="color: #e57373;"><%= player[:deaths] %> 💀</div>
             </div>
           <% end %>
         <% else %>
-          <p class="hw-activity-empty">Aucune inscription récente</p>
+          <p class="hw-empty">Aucune donnée</p>
         <% end %>
       </div>
-
-      <!-- Roster -->
-      <div class="hw-activity-panel">
-        <h3 class="hw-activity-panel-title">🎮 Roster</h3>
-        <% if @recent_characters.any? %>
-          <% @recent_characters.each do |character| %>
-            <div class="hw-activity-item">
-              <div class="hw-activity-icon">
-                <%= character.specialization&.role == 'Tank' ? '🛡️' : character.specialization&.role == 'Healer' ? '✨' : '⚔️' %>
-              </div>
-              <div class="hw-activity-content">
-                <div class="hw-activity-name"><%= character.pseudo %></div>
-                <div class="hw-activity-detail">
-                  <%= character.wow_class&.name %>
-                  <%= character.specialization&.name %>
-                </div>
-              </div>
-            </div>
-          <% end %>
-        <% else %>
-          <p class="hw-activity-empty">Aucun personnage récent</p>
-        <% end %>
-      </div>
-
     </div>
+
   </div>
+
 </div>
 
-<!-- NAVIGATION -->
-<div class="hw-navigation">
+<!-- À propos -->
+<div class="hw-about">
   <div class="hw-container">
-    <div class="hw-nav-grid">
-
-      <%= link_to characters_path, class: "hw-nav-card" do %>
-        <div class="hw-nav-icon">⚔️</div>
-        <h3 class="hw-nav-title">Roster</h3>
-        <p class="hw-nav-desc">Choix de classes pour Midnight</p>
-      <% end %>
-
-      <%= link_to events_path, class: "hw-nav-card" do %>
-        <div class="hw-nav-icon">📅</div>
-        <h3 class="hw-nav-title">Calendrier</h3>
-        <p class="hw-nav-desc">Événements de la guilde</p>
-      <% end %>
-
-      <%= link_to farm_path, class: "hw-nav-card" do %>
-        <div class="hw-nav-icon">🌾</div>
-        <h3 class="hw-nav-title">Farm</h3>
-        <p class="hw-nav-desc">Objectifs collectifs</p>
-      <% end %>
-
-      <%= link_to achievements_path, class: "hw-nav-card" do %>
-        <div class="hw-nav-icon">🏆</div>
-        <h3 class="hw-nav-title">Hauts Faits</h3>
-        <p class="hw-nav-desc">Progression personnelle</p>
-      <% end %>
-
-    </div>
-  </div>
-</div>
-
-<!-- FOOTER -->
-<div class="hw-footer">
-  <div class="hw-container">
-    <h2 class="hw-footer-title">À propos</h2>
-    <p class="hw-footer-text">
+    <h2 class="hw-about-title">À propos</h2>
+    <p class="hw-about-text">
       Highway to Wipe est une guilde PvE sur le serveur Eitrigg.
       On raid dans la bonne humeur tout en visant le contenu endgame.
     </p>
   </div>
 </div>
-
-<!-- Chargement asynchrone des données Warcraft Logs -->
-<%= turbo_frame_tag "warcraft_logs_async", src: warcraft_logs_widget_path, loading: :lazy %>
-
-<!-- JavaScript Countdown -->
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const countdownElement = document.querySelector('[data-event-date]');
-    if (!countdownElement) return;
-
-    const eventDate = new Date(countdownElement.dataset.eventDate).getTime();
-
-    function updateCountdown() {
-      const now = new Date().getTime();
-      const distance = eventDate - now;
-
-      if (distance < 0) {
-        countdownElement.innerHTML = '<p style="color: #ffd700; font-size: 24px; text-align: center;">C\'est parti ! 🎉</p>';
-        return;
-      }
-
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-      document.querySelector('[data-countdown="days"]').textContent = days;
-      document.querySelector('[data-countdown="hours"]').textContent = hours;
-      document.querySelector('[data-countdown="minutes"]').textContent = minutes;
-      document.querySelector('[data-countdown="seconds"]').textContent = seconds;
-    }
-
-    updateCountdown();
-    setInterval(updateCountdown, 1000);
-  });
-</script>
