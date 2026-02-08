@@ -402,5 +402,4 @@ class WarcraftLogsService
   rescue => e
   Rails.logger.error "Parse death stats error: #{e.message}"
   []  # Tableau vide si erreur
-  end
 end
