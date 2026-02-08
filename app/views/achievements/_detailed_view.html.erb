@@ -1,67 +1,162 @@
-<% if achievements.any? %>
-  <div class="card">
-    <div class="card-header">
-      <h5 class="mb-0">
-        <% if @show_completed %>
-          📋 Tous les hauts faits (<%= achievements.count %>)
-        <% else %>
-          ❌ Hauts faits manquants (<%= achievements.count %>)
-        <% end %>
-      </h5>
-    </div>
-    <div class="list-group list-group-flush" style="max-height: 700px; overflow-y: auto;">
-      <% achievements.each do |achievement| %>
-        <% is_completed = @synced_achievements.include?(achievement.blizzard_id) %>
+<!-- Breadcrumb -->
+<div class="hw-breadcrumb">
+  <% breadcrumb_items.each_with_index do |item, index| %>
+    <% if item[:active] %>
+      <span class="hw-breadcrumb-active"><%= item[:label] %></span>
+    <% else %>
+      <span class="hw-breadcrumb-item">
+        <%= link_to item[:label], item[:url] %>
+      </span>
+      <span class="hw-breadcrumb-separator">›</span>
+    <% end %>
+  <% end %>
+</div>
 
-        <div class="list-group-item <%= 'bg-light' if is_completed %>">
-          <div class="d-flex align-items-start">
+<!-- Titre et stats summary -->
+<div class="hw-card">
+  <div class="hw-card-header">
+    <h2 class="hw-card-title"><%= title %></h2>
+  </div>
+  <div class="hw-card-body">
+    <div class="hw-achievement-summary">
+      <div class="hw-achievement-summary-box">
+        <div class="hw-achievement-summary-number"><%= current_stats[:completed] %></div>
+        <div class="hw-achievement-summary-label">✅ Complétés</div>
+      </div>
+      <div class="hw-achievement-summary-box">
+        <div class="hw-achievement-summary-number"><%= current_stats[:remaining] %></div>
+        <div class="hw-achievement-summary-label">❌ Manquants</div>
+      </div>
+      <div class="hw-achievement-summary-box">
+        <div class="hw-achievement-summary-number"><%= current_stats[:percentage] %>%</div>
+        <div class="hw-achievement-summary-label">Progression</div>
+      </div>
+      <div class="hw-achievement-summary-box">
+        <div class="hw-achievement-summary-number"><%= current_stats[:total] %></div>
+        <div class="hw-achievement-summary-label">Total</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Filtres catégories -->
+<% if categories_with_stats.present? %>
+  <div class="hw-achievement-categories">
+    <%= link_to achievements_path(base_url_params),
+        class: "hw-achievement-category-tab #{'active' unless params[:category_name].present?}" do %>
+      Toutes
+      <span class="hw-achievement-category-count">(<%= current_stats[:total] %>)</span>
+    <% end %>
+
+    <% categories_with_stats.each do |cat_stat| %>
+      <% category_name = cat_stat[:category].is_a?(String) ? cat_stat[:category] : cat_stat[:category].name %>
+      <%= link_to achievements_path(base_url_params.merge(category_name: category_name)),
+          class: "hw-achievement-category-tab #{'active' if params[:category_name] == category_name}" do %>
+        <%= category_name %>
+        <span class="hw-achievement-category-count">
+          (<%= cat_stat[:completed] %>/<%= cat_stat[:total] %>)
+        </span>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>
+
+<!-- Toggle complétés/manquants -->
+<div class="hw-card-actions" style="margin-bottom: 24px;">
+  <% if @show_completed %>
+    <%= link_to achievements_path(base_url_params.merge(show_completed: false, category_id: params[:category_id])),
+        class: "hw-btn hw-btn-secondary" do %>
+      ❌ Voir uniquement les manquants
+    <% end %>
+  <% else %>
+    <%= link_to achievements_path(base_url_params.merge(show_completed: true, category_id: params[:category_id])),
+        class: "hw-btn hw-btn-primary" do %>
+      📋 Voir tous les hauts faits
+    <% end %>
+  <% end %>
+</div>
+
+<!-- Liste des achievements -->
+<% if achievements.any? %>
+  <div class="hw-card">
+    <div class="hw-card-header">
+      <span class="hw-card-icon">
+        <% if @show_completed %>📋<% else %>❌<% end %>
+      </span>
+      <h2 class="hw-card-title">
+        <% if @show_completed %>
+          Tous les hauts faits (<%= achievements.count %>)
+        <% else %>
+          Hauts faits manquants (<%= achievements.count %>)
+        <% end %>
+      </h2>
+    </div>
+    <div class="hw-card-body" style="padding: 0;">
+      <div class="hw-achievement-list" style="max-height: 700px; overflow-y: auto; padding: 20px;">
+        <% achievements.each do |achievement| %>
+          <% is_completed = @synced_achievements.include?(achievement.blizzard_id) %>
+
+          <div class="hw-achievement-item <%= 'completed' if is_completed %>">
             <% if achievement.icon.present? %>
               <img src="<%= achievement.icon_url %>"
                    alt="<%= achievement.name %>"
-                   class="me-3 <%= 'opacity-50' unless is_completed %>"
-                   style="width: 42px; height: 42px; border-radius: 6px; border: 2px solid <%= is_completed ? '#28a745' : '#dc3545' %>;">
+                   class="hw-achievement-icon"
+                   style="border-color: <%= is_completed ? '#81c784' : '#e57373' %>;">
             <% else %>
-              <div class="me-3" style="width: 42px; height: 42px; background: #ddd; border-radius: 6px;"></div>
+              <div class="hw-achievement-icon" style="background: #333;"></div>
             <% end %>
 
-            <div class="flex-grow-1">
-              <h6 class="mb-1 <%= 'text-muted' if is_completed %>">
+            <div class="hw-achievement-content">
+              <div class="hw-achievement-name">
                 <%= achievement.name %>
-                <% if is_completed %>
-                  <span class="badge bg-success ms-2">✅</span>
-                <% else %>
-                  <span class="badge bg-danger ms-2">❌</span>
+                <% if achievement.points > 0 %>
+                  <span class="hw-achievement-points"><%= achievement.points %> pts</span>
                 <% end %>
-              </h6>
+              </div>
               <% if achievement.description.present? %>
-                <p class="mb-1 small <%= 'text-muted' if is_completed %>">
+                <div class="hw-achievement-description">
                   <%= achievement.description %>
-                </p>
+                </div>
               <% end %>
               <% if achievement.category.present? %>
-                <small class="text-muted">
+                <div class="hw-achievement-description">
                   📂 <%= achievement.category %>
-                </small>
+                </div>
               <% end %>
             </div>
 
-            <div class="text-end ms-3">
-              <span class="badge bg-warning text-dark"><%= achievement.points %> pts</span>
+            <div class="hw-achievement-status">
+              <% if is_completed %>
+                <span class="hw-achievement-status-completed">✅</span>
+              <% else %>
+                <span class="hw-achievement-status-incomplete">❌</span>
+              <% end %>
             </div>
           </div>
-        </div>
-      <% end %>
+        <% end %>
+      </div>
     </div>
   </div>
 <% else %>
-  <div class="alert alert-success text-center">
-    <h4>🎉 Félicitations !</h4>
-    <p class="mb-0">
-      <% if @selected_category.present? %>
-        Vous avez terminé tous les hauts faits de la catégorie "<%= @selected_category %>" !
-      <% else %>
-        Vous avez terminé tous les hauts faits de cette section !
-      <% end %>
-    </p>
+  <div class="hw-card" style="background: rgba(76, 175, 80, 0.1); border-color: rgba(76, 175, 80, 0.3);">
+    <div class="hw-card-body" style="text-align: center; padding: 48px;">
+      <h3 style="font-family: 'Cinzel', serif; color: #81c784; font-size: 24px; margin-bottom: 12px;">
+        🎉 Félicitations !
+      </h3>
+      <p style="color: #aaa; margin: 0;">
+        <% if @selected_category.present? %>
+          Vous avez terminé tous les hauts faits de la catégorie "<%= @selected_category %>" !
+        <% else %>
+          Vous avez terminé tous les hauts faits de cette section !
+        <% end %>
+      </p>
+    </div>
   </div>
 <% end %>
+
+<!-- Bouton retour -->
+<div class="hw-card-actions" style="margin-top: 24px;">
+  <%= link_to back_url, class: "hw-btn hw-btn-secondary" do %>
+    ← Retour à la vue d'ensemble
+  <% end %>
+</div>

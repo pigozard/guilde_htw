@@ -1,0 +1,328 @@
+/* ============================================
+   FARM COLLABORATIF SYSTÈME HW
+   ============================================ */
+
+/* Grille de consommables */
+.hw-consumables-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.hw-consumable-item {
+  transition: transform 0.2s;
+}
+
+.hw-consumable-button {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 2px solid rgba(255, 215, 0, 0.2);
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.hw-consumable-button:hover {
+  transform: translateY(-4px);
+  border-color: #ffd700;
+  background: rgba(255, 215, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
+}
+
+.hw-consumable-button img {
+  width: 48px;
+  height: 48px;
+  border: 2px solid #d4af37;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.hw-consumable-name {
+  font-size: 12px;
+  color: #fff;
+  text-align: center;
+  line-height: 1.3;
+  font-weight: 500;
+}
+
+/* Catégories */
+.hw-farm-category-title {
+  font-family: 'Cinzel', serif;
+  color: #f0e6d3;
+  font-size: 20px;
+  margin: 32px 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.hw-farm-category-title:first-child {
+  margin-top: 0;
+}
+
+/* Table farm */
+.hw-farm-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.hw-farm-table thead {
+  background: #141416;
+}
+
+.hw-farm-table th {
+  padding: 16px;
+  text-align: left;
+  color: #ffd700;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.hw-farm-table th.text-center {
+  text-align: center;
+}
+
+.hw-farm-table tbody tr {
+  border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+  transition: background 0.2s;
+}
+
+.hw-farm-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.hw-farm-table tbody tr:hover {
+  background: rgba(255, 215, 0, 0.05);
+}
+
+.hw-farm-table td {
+  padding: 16px;
+  color: #fff;
+  vertical-align: middle;
+}
+
+.hw-farm-table td.text-center {
+  text-align: center;
+}
+
+/* Consommable dans la table */
+.hw-farm-consumable-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hw-farm-consumable-icon {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #d4af37;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+/* Badges */
+.hw-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.hw-badge-primary {
+  background: rgba(33, 150, 243, 0.2);
+  color: #64b5f6;
+  border: 1px solid rgba(33, 150, 243, 0.3);
+}
+
+.hw-badge-success {
+  background: rgba(76, 175, 80, 0.2);
+  color: #81c784;
+  border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.hw-badge-warning {
+  background: rgba(255, 152, 0, 0.2);
+  color: #ffb74d;
+  border: 1px solid rgba(255, 152, 0, 0.3);
+}
+
+.hw-badge-danger {
+  background: rgba(244, 67, 54, 0.2);
+  color: #e57373;
+  border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+.hw-badge-lg {
+  font-size: 16px;
+  padding: 8px 16px;
+}
+
+/* Farmers list */
+.hw-farmer-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(76, 175, 80, 0.2);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  color: #81c784;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-right: 8px;
+  margin-bottom: 4px;
+}
+
+.hw-farmer-remove {
+  background: none;
+  border: none;
+  color: #fff;
+  padding: 0;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  margin-left: 4px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.hw-farmer-remove:hover {
+  opacity: 1;
+}
+
+/* Quantity controls */
+.hw-quantity-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 8px;
+}
+
+.hw-quantity-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  color: #ffd700;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  line-height: 1;
+  padding: 0;
+}
+
+.hw-quantity-btn:hover {
+  background: rgba(255, 215, 0, 0.2);
+  border-color: #ffd700;
+}
+
+.hw-quantity-input {
+  width: 50px;
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  color: #fff;
+  text-align: center;
+  padding: 4px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.hw-quantity-input:focus {
+  outline: none;
+  border-color: #ffd700;
+}
+
+.hw-quantity-remove {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  background: rgba(244, 67, 54, 0.1);
+  border: 1px solid rgba(244, 67, 54, 0.3);
+  color: #f44336;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  line-height: 1;
+  padding: 0;
+  margin-left: 8px;
+}
+
+.hw-quantity-remove:hover {
+  background: rgba(244, 67, 54, 0.2);
+  border-color: #f44336;
+}
+
+/* User selections */
+.hw-user-selection {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 16px;
+  margin-bottom: 8px;
+}
+
+.hw-user-badge {
+  display: inline-block;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Messages vides */
+.hw-farm-empty {
+  color: #666;
+  font-style: italic;
+  text-align: center;
+  padding: 32px;
+  font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hw-consumables-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 12px;
+  }
+
+  .hw-consumable-button img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .hw-consumable-name {
+    font-size: 11px;
+  }
+
+  .hw-farm-table {
+    font-size: 13px;
+  }
+
+  .hw-farm-table th,
+  .hw-farm-table td {
+    padding: 12px 8px;
+  }
+}

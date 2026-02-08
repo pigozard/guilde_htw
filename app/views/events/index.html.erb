@@ -1,16 +1,21 @@
-<div class="container mt-4">
-  <h1 class="text-center mb-4 page-title">📅 Calendrier de la Guilde</h1>
+<div class="hw-hero">
+  <h1 class="hw-hero-title">📅 Calendrier de la Guilde</h1>
+  <p class="hw-hero-subtitle">Organisez vos raids et événements</p>
+</div>
 
+<div class="hw-container">
+
+  <!-- Bouton création -->
   <% if user_signed_in? %>
-    <div class="text-center mb-4">
-      <%= link_to new_event_path, class: "btn-gold" do %>
+    <div class="hw-card-actions">
+      <%= link_to new_event_path, class: "hw-btn hw-btn-primary hw-btn-lg" do %>
         ➕ Créer un événement
       <% end %>
     </div>
   <% end %>
 
-  <div class="calendar-container">
-    <!-- Header custom -->
+  <!-- Calendrier -->
+  <div class="hw-card calendar-container">
     <div class="calendar-nav">
       <%= link_to events_path(start_date: @date.prev_month), class: "calendar-nav-btn" do %>
         ‹
@@ -36,10 +41,12 @@
     <% end %>
   </div>
 
+  <!-- Légende -->
   <div class="calendar-legend">
     <span class="legend-item"><span class="legend-color event-raid"></span> Raid</span>
     <span class="legend-item"><span class="legend-color event-mythic-plus"></span> Mythic+</span>
     <span class="legend-item"><span class="legend-color event-pvp"></span> PvP</span>
     <span class="legend-item"><span class="legend-color event-social"></span> Social</span>
   </div>
+
 </div>
