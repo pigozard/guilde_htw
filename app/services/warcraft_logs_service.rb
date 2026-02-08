@@ -95,61 +95,60 @@ class WarcraftLogsService
   end
 
   def guild_death_stats
-  return mock_death_stats unless @access_token
+    return mock_death_stats unless @access_token
 
-  guild_name = "Highway to Wipe"
-  server = "eitrigg"
-  region = "EU"
+    guild_name = "Highway to Wipe"
+    server = "eitrigg"
+    region = "EU"
 
-  # Période : dernier mois
-  start_date = 1.month.ago.to_i * 1000
-  end_date = Time.now.to_i * 1000
+    # Période : dernier mois
+    start_date = 1.month.ago.to_i * 1000
+    end_date = Time.now.to_i * 1000
 
-  # Query pour récupérer les deaths par joueur
-  query = <<~GRAPHQL
-    {
-      reportData {
-        reports(
-          guildName: "#{guild_name}",
-          guildServerSlug: "#{server}",
-          guildServerRegion: "#{region}",
-          startTime: #{start_date},
-          endTime: #{end_date},
-          limit: 20
-        ) {
-          data {
-            code
-            zone {
-              id
-              name
+    # Query pour récupérer les deaths par joueur
+    query = <<~GRAPHQL
+      {
+        reportData {
+          reports(
+            guildName: "#{guild_name}",
+            guildServerSlug: "#{server}",
+            guildServerRegion: "#{region}",
+            startTime: #{start_date},
+            endTime: #{end_date},
+            limit: 20
+          ) {
+            data {
+              code
+              zone {
+                id
+                name
+              }
+              rankings(playerMetric: deaths)
             }
-            rankings(playerMetric: deaths)
           }
         }
       }
-    }
-  GRAPHQL
+    GRAPHQL
 
-  response = self.class.post(
-    '/client',
-    headers: {
-      'Authorization' => "Bearer #{@access_token}",
-      'Content-Type' => 'application/json'
-    },
-    body: { query: query }.to_json
-  )
+    response = self.class.post(
+      '/client',
+      headers: {
+        'Authorization' => "Bearer #{@access_token}",
+        'Content-Type' => 'application/json'
+      },
+      body: { query: query }.to_json
+    )
 
-  if response.success?
-    parse_death_stats(response)
-  else
-    Rails.logger.error "Death Stats Error: #{response.code}"
+    if response.success?
+      parse_death_stats(response)
+    else
+      Rails.logger.error "Death Stats Error: #{response.code}"
+      mock_death_stats
+    end
+  rescue => e
+    Rails.logger.error "Death Stats Exception: #{e.message}"
     mock_death_stats
   end
-  rescue => e
-  Rails.logger.error "Death Stats Exception: #{e.message}"
-  mock_death_stats
-  end
-
 
   private
 
@@ -244,7 +243,6 @@ class WarcraftLogsService
       zone_name = report.dig('zone', 'name')
 
       # Raids TWW: Manaforge Omega (44), Liberation of Undermine (39), Nerub-ar Palace (38)
-      # On va logger tous les IDs pour trouver le bon
       next unless [44, 39, 38].include?(zone_id)
 
       fights = report['fights'] || []
@@ -320,6 +318,48 @@ class WarcraftLogsService
     kills.sort_by { |k| -k[:date].to_i }
   end
 
+  def parse_death_stats(response)
+    data = response.parsed_response
+    reports = data.dig('data', 'reportData', 'reports', 'data') || []
+
+    # Agrège les deaths par joueur
+    player_deaths = Hash.new(0)
+    player_classes = {}
+
+    reports.each do |report|
+      zone_id = report.dig('zone', 'id')
+      next unless [44, 39, 38].include?(zone_id) # Raids TWW
+
+      rankings = report['rankings'] || []
+
+      rankings.each do |ranking|
+        player_name = ranking['name']
+        deaths = ranking['deaths'] || 0
+        player_class = ranking['class']
+
+        player_deaths[player_name] += deaths
+        player_classes[player_name] ||= player_class
+      end
+    end
+
+    # Si aucun death trouvé, retourne un tableau vide
+    return [] if player_deaths.empty?
+
+    # Trie par nombre de deaths décroissant
+    sorted_players = player_deaths.sort_by { |_, deaths| -deaths }.first(10)
+
+    sorted_players.map do |player_name, deaths|
+      {
+        player: player_name,
+        deaths: deaths,
+        class: player_classes[player_name] || 'Unknown'
+      }
+    end
+  rescue => e
+    Rails.logger.error "Parse death stats error: #{e.message}"
+    []
+  end
+
   def mock_death_stats
     [
       { player: "Inboxfear", deaths: 42, class: "Paladin" },
@@ -347,59 +387,4 @@ class WarcraftLogsService
       death_stats: mock_death_stats
     }
   end
-  def parse_death_stats(response)
-  data = response.parsed_response
-  reports = data.dig('data', 'reportData', 'reports', 'data') || []
-
-  # Agrège les deaths par joueur
-  player_deaths = Hash.new(0)
-  player_classes = {}
-
-  reports.each do |report|
-    zone_id = report.dig('zone', 'id')
-    next unless [44, 39, 38].include?(zone_id) # Raids TWW
-
-    rankings = report['rankings'] || []
-
-    rankings.each do |ranking|
-      player_name = ranking['name']
-      deaths = ranking['deaths'] || 0
-      player_class = ranking['class']
-
-      player_deaths[player_name] += deaths
-      player_classes[player_name] ||= player_class
-    end
-  end
-
-  # Si aucun death trouvé, retourne un tableau vide
-  return [] if player_deaths.empty?
-
-  # Trie par nombre de deaths décroissant
-  sorted_players = player_deaths.sort_by { |_, deaths| -deaths }.first(10)
-
-  sorted_players.map do |player_name, deaths|
-    {
-      player: player_name,
-      deaths: deaths,
-      class: player_classes[player_name] || 'Unknown'
-    }
-  end
-  rescue => e
-  Rails.logger.error "Parse death stats error: #{e.message}"
-  []  # Retourne tableau vide au lieu de mock
-  end
-
-  # Trie par nombre de deaths décroissant
-  sorted_players = player_deaths.sort_by { |_, deaths| -deaths }.first(10)
-
-  sorted_players.map do |player_name, deaths|
-    {
-      player: player_name,
-      deaths: deaths,
-      class: player_classes[player_name] || 'Unknown'
-    }
-  end
-  rescue => e
-  Rails.logger.error "Parse death stats error: #{e.message}"
-  []  # Tableau vide si erreur
 end
