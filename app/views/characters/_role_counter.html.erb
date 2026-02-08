@@ -1,7 +1,9 @@
-<div class="col-6 col-md-2 text-center mb-4">
-  <div class="role-card">
-    <%= image_tag("roles/#{role}.png", class: "role-icon-big") %>
+<div class="hw-card hw-role-counter hw-role-counter-<%= role %>">
+  <div class="hw-card-body">
+    <div class="hw-role-counter-icon">
+      <%= image_tag("roles/#{role}.png", alt: label, class: "hw-role-counter-img") %>
+    </div>
+    <div class="hw-role-counter-number"><%= count %></div>
+    <div class="hw-role-counter-label"><%= label %></div>
   </div>
-  <div class="role-count"><%= count %></div>
-  <div class="role-label"><%= label %></div>
 </div>

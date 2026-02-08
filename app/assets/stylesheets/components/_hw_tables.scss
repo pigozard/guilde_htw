@@ -1,0 +1,108 @@
+/* ============================================
+   TABLES SYSTÈME HW - STYLE SOMBRE ÉLÉGANT
+   ============================================ */
+
+.hw-table-wrapper {
+  overflow-x: auto;
+  background: #2d2d2d;
+  border-radius: 8px;
+  border: 1px solid #404040;
+}
+
+.hw-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  margin: 0;
+}
+
+.hw-table thead {
+  background: #3d3d3d;
+}
+
+.hw-table th {
+  padding: 16px 20px;
+  text-align: left;
+  color: #b0b0b0;
+  font-size: 14px;
+  font-weight: 600;
+  border-bottom: 1px solid #404040;
+}
+
+.hw-table tbody tr {
+  border-bottom: 1px solid #404040;
+  transition: background 0.2s ease;
+}
+
+.hw-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.hw-table tbody tr:hover {
+  background: #3a3a3a;
+}
+
+.hw-table td {
+  padding: 18px 20px;
+  color: #ffffff;
+  vertical-align: middle;
+}
+
+.hw-table td:last-child {
+  text-align: right;
+}
+
+/* Colonne classe avec icône */
+.hw-table-class {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hw-table-class-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+/* Icône de rôle */
+.hw-table .role-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+/* Texte Flex */
+.hw-table-flex {
+  color: #aaa;
+  font-weight: 400;
+}
+
+/* Actions */
+.hw-table-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hw-table {
+    font-size: 14px;
+  }
+
+  .hw-table th,
+  .hw-table td {
+    padding: 14px 12px;
+  }
+
+  .hw-table-class-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .hw-table .role-icon {
+    width: 20px;
+    height: 20px;
+  }
+}

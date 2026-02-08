@@ -1,27 +1,32 @@
-<div class="container mt-4">
-  <h1 class="text-center mb-5">Roster Midnight 🌙</h1>
+<div class="hw-hero">
+  <h1 class="hw-hero-title">Roster Midnight 🌙</h1>
+  <p class="hw-hero-subtitle">Composition pour la prochaine extension</p>
+</div>
+
+<div class="hw-container">
 
   <!-- Compteurs de rôles -->
-  <div class="row justify-content-center mb-5">
+  <div class="hw-role-grid">
     <%= render "role_counter", role: "tank", count: @role_counts["tank"] || 0, label: "Tanks" %>
-    <%= render "role_counter", role: "healer", count: @role_counts["healer"] || 0, label: "Healers" %>
-    <%= render "role_counter", role: "dps_cac", count: @role_counts["dps_cac"] || 0, label: "DPS CAC" %>
-    <%= render "role_counter", role: "dps_caster", count: @role_counts["dps_caster"] || 0, label: "Casters" %>
-    <%= render "role_counter", role: "flex", count: @flex_count, label: "Flex" %>
+    <%= render "role_counter", role: "healer", count: @role_counts["healer"] || 0, label: "Healers"%>
+    <%= render "role_counter", role: "dps_cac", count: @role_counts["dps_cac"] || 0, label: "DPS CAC"%>
+    <%= render "role_counter", role: "dps_caster", count: @role_counts["dps_caster"] || 0, label: "Casters"%>
+    <%= render "role_counter", role: "flex", count: @flex_count, label: "Flex", icon: "✨" %>
   </div>
 
-  <!-- Bouton d'ajout -->
-  <div class="text-center mb-5">
+  <!-- Bouton CTA -->
+  <div class="hw-card-actions">
     <% if user_signed_in? %>
-      <%= link_to "Ajouter mon perso", new_character_path, class: "btn btn-roster btn-lg" %>
+      <%= link_to "Ajouter mon perso", new_character_path, class: "hw-btn hw-btn-primary hw-btn-lg" %>
     <% else %>
-      <%= link_to "Connecte-toi pour ajouter ton perso", new_user_session_path, class: "btn btn-secondary btn-lg" %>
+      <%= link_to "Connecte-toi pour ajouter ton perso", new_user_session_path, class: "hw-btn hw-btn-secondary hw-btn-lg" %>
     <% end %>
   </div>
 
-  <!-- Liste des persos -->
-  <% if @characters.any? %>
-    <table class="table table-dark">
+ <!-- Liste des persos -->
+<% if @characters.any? %>
+  <div class="hw-table-wrapper">
+    <table class="hw-table">
       <thead>
         <tr>
           <th>Pseudo</th>
@@ -35,7 +40,8 @@
         <%= render @characters %>
       </tbody>
     </table>
-  <% else %>
-    <p class="text-center empty-message">Aucun perso inscrit pour le moment.</p>
-  <% end %>
+  </div>
+<% else %>
+  <p class="hw-empty">Aucun perso inscrit pour le moment</p>
+<% end %>
 </div>
