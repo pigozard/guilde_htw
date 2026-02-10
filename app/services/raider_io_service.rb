@@ -9,7 +9,6 @@ class RaiderIoService
   end
 
   def top_mythic_plus_players
-    # Récupérer les membres de la guilde
     response = self.class.get(
       '/guilds/profile',
       query: {
@@ -23,12 +22,16 @@ class RaiderIoService
     return mock_data unless response.success?
 
     members = response.dig('members') || []
-
     Rails.logger.info "✅ Raider.io: #{members.size} membres trouvés"
 
-    # Pour chaque membre, récupérer son score M+
-    player_scores = members.map do |member|
-      character_name = member['character']['name']
+    # Dédupliquer les membres par nom AVANT les appels API
+    unique_members = members.uniq { |m| m.dig('character', 'name') }
+    Rails.logger.info "✅ Après déduplication: #{unique_members.size} membres uniques"
+
+    # Pour chaque membre unique, récupérer son score M+
+    player_scores = unique_members.map do |member|
+      character_name = member.dig('character', 'name')
+      next unless character_name
 
       char_response = self.class.get(
         '/characters/profile',
@@ -54,7 +57,7 @@ class RaiderIoService
     # Trier par score décroissant et garder le top 5
     top_players = player_scores.sort_by { |p| -p[:score] }.first(5)
 
-    Rails.logger.info "✅ Raider.io: Top 5 calculé (meilleur score: #{top_players.first[:score]})" if top_players.any?
+    Rails.logger.info "✅ Raider.io: Top 5 calculé (#{top_players.size} joueurs)" if top_players.any?
 
     top_players
 
