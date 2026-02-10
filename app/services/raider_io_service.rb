@@ -4,16 +4,17 @@ class RaiderIoService
 
   def initialize
     @guild_name = "Highway to Wipe"
-    @realm = "eitrigg"
+    @guild_realm = "eitrigg"
     @region = "eu"
   end
 
   def top_mythic_plus_players
+    # Récupérer les membres avec le realm de la GUILDE
     response = self.class.get(
       '/guilds/profile',
       query: {
         region: @region,
-        realm: @realm,
+        realm: @guild_realm,
         name: @guild_name,
         fields: 'members'
       }
@@ -31,13 +32,18 @@ class RaiderIoService
     # Pour chaque membre unique, récupérer son score M+
     player_scores = unique_members.map do |member|
       character_name = member.dig('character', 'name')
-      next unless character_name
+      character_realm = member.dig('character', 'realm')  # ← LE REALM DU PERSO
 
+      next unless character_name && character_realm
+
+      Rails.logger.info "🔍 Recherche: #{character_name} @ #{character_realm}"
+
+      # Utiliser LE REALM DU PERSONNAGE, pas celui de la guilde
       char_response = self.class.get(
         '/characters/profile',
         query: {
           region: @region,
-          realm: @realm,
+          realm: character_realm,  # ← ICI !
           name: character_name,
           fields: 'mythic_plus_scores_by_season:current'
         }
@@ -45,19 +51,28 @@ class RaiderIoService
 
       if char_response.success?
         score = char_response.dig('mythic_plus_scores_by_season', 0, 'scores', 'all') || 0
+
+        Rails.logger.info "📊 #{character_name}-#{character_realm}: #{score}"
+
         {
           name: character_name,
           score: score.round,
           class: char_response['class'],
           spec: char_response['active_spec_name']
         }
+      else
+        Rails.logger.warn "⚠️  Échec pour #{character_name}-#{character_realm}"
+        nil
       end
     end.compact
 
     # Trier par score décroissant et garder le top 5
     top_players = player_scores.sort_by { |p| -p[:score] }.first(5)
 
-    Rails.logger.info "✅ Raider.io: Top 5 calculé (#{top_players.size} joueurs)" if top_players.any?
+    Rails.logger.info "✅ Raider.io: Top 5 calculé"
+    top_players.each_with_index do |player, i|
+      Rails.logger.info "  #{i+1}. #{player[:name]} - #{player[:score]}"
+    end
 
     top_players
 
