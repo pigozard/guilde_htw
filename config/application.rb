@@ -14,7 +14,7 @@ module GuildeHtw
       generate.helper false
       generate.test_framework :test_unit, fixture: false
     end
-    config.time_zone = "Paris"
+    config.time_zone = "Europe/Paris"
     config.i18n.default_locale = :fr
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.1

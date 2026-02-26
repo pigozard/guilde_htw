@@ -20,16 +20,17 @@ class EventsController < ApplicationController
 
   def new
     @event = Event.new
-    @event.start_time = params[:start_time] || Time.current + 1.hour
   end
 
   def create
     @event = current_user.created_events.build(event_params)
-    set_event_start_time
+    parse_start_time
 
     if @event.save
-      redirect_to @event, notice: "Événement créé !"
+      redirect_to @event, notice: "Créé ! start_time=#{@event.start_time} | raw=#{params[:event][:start_date]} #{params[:event][:start_hour]}"
     else
+      @start_date = params[:event][:start_date]
+      @start_hour = params[:event][:start_hour]
       render :new, status: :unprocessable_entity
     end
   end
@@ -38,11 +39,13 @@ class EventsController < ApplicationController
   end
 
   def update
-    set_event_start_time
+    parse_start_time
 
     if @event.update(event_params)
       redirect_to @event, notice: "Événement mis à jour."
     else
+      @start_date = params[:event][:start_date]
+      @start_hour = params[:event][:start_hour]
       render :edit, status: :unprocessable_entity
     end
   end
@@ -64,12 +67,12 @@ class EventsController < ApplicationController
     end
   end
 
-  def set_event_start_time
+  def parse_start_time
     return unless params[:event][:start_date].present? && params[:event][:start_hour].present?
-    @event.start_time = DateTime.parse("#{params[:event][:start_date]} #{params[:event][:start_hour]}")
+    @event.start_time = Time.zone.parse("#{params[:event][:start_date]} #{params[:event][:start_hour]}")
   end
 
   def event_params
-    params.require(:event).permit(:title, :description, :start_time, :end_time, :event_type, :max_participants)
+    params.require(:event).permit(:title, :description, :end_time, :event_type, :max_participants)
   end
 end

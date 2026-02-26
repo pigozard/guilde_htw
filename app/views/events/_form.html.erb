@@ -28,8 +28,11 @@
 <div class="form-group mb-3">
   <%= f.label :start_time, "Date et heure", class: "form-label" %>
   <div class="d-flex gap-2">
-    <%= f.date_field :start_date, class: "form-control", value: @event.start_time&.to_date || Date.today %>
-    <%= f.time_field :start_hour, class: "form-control", value: @event.start_time&.strftime("%H:%M") || "21:00", style: "max-width: 120px;" %>
+    <%= f.date_field :start_date, class: "form-control",
+        value: @start_date || @event.start_time&.in_time_zone("Europe/Paris")&.to_date || Date.today %>
+    <%= f.time_field :start_hour, class: "form-control",
+        value: @start_hour || @event.start_time&.in_time_zone("Europe/Paris")&.strftime("%H:%M") || "21:00",
+        style: "max-width: 120px;" %>
   </div>
 </div>
   <div class="form-group mb-3">
