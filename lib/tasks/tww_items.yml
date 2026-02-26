@@ -1,443 +1,298 @@
 # =============================================================================
-# The War Within - Consommables & Ingrédients
-# IDs Rank 3 uniquement - Version corrigée sans doublons
-# Pour la guilde Highway to Wipe
+# Midnight (12.0) - Consommables Raid & Farm Collaboratif
+# Guilde Highway to Wipe - Eitrigg Alliance
+#
+# NOTES :
+# - IDs extraits des URLs Wowhead via wow-professions.com et icy-veins.com
+# - [OK] = ID confirmé dans URL Wowhead  |  [?] = déduit/séquentiel
+# - L'API Blizzard (locale=fr_FR) retournera les noms FR automatiquement
+# - Midnight : 2 rangs qualité seulement (Silver / Gold)
+#
+# IMPORTANT - Corrections IDs herbes :
+#   Les IDs herbes dans le YAML TWW précédent (236775, 236777, 236779)
+#   étaient des approximations. Les URLs wow-professions.com pointent vers
+#   236774 (Azeroot), 236776 (Argentleaf), 236778 (Mana Lily).
+#   Vérifie via l'API Blizzard lequel est correct pour ton serveur.
+#
+# Pour importer : adapter le nom du fichier dans ta rake task
+# puis : rake blizzard:import_consumables
 # =============================================================================
 
+# =============================================================================
+# INGREDIENTS
+# =============================================================================
 ingredients:
-  # === HERBES ===
-  210796:
-    name: "Mycobloom"
+
+  # --- HERBES ---
+  236761:
+    name: "Tranquility Bloom"          # [OK] wow-professions /item=236761
     category: "herb"
-  210799:
-    name: "Luredrop"
+  236770:
+    name: "Sanguithorn"                # [OK] wow-professions /item=236770
     category: "herb"
-  210802:
-    name: "Orbinid"
+  236774:
+    name: "Azeroot"                    # [OK] wow-professions /item=236774
     category: "herb"
-  210805:
-    name: "Fleur bénie"
+  236776:
+    name: "Argentleaf"                 # [OK] wow-professions /item=236776
     category: "herb"
-  210808:
-    name: "Lance d'Arathor"
+  236778:
+    name: "Mana Lily"                  # [OK] wow-professions /item=236778
     category: "herb"
-  213197:
-    name: "Lotus nul"
+  236780:
+    name: "Nocturnal Lotus"            # [?] herbe rare
     category: "herb"
 
-  # === REACTIFS ALCHIMIE ===
-  213611:
-    name: "Echantillon frétillant"
-    category: "reagent"
-  213612:
-    name: "Spores viridescentes"
-    category: "reagent"
-  213613:
-    name: "Résidu de ligne tellurique"
-    category: "reagent"
-  211806:
-    name: "Fiole dorée"
-    category: "reagent"
+  # --- MOTES ---
+  236949:
+    name: "Mote of Light"              # [OK] wow-professions /item=236949
+    category: "mote"
+  236950:
+    name: "Mote of Primal Energy"      # [OK] wow-professions /item=236950
+    category: "mote"
+  236951:
+    name: "Mote of Wild Magic"         # [OK] wow-professions /item=236951
+    category: "mote"
 
-  # === INGREDIENTS CUISINE ===
-  222737:
-    name: "Mycobloom haché"
-    category: "prepared"
-  222738:
-    name: "Steak en portions"
-    category: "prepared"
-  222739:
-    name: "Oeufs préparés"
-    category: "prepared"
-  222741:
-    name: "Filet frais"
-    category: "prepared"
-  222695:
-    name: "Herbes tressées"
-    category: "prepared"
-  222696:
-    name: "Poivrons croquants"
+  # --- REAGENTS ALCHEMY ---
+  240991:
+    name: "Sunglass Vial"              # [OK] wow-professions /item=240991
     category: "reagent"
-  222700:
-    name: "Epices granulées"
-    category: "reagent"
+    # Vendor: Melaris à Silvermoon City
 
-  # === POISSONS ===
-  220149:
-    name: "Aiguillat sanguinaire"
+  # --- VIANDES / PROTEINES (Cooking) ---
+  242639:
+    name: "Practically Pork"           # [OK] wow-professions /item=242639
+    category: "meat"
+  242640:
+    name: "Plant Protein"              # [OK] wow-professions /item=242640
+    category: "meat"
+
+  # --- POISSONS (Cooking) ---
+  253403:
+    name: "Thalassian Filet"           # [OK] wow-professions /item=253403
     category: "fish"
-  220143:
-    name: "Requin des bas-fonds kaheti"
+  238383:
+    name: "Eversong Trout"             # [OK] wow-professions /item=238383
     category: "fish"
-  220145:
-    name: "Esturgeon cristallin"
+  238372:
+    name: "Restored Songfish"          # [OK] wow-professions /item=238372
     category: "fish"
-  220141:
-    name: "Poisson spéculaire"
+  238366:
+    name: "Lynxfish"                   # [OK] wow-professions /item=238366
+    category: "fish"
+  238371:
+    name: "Arcane Wyrmfish"            # [OK] wow-professions /item=238371
     category: "fish"
 
+  # --- AUTRES ---
+  251285:
+    name: "Petrified Root"             # [OK] wow-professions /item=251285
+    category: "reagent"
+    # Obligatoire pour TOUS les festins
+
+# =============================================================================
+# CONSUMABLES
+# =============================================================================
 consumables:
-  # === FLACONS (Rank 3) ===
-  212282:
-    name: "Flacon de maîtrise trempée"
+
+  # === FLASKS ===
+  241321:
+    name: "Flask of Thalassian Resistance"  # [OK] +Versatilité
     category: "flask"
-    expansion: "The War Within"
-  212273:
-    name: "Flacon d'agression trempée"
+    expansion: "Midnight"
+  241322:
+    name: "Flask of the Magisters"          # [OK] +Maîtrise (BIS healers/casters)
     category: "flask"
-    expansion: "The War Within"
-  212276:
-    name: "Flacon de célérité trempée"
+    expansion: "Midnight"
+  241324:
+    name: "Flask of the Shattered Sun"      # [?] +Critique
     category: "flask"
-    expansion: "The War Within"
-  212279:
-    name: "Flacon de polyvalence trempée"
+    expansion: "Midnight"
+  241325:
+    name: "Flask of the Blood Knights"      # [OK] +Hâte (BIS DPS physique)
     category: "flask"
-    expansion: "The War Within"
-  212285:
-    name: "Flacon de chaos alchimique"
-    category: "flask"
-    expansion: "The War Within"
-  212303:
-    name: "Flacon des grâces salvatrices"
-    category: "flask"
-    expansion: "The War Within"
+    expansion: "Midnight"
 
-  # === POTIONS DE COMBAT (Rank 3) ===
-  212267:
-    name: "Potion trempée"
+  # === POTIONS COMBAT ===
+  241309:
+    name: "Light's Potential"               # [OK] +Stat principale
     category: "potion"
-    expansion: "The War Within"
-  212261:
-    name: "Potion de concentration inébranlable"
+    expansion: "Midnight"
+  241289:
+    name: "Potion of Recklessness"          # [OK] +Best second / -Worst second
     category: "potion"
-    expansion: "The War Within"
-  212264:
-    name: "Potion de ligne de front"
+    expansion: "Midnight"
+  241293:
+    name: "Draught of Rampant Abandon"      # [OK] +Stat prim + void zones
     category: "potion"
-    expansion: "The War Within"
-  212258:
-    name: "Fiole grotesque"
+    expansion: "Midnight"
+  241296:
+    name: "Potion of Zealotry"              # [OK] Proc dégâts Holy
     category: "potion"
-    expansion: "The War Within"
-
-  # === POTIONS UTILITAIRES (Rank 3) ===
-  212241:
-    name: "Potion de mana algari"
-    category: "potion"
-    expansion: "The War Within"
-  212245:
-    name: "Délice du troglodyte"
-    category: "potion"
-    expansion: "The War Within"
-  212249:
-    name: "Sérum d'âme somnolente"
-    category: "potion"
-    expansion: "The War Within"
-
-  # === PHIALES (Rank 3) ===
-  212291:
-    name: "Phiale des saisons généreuses"
-    category: "phial"
-    expansion: "The War Within"
-  212294:
-    name: "Phiale d'ingéniosité concentrée"
-    category: "phial"
-    expansion: "The War Within"
-  212297:
-    name: "Phiale d'ambidextrie améliorée"
-    category: "phial"
-    expansion: "The War Within"
-  212300:
-    name: "Phiale de vision véritable"
-    category: "phial"
-    expansion: "The War Within"
-
-  # === CHAUDRONS ===
-  212721:
-    name: "Chaudron de flacons algari"
-    category: "cauldron"
-    expansion: "The War Within"
-  212753:
-    name: "Chaudron de potions algari"
-    category: "cauldron"
-    expansion: "The War Within"
-
-  # === NOURRITURE ===
-  222734:
-    name: "Festin du jour divin"
-    category: "food"
-    expansion: "The War Within"
-  222736:
-    name: "Festin du bal masqué de minuit"
-    category: "food"
-    expansion: "The War Within"
-  222722:
-    name: "Le spécial sushi"
-    category: "food"
-    expansion: "The War Within"
-  222719:
-    name: "Planche du bouffon"
-    category: "food"
-    expansion: "The War Within"
-  222716:
-    name: "Générosité de Beledar"
-    category: "food"
-    expansion: "The War Within"
-  222710:
-    name: "Poivrons farcis des cavernes"
-    category: "food"
-    expansion: "The War Within"
-  222707:
-    name: "Chili de Hallowfall"
-    category: "food"
-    expansion: "The War Within"
-
-recipes:
-  # === FLACONS ===
-  212282:
-    - ingredient_id: 213197
-      quantity: 1
-    - ingredient_id: 213613
-      quantity: 2
-    - ingredient_id: 210805
-      quantity: 12
-    - ingredient_id: 210808
-      quantity: 12
-    - ingredient_id: 211806
-      quantity: 2
-  212273:
-    - ingredient_id: 213197
-      quantity: 1
-    - ingredient_id: 213612
-      quantity: 2
-    - ingredient_id: 210799
-      quantity: 12
-    - ingredient_id: 210802
-      quantity: 12
-    - ingredient_id: 211806
-      quantity: 2
-  212276:
-    - ingredient_id: 213197
-      quantity: 1
-    - ingredient_id: 213613
-      quantity: 2
-    - ingredient_id: 210799
-      quantity: 12
-    - ingredient_id: 210805
-      quantity: 12
-    - ingredient_id: 211806
-      quantity: 2
-  212279:
-    - ingredient_id: 213197
-      quantity: 1
-    - ingredient_id: 213612
-      quantity: 2
-    - ingredient_id: 210802
-      quantity: 12
-    - ingredient_id: 210808
-      quantity: 12
-    - ingredient_id: 211806
-      quantity: 2
-  212285:
-    - ingredient_id: 213197
-      quantity: 1
-    - ingredient_id: 213613
-      quantity: 2
-    - ingredient_id: 213612
-      quantity: 2
-    - ingredient_id: 210796
-      quantity: 8
-    - ingredient_id: 211806
-      quantity: 2
-  212303:
-    - ingredient_id: 213197
-      quantity: 1
-    - ingredient_id: 213613
-      quantity: 2
-    - ingredient_id: 210796
-      quantity: 12
-    - ingredient_id: 210805
-      quantity: 12
-    - ingredient_id: 211806
-      quantity: 2
-
-  # === POTIONS DE COMBAT ===
-  212267:
-    - ingredient_id: 213611
-      quantity: 1
-    - ingredient_id: 210796
-      quantity: 12
-    - ingredient_id: 210799
-      quantity: 4
-    - ingredient_id: 210808
-      quantity: 4
-    - ingredient_id: 211806
-      quantity: 5
-  212261:
-    - ingredient_id: 213611
-      quantity: 1
-    - ingredient_id: 210796
-      quantity: 12
-    - ingredient_id: 210802
-      quantity: 4
-    - ingredient_id: 210805
-      quantity: 4
-    - ingredient_id: 211806
-      quantity: 5
-  212264:
-    - ingredient_id: 213611
-      quantity: 1
-    - ingredient_id: 210796
-      quantity: 8
-    - ingredient_id: 210805
-      quantity: 6
-    - ingredient_id: 210808
-      quantity: 6
-    - ingredient_id: 211806
-      quantity: 5
-  212258:
-    - ingredient_id: 213611
-      quantity: 1
-    - ingredient_id: 210796
-      quantity: 8
-    - ingredient_id: 210799
-      quantity: 6
-    - ingredient_id: 210808
-      quantity: 6
-    - ingredient_id: 211806
-      quantity: 5
+    expansion: "Midnight"
 
   # === POTIONS UTILITAIRES ===
-  212241:
-    - ingredient_id: 210796
-      quantity: 4
-    - ingredient_id: 210805
-      quantity: 4
-    - ingredient_id: 211806
-      quantity: 5
-  212245:
-    - ingredient_id: 210796
-      quantity: 4
-    - ingredient_id: 210799
-      quantity: 4
-    - ingredient_id: 210802
-      quantity: 4
-    - ingredient_id: 211806
-      quantity: 5
-  212249:
-    - ingredient_id: 210796
-      quantity: 4
-    - ingredient_id: 210805
-      quantity: 5
-    - ingredient_id: 210808
-      quantity: 5
-    - ingredient_id: 211806
-      quantity: 5
+  241305:
+    name: "Silvermoon Health Potion"         # [OK] /item=241305
+    category: "potion"
+    expansion: "Midnight"
 
-  # === PHIALES ===
-  212291:
-    - ingredient_id: 213197
-      quantity: 1
-    - ingredient_id: 210799
-      quantity: 8
-    - ingredient_id: 210802
-      quantity: 8
-    - ingredient_id: 210805
-      quantity: 8
-    - ingredient_id: 210808
-      quantity: 8
-    - ingredient_id: 211806
-      quantity: 2
-  212294:
-    - ingredient_id: 213197
-      quantity: 1
-    - ingredient_id: 210799
-      quantity: 10
-    - ingredient_id: 210802
-      quantity: 10
-    - ingredient_id: 210805
-      quantity: 10
-    - ingredient_id: 211806
-      quantity: 2
-  212297:
-    - ingredient_id: 213197
-      quantity: 1
-    - ingredient_id: 210796
-      quantity: 10
-    - ingredient_id: 210799
-      quantity: 10
-    - ingredient_id: 210802
-      quantity: 10
-    - ingredient_id: 211806
-      quantity: 2
-  212300:
-    - ingredient_id: 213197
-      quantity: 1
-    - ingredient_id: 210796
-      quantity: 10
-    - ingredient_id: 210799
-      quantity: 10
-    - ingredient_id: 210805
-      quantity: 10
-    - ingredient_id: 211806
-      quantity: 2
+  # === CHAUDRON ===
+  241284:
+    name: "Voidlight Potion Cauldron"        # [OK] /item=241284
+    category: "cauldron"
+    expansion: "Midnight"
 
-  # === NOURRITURE ===
-  222734:
-    - ingredient_id: 222741
-      quantity: 200
-    - ingredient_id: 222737
-      quantity: 100
-    - ingredient_id: 220149
-      quantity: 5
-    - ingredient_id: 222695
-      quantity: 50
-  222736:
-    - ingredient_id: 222738
-      quantity: 200
-    - ingredient_id: 222739
-      quantity: 100
-    - ingredient_id: 220141
-      quantity: 5
-    - ingredient_id: 222695
-      quantity: 50
-  222722:
-    - ingredient_id: 222741
-      quantity: 4
-    - ingredient_id: 220143
-      quantity: 2
-    - ingredient_id: 220145
-      quantity: 2
-    - ingredient_id: 220149
+  # === WEAPON OIL ===
+  243734:
+    name: "Thalassian Phoenix Oil"           # [OK] /item=243734 - BIS toutes classes
+    category: "rune"
+    expansion: "Midnight"
+
+  # === FESTINS (groupe, posés au sol) ===
+  255845:
+    name: "Silvermoon Parade"                # [OK] +50 Stat prim +98 Stam
+    category: "food"
+    expansion: "Midnight"
+  255846:
+    name: "Harandar Celebration"             # [OK] +50 Stat prim +98 Stam
+    category: "food"
+    expansion: "Midnight"
+  242272:
+    name: "Quel'dorei Medley"                # [OK] +65 Best second +98 Stam
+    category: "food"
+    expansion: "Midnight"
+  242273:
+    name: "Blooming Feast"                   # [OK] +65 Best second +98 Stam
+    category: "food"
+    expansion: "Midnight"
+
+  # === FOOD PERSO ===
+  242275:
+    name: "Royal Roast"                      # [OK] /item=242275 +65 Stat prim
+    category: "food"
+    expansion: "Midnight"
+  255847:
+    name: "Impossibly Royal Roast"           # [OK] /item=255847 +65 Stat prim
+    category: "food"
+    expansion: "Midnight"
+  242274:
+    name: "Champion's Bento"                 # [OK] /item=242274 +65 Best second
+    category: "food"
+    expansion: "Midnight"
+  255848:
+    name: "Flora Frenzy"                     # [OK] /item=255848 +65 Best second
+    category: "food"
+    expansion: "Midnight"
+
+# =============================================================================
+# RECIPES
+# =============================================================================
+recipes:
+
+  # === ALCHEMY - Potions ===
+
+  241309:  # Light's Potential (+Stat Prim)
+    - ingredient_id: 236949   # Mote of Light
       quantity: 1
-  222719:
-    - ingredient_id: 222738
-      quantity: 4
-    - ingredient_id: 222739
-      quantity: 2
-    - ingredient_id: 222695
-      quantity: 2
-  222716:
-    - ingredient_id: 222738
+    - ingredient_id: 236761   # Tranquility Bloom
+      quantity: 8
+    - ingredient_id: 236774   # Azeroot
       quantity: 3
-    - ingredient_id: 222737
+    - ingredient_id: 236776   # Argentleaf
+      quantity: 3
+    - ingredient_id: 240991   # Sunglass Vial
+      quantity: 5
+
+  241305:  # Silvermoon Health Potion
+    - ingredient_id: 236761   # Tranquility Bloom
+      quantity: 6
+    - ingredient_id: 240991   # Sunglass Vial
+      quantity: 5
+
+  241289:  # Potion of Recklessness
+    - ingredient_id: 236950   # Mote of Primal Energy
       quantity: 2
-    - ingredient_id: 222695
-      quantity: 2
-  222710:
-    - ingredient_id: 222738
-      quantity: 2
-    - ingredient_id: 222737
-      quantity: 2
-    - ingredient_id: 222696
-      quantity: 2
-  222707:
-    - ingredient_id: 222738
-      quantity: 2
-    - ingredient_id: 222737
+    # Source: mmo-champion datamine - quantités partielles, à confirmer in-game
+
+  241296:  # Potion of Zealotry
+    - ingredient_id: 236949   # Mote of Light
       quantity: 1
-    - ingredient_id: 222696
-      quantity: 2
-    - ingredient_id: 222700
+    # Source: mmo-champion datamine - quantités partielles, à confirmer in-game
+
+  # Draught of Rampant Abandon (241293) - reagents à compléter in-game
+  # Lightfused Mana Potion :
+  #   8x Tranquility Bloom (236761) + 3x Mana Lily (236778) + 5x Sunglass Vial (240991)
+  # Potion of Devoured Dreams :
+  #   2x Mote of Wild Magic (236951) - source: mmo-champion datamine
+
+  # === ALCHEMY - Flasks ===
+  # Reagents flasks non disponibles dans les guides web.
+  # Pattern probable : Herbes + Motes + Sunglass Vial (à compléter in-game)
+
+  # === COOKING - Festins ===
+
+  255845:  # Silvermoon Parade (+Stat Prim, poissons)
+    - ingredient_id: 238366   # Lynxfish
+      quantity: 4
+    - ingredient_id: 238371   # Arcane Wyrmfish
+      quantity: 4
+    - ingredient_id: 242639   # Practically Pork
+      quantity: 10
+    - ingredient_id: 251285   # Petrified Root
       quantity: 1
+
+  255846:  # Harandar Celebration (+Stat Prim, herbes)
+    - ingredient_id: 236774   # Azeroot
+      quantity: 3
+    - ingredient_id: 242640   # Plant Protein
+      quantity: 10
+    - ingredient_id: 236951   # Mote of Wild Magic
+      quantity: 3
+    - ingredient_id: 251285   # Petrified Root
+      quantity: 1
+
+  242273:  # Blooming Feast (+Stat Second, herbes)
+    - ingredient_id: 236778   # Mana Lily
+      quantity: 5
+    - ingredient_id: 236774   # Azeroot
+      quantity: 5
+    - ingredient_id: 236776   # Argentleaf
+      quantity: 5
+    - ingredient_id: 242640   # Plant Protein
+      quantity: 10
+    - ingredient_id: 251285   # Petrified Root
+      quantity: 1
+
+  242272:  # Quel'dorei Medley (+Stat Second, poissons)
+    - ingredient_id: 238383   # Eversong Trout
+      quantity: 6
+    - ingredient_id: 238372   # Restored Songfish
+      quantity: 4
+    - ingredient_id: 253403   # Thalassian Filet
+      quantity: 10
+    - ingredient_id: 251285   # Petrified Root
+      quantity: 1
+
+  # === COOKING - Food Perso ===
+
+  242275:  # Royal Roast (+Stat Prim)
+    - ingredient_id: 242639   # Practically Pork
+      quantity: 15
+
+  255847:  # Impossibly Royal Roast (+Stat Prim)
+    - ingredient_id: 242640   # Plant Protein
+      quantity: 15
+
+  242274:  # Champion's Bento (+Stat Second)
+    - ingredient_id: 242639   # Practically Pork
+      quantity: 5
+    - ingredient_id: 242640   # Plant Protein
+      quantity: 5
+    - ingredient_id: 253403   # Thalassian Filet
+      quantity: 5
+
+  255848:  # Flora Frenzy (+Stat Second)
+    - ingredient_id: 242640   # Plant Protein
+      quantity: 12
