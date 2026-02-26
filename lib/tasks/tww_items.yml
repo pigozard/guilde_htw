@@ -2,20 +2,13 @@
 # Midnight (12.0) - Consommables Raid & Farm Collaboratif
 # Guilde Highway to Wipe - Eitrigg Alliance
 #
-# NOTES :
-# - IDs extraits des URLs Wowhead via wow-professions.com et icy-veins.com
-# - [OK] = ID confirmé dans URL Wowhead  |  [?] = déduit/séquentiel
-# - L'API Blizzard (locale=fr_FR) retournera les noms FR automatiquement
-# - Midnight : 2 rangs qualité seulement (Silver / Gold)
+# COMPLET : Recettes alchemy depuis le profession book FR (copié par Pierre)
+#           Recettes cooking depuis wow-professions.com (confirmées)
+#           IDs depuis URLs Wowhead
 #
-# IMPORTANT - Corrections IDs herbes :
-#   Les IDs herbes dans le YAML TWW précédent (236775, 236777, 236779)
-#   étaient des approximations. Les URLs wow-professions.com pointent vers
-#   236774 (Azeroot), 236776 (Argentleaf), 236778 (Mana Lily).
-#   Vérifie via l'API Blizzard lequel est correct pour ton serveur.
-#
-# Pour importer : adapter le nom du fichier dans ta rake task
-# puis : rake blizzard:import_consumables
+# Qualité : rang Gold uniquement (pas de doublons Silver)
+# Midnight = 2 rangs (Silver / Gold)
+# L'API Blizzard (locale=fr_FR) retournera les noms FR
 # =============================================================================
 
 # =============================================================================
@@ -25,213 +18,341 @@ ingredients:
 
   # --- HERBES ---
   236761:
-    name: "Tranquility Bloom"          # [OK] wow-professions /item=236761
+    name: "Tranquility Bloom"          # FR: Tranquillette [OK]
     category: "herb"
   236770:
-    name: "Sanguithorn"                # [OK] wow-professions /item=236770
+    name: "Sanguithorn"                # FR: Sanguironce [OK]
     category: "herb"
   236774:
-    name: "Azeroot"                    # [OK] wow-professions /item=236774
+    name: "Azeroot"                    # FR: Azeracine [OK]
     category: "herb"
   236776:
-    name: "Argentleaf"                 # [OK] wow-professions /item=236776
+    name: "Argentleaf"                 # FR: Feuille-d'argent [OK]
     category: "herb"
   236778:
-    name: "Mana Lily"                  # [OK] wow-professions /item=236778
+    name: "Mana Lily"                  # FR: Lys de mana [OK]
     category: "herb"
   236780:
-    name: "Nocturnal Lotus"            # [?] herbe rare
+    name: "Nocturnal Lotus"            # FR: Lotus nocturne [?] herbe rare
     category: "herb"
 
   # --- MOTES ---
   236949:
-    name: "Mote of Light"              # [OK] wow-professions /item=236949
+    name: "Mote of Light"              # FR: Particule de Lumière [OK]
     category: "mote"
   236950:
-    name: "Mote of Primal Energy"      # [OK] wow-professions /item=236950
+    name: "Mote of Primal Energy"      # FR: Particule d'énergie primordiale [OK]
     category: "mote"
   236951:
-    name: "Mote of Wild Magic"         # [OK] wow-professions /item=236951
+    name: "Mote of Wild Magic"         # FR: Particule de magie sauvage [OK]
     category: "mote"
+  # Mote of Pure Void                  # FR: Particule de Vide pur [?] ID à confirmer
+  #   category: "mote"
 
   # --- REAGENTS ALCHEMY ---
   240991:
-    name: "Sunglass Vial"              # [OK] wow-professions /item=240991
+    name: "Sunglass Vial"              # FR: Fiole de verre solaire [OK]
     category: "reagent"
-    # Vendor: Melaris à Silvermoon City
+  # Stabilized Derivate                # FR: Dérivé stabilisé (crafté via Recycle)
+  #   category: "reagent"
+  241282:
+    name: "Wondrous Synergist"         # FR: Synergiste extraordinaire [OK] /item=241282
+    category: "reagent"
+  251285:
+    name: "Petrified Root"             # FR: Racine pétrifiée [OK]
+    category: "reagent"
 
   # --- VIANDES / PROTEINES (Cooking) ---
   242639:
-    name: "Practically Pork"           # [OK] wow-professions /item=242639
+    name: "Practically Pork"           # FR: [à confirmer in-game] [OK]
     category: "meat"
   242640:
-    name: "Plant Protein"              # [OK] wow-professions /item=242640
+    name: "Plant Protein"              # FR: [à confirmer in-game] [OK]
     category: "meat"
 
   # --- POISSONS (Cooking) ---
   253403:
-    name: "Thalassian Filet"           # [OK] wow-professions /item=253403
+    name: "Thalassian Filet"           # [OK]
     category: "fish"
   238383:
-    name: "Eversong Trout"             # [OK] wow-professions /item=238383
+    name: "Eversong Trout"             # [OK]
     category: "fish"
   238372:
-    name: "Restored Songfish"          # [OK] wow-professions /item=238372
+    name: "Restored Songfish"          # [OK]
     category: "fish"
   238366:
-    name: "Lynxfish"                   # [OK] wow-professions /item=238366
+    name: "Lynxfish"                   # [OK]
     category: "fish"
   238371:
-    name: "Arcane Wyrmfish"            # [OK] wow-professions /item=238371
+    name: "Arcane Wyrmfish"            # [OK]
     category: "fish"
-
-  # --- AUTRES ---
-  251285:
-    name: "Petrified Root"             # [OK] wow-professions /item=251285
-    category: "reagent"
-    # Obligatoire pour TOUS les festins
 
 # =============================================================================
 # CONSUMABLES
 # =============================================================================
 consumables:
 
-  # === FLASKS ===
-  241321:
-    name: "Flask of Thalassian Resistance"  # [OK] +Versatilité
-    category: "flask"
+  # === FLASKS (craftent x2) ===
+  241325:
+    name: "Flask of the Blood Knights"      # FR: Flacon des Chevaliers de sang [OK]
+    category: "flask"                        # +Hâte
     expansion: "Midnight"
   241322:
-    name: "Flask of the Magisters"          # [OK] +Maîtrise (BIS healers/casters)
-    category: "flask"
+    name: "Flask of the Magisters"          # FR: Flacon des Magistères [OK]
+    category: "flask"                        # +Maîtrise
     expansion: "Midnight"
   241324:
-    name: "Flask of the Shattered Sun"      # [?] +Critique
-    category: "flask"
+    name: "Flask of the Shattered Sun"      # FR: Flacon du Soleil brisé [?]
+    category: "flask"                        # +Critique
     expansion: "Midnight"
-  241325:
-    name: "Flask of the Blood Knights"      # [OK] +Hâte (BIS DPS physique)
-    category: "flask"
+  241321:
+    name: "Flask of Thalassian Resistance"  # FR: Flacon de résistance thalassienne [OK]
+    category: "flask"                        # +Versatilité
     expansion: "Midnight"
 
-  # === POTIONS COMBAT ===
+  # === POTIONS LIGHT ===
   241309:
-    name: "Light's Potential"               # [OK] +Stat principale
-    category: "potion"
-    expansion: "Midnight"
-  241289:
-    name: "Potion of Recklessness"          # [OK] +Best second / -Worst second
-    category: "potion"
-    expansion: "Midnight"
-  241293:
-    name: "Draught of Rampant Abandon"      # [OK] +Stat prim + void zones
-    category: "potion"
+    name: "Light's Potential"               # FR: Potentiel de la Lumière [OK]
+    category: "potion"                       # +Stat principale 30s
     expansion: "Midnight"
   241296:
-    name: "Potion of Zealotry"              # [OK] Proc dégâts Holy
-    category: "potion"
+    name: "Potion of Zealotry"              # FR: Potion de fanatisme [OK]
+    category: "potion"                       # Proc dégâts Holy
     expansion: "Midnight"
+  # Light's Preservation                    # FR: Préservation de la Lumière
+  #   category: "potion"                     # Bouclier absorb
+  # Lightfused Mana Potion                  # FR: Potion de mana lumimprégné
+  #   category: "potion"                     # Regen mana instant
+
+  # === POTIONS VOID ===
+  241289:
+    name: "Potion of Recklessness"          # FR: Potion de témérité [OK]
+    category: "potion"                       # +Best second / -Worst second
+    expansion: "Midnight"
+  241293:
+    name: "Draught of Rampant Abandon"      # FR: Breuvage d'abandon effréné [OK]
+    category: "potion"                       # +Stat prim + void zones
+    expansion: "Midnight"
+  # Potion of Devoured Dreams               # FR: Potion de rêves dévorés
+  #   category: "potion"                     # Channel 10s mana regen
 
   # === POTIONS UTILITAIRES ===
   241305:
-    name: "Silvermoon Health Potion"         # [OK] /item=241305
-    category: "potion"
+    name: "Silvermoon Health Potion"         # FR: Potion de soins de Lune-d'Argent [OK]
+    category: "potion"                       # Soin, CD séparé des potions combat
     expansion: "Midnight"
 
-  # === CHAUDRON ===
+  # === CHAUDRONS ===
   241284:
-    name: "Voidlight Potion Cauldron"        # [OK] /item=241284
+    name: "Voidlight Potion Cauldron"        # FR: Chaudron de potion de Lumière du Vide [OK]
     category: "cauldron"
     expansion: "Midnight"
+  # Cauldron of Sin'dorei Flasks            # FR: Chaudron de flacons sin'dorei [?]
+  #   category: "cauldron"
 
   # === WEAPON OIL ===
   243734:
-    name: "Thalassian Phoenix Oil"           # [OK] /item=243734 - BIS toutes classes
-    category: "rune"
+    name: "Thalassian Phoenix Oil"           # FR: [à confirmer] [OK]
+    category: "rune"                         # +Crit +Hâte, 2h
     expansion: "Midnight"
 
-  # === FESTINS (groupe, posés au sol) ===
+  # === FESTINS (+Stat Prim, +98 Stam, groupe) ===
   255845:
-    name: "Silvermoon Parade"                # [OK] +50 Stat prim +98 Stam
+    name: "Silvermoon Parade"                # FR: [à confirmer] [OK]
     category: "food"
     expansion: "Midnight"
   255846:
-    name: "Harandar Celebration"             # [OK] +50 Stat prim +98 Stam
+    name: "Harandar Celebration"             # FR: [à confirmer] [OK]
     category: "food"
     expansion: "Midnight"
+
+  # === FESTINS (+Stat Second, +98 Stam, groupe) ===
   242272:
-    name: "Quel'dorei Medley"                # [OK] +65 Best second +98 Stam
+    name: "Quel'dorei Medley"                # [OK]
     category: "food"
     expansion: "Midnight"
   242273:
-    name: "Blooming Feast"                   # [OK] +65 Best second +98 Stam
+    name: "Blooming Feast"                   # [OK]
     category: "food"
     expansion: "Midnight"
 
   # === FOOD PERSO ===
   242275:
-    name: "Royal Roast"                      # [OK] /item=242275 +65 Stat prim
+    name: "Royal Roast"                      # [OK] +Stat prim
     category: "food"
     expansion: "Midnight"
   255847:
-    name: "Impossibly Royal Roast"           # [OK] /item=255847 +65 Stat prim
+    name: "Impossibly Royal Roast"           # [OK] +Stat prim
     category: "food"
     expansion: "Midnight"
   242274:
-    name: "Champion's Bento"                 # [OK] /item=242274 +65 Best second
+    name: "Champion's Bento"                 # [OK] +Best second
     category: "food"
     expansion: "Midnight"
   255848:
-    name: "Flora Frenzy"                     # [OK] /item=255848 +65 Best second
+    name: "Flora Frenzy"                     # [OK] +Best second
     category: "food"
     expansion: "Midnight"
 
 # =============================================================================
-# RECIPES
+# RECIPES (quantités pour 1 craft - rang Gold)
+# Source alchemy : profession book FR (copié par Pierre)
+# Source cooking : wow-professions.com
 # =============================================================================
 recipes:
 
-  # === ALCHEMY - Potions ===
+  # =========================================================================
+  # ALCHEMY - FLASKS (craftent x2)
+  # =========================================================================
+
+  241325:  # Flask of the Blood Knights (+Hâte)
+    - ingredient_id: 236780   # Nocturnal Lotus
+      quantity: 1
+    - ingredient_id: 236951   # Mote of Wild Magic
+      quantity: 2
+    - ingredient_id: 240991   # Sunglass Vial
+      quantity: 2
+    - ingredient_id: 236776   # Argentleaf
+      quantity: 8
+    - ingredient_id: 236770   # Sanguithorn
+      quantity: 6
+
+  241322:  # Flask of the Magisters (+Maîtrise)
+    - ingredient_id: 236780   # Nocturnal Lotus
+      quantity: 1
+    # Mote of Pure Void (Particule de Vide pur) - ID à confirmer
+    #   quantity: 2
+    - ingredient_id: 240991   # Sunglass Vial
+      quantity: 2
+    - ingredient_id: 236770   # Sanguithorn
+      quantity: 8
+    - ingredient_id: 236778   # Mana Lily
+      quantity: 6
+
+  241324:  # Flask of the Shattered Sun (+Critique)
+    - ingredient_id: 236780   # Nocturnal Lotus
+      quantity: 1
+    - ingredient_id: 236950   # Mote of Primal Energy
+      quantity: 2
+    - ingredient_id: 240991   # Sunglass Vial
+      quantity: 2
+    - ingredient_id: 236774   # Azeroot
+      quantity: 8
+    - ingredient_id: 236776   # Argentleaf
+      quantity: 6
+
+  241321:  # Flask of Thalassian Resistance (+Versatilité)
+    - ingredient_id: 236780   # Nocturnal Lotus
+      quantity: 1
+    - ingredient_id: 236949   # Mote of Light
+      quantity: 2
+    - ingredient_id: 240991   # Sunglass Vial
+      quantity: 2
+    - ingredient_id: 236778   # Mana Lily
+      quantity: 8
+    - ingredient_id: 236774   # Azeroot
+      quantity: 6
+
+  # =========================================================================
+  # ALCHEMY - POTIONS LIGHT (craftent x5)
+  # =========================================================================
+
+  241305:  # Silvermoon Health Potion
+    - ingredient_id: 240991   # Sunglass Vial
+      quantity: 5
+    - ingredient_id: 236761   # Tranquility Bloom
+      quantity: 6
 
   241309:  # Light's Potential (+Stat Prim)
     - ingredient_id: 236949   # Mote of Light
       quantity: 1
+    - ingredient_id: 240991   # Sunglass Vial
+      quantity: 5
+    - ingredient_id: 236761   # Tranquility Bloom
+      quantity: 8
+    - ingredient_id: 236776   # Argentleaf
+      quantity: 3
+    - ingredient_id: 236774   # Azeroot
+      quantity: 3
+
+  241296:  # Potion of Zealotry (proc Holy)
+    - ingredient_id: 236949   # Mote of Light
+      quantity: 1
+    - ingredient_id: 240991   # Sunglass Vial
+      quantity: 5
     - ingredient_id: 236761   # Tranquility Bloom
       quantity: 8
     - ingredient_id: 236774   # Azeroot
-      quantity: 3
-    - ingredient_id: 236776   # Argentleaf
-      quantity: 3
-    - ingredient_id: 240991   # Sunglass Vial
-      quantity: 5
+      quantity: 10
 
-  241305:  # Silvermoon Health Potion
-    - ingredient_id: 236761   # Tranquility Bloom
-      quantity: 6
-    - ingredient_id: 240991   # Sunglass Vial
-      quantity: 5
+  # Lightfused Mana Potion (ID à confirmer)
+  #   - Sunglass Vial x5
+  #   - Tranquility Bloom x8
+  #   - Mana Lily x3
 
-  241289:  # Potion of Recklessness
+  # Light's Preservation (ID à confirmer)
+  #   - Mote of Light x2
+  #   - Sunglass Vial x5
+  #   - Tranquility Bloom x4
+  #   - Azeroot x3
+
+  # =========================================================================
+  # ALCHEMY - POTIONS VOID (craftent x5)
+  # =========================================================================
+
+  241289:  # Potion of Recklessness (+Best sec / -Worst sec)
     - ingredient_id: 236950   # Mote of Primal Energy
       quantity: 2
-    # Source: mmo-champion datamine - quantités partielles, à confirmer in-game
+    - ingredient_id: 240991   # Sunglass Vial
+      quantity: 5
+    - ingredient_id: 236761   # Tranquility Bloom
+      quantity: 8
+    - ingredient_id: 236774   # Azeroot
+      quantity: 4
 
-  241296:  # Potion of Zealotry
-    - ingredient_id: 236949   # Mote of Light
+  241293:  # Draught of Rampant Abandon (+Stat prim + void zones)
+    - ingredient_id: 236950   # Mote of Primal Energy
+      quantity: 3
+    - ingredient_id: 240991   # Sunglass Vial
+      quantity: 5
+    - ingredient_id: 236761   # Tranquility Bloom
+      quantity: 8
+    - ingredient_id: 236778   # Mana Lily
+      quantity: 3
+    - ingredient_id: 236770   # Sanguithorn
+      quantity: 3
+
+  # Potion of Devoured Dreams (ID à confirmer)
+  #   - Mote of Wild Magic x2
+  #   - Sunglass Vial x5
+  #   - Tranquility Bloom x8
+  #   - Mana Lily x4
+
+  # =========================================================================
+  # ALCHEMY - CHAUDRONS
+  # =========================================================================
+
+  241284:  # Voidlight Potion Cauldron
+    - ingredient_id: 236780   # Nocturnal Lotus
       quantity: 1
-    # Source: mmo-champion datamine - quantités partielles, à confirmer in-game
+    # Stabilized Derivate x5 (ID à confirmer)
+    - ingredient_id: 251285   # Petrified Root
+      quantity: 2
+    - ingredient_id: 240991   # Sunglass Vial
+      quantity: 20
+    - ingredient_id: 241282   # Wondrous Synergist
+      quantity: 4
 
-  # Draught of Rampant Abandon (241293) - reagents à compléter in-game
-  # Lightfused Mana Potion :
-  #   8x Tranquility Bloom (236761) + 3x Mana Lily (236778) + 5x Sunglass Vial (240991)
-  # Potion of Devoured Dreams :
-  #   2x Mote of Wild Magic (236951) - source: mmo-champion datamine
+  # Cauldron of Sin'dorei Flasks (ID à confirmer)
+  #   - Nocturnal Lotus x1
+  #   - Stabilized Derivate x5
+  #   - Petrified Root x2
+  #   - Sunglass Vial x20
+  #   - Wondrous Synergist x4
 
-  # === ALCHEMY - Flasks ===
-  # Reagents flasks non disponibles dans les guides web.
-  # Pattern probable : Herbes + Motes + Sunglass Vial (à compléter in-game)
-
-  # === COOKING - Festins ===
+  # =========================================================================
+  # COOKING - FESTINS
+  # =========================================================================
 
   255845:  # Silvermoon Parade (+Stat Prim, poissons)
     - ingredient_id: 238366   # Lynxfish
@@ -275,7 +396,9 @@ recipes:
     - ingredient_id: 251285   # Petrified Root
       quantity: 1
 
-  # === COOKING - Food Perso ===
+  # =========================================================================
+  # COOKING - FOOD PERSO
+  # =========================================================================
 
   242275:  # Royal Roast (+Stat Prim)
     - ingredient_id: 242639   # Practically Pork
