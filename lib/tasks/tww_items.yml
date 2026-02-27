@@ -2,10 +2,12 @@
 # Midnight (12.0) - Consommables Raid & Farm Collaboratif
 # Guilde Highway to Wipe - Eitrigg Alliance
 #
-# Usage : EXPANSION=midnight rake blizzard:import_consumables
+# IDs confirmés via Wowhead URLs :
+#   Flask of the Blood Knights  = 241324  (wowhead.com/item=241324)
+#   Flask of the Shattered Sun  = 241326  (wowhead.com/item=241326)
+#   Cauldron of Sin'dorei Flasks = 241319 (wowhead.com/item=241319)
 #
-# Items avec api_skip: true seront importés directement depuis le YAML
-# sans appeler l'API Blizzard (items trop récents non encore indexés)
+# Usage : EXPANSION=midnight rake blizzard:import_consumables
 # =============================================================================
 
 # =============================================================================
@@ -51,7 +53,6 @@ ingredients:
   348534:
     name: "Stabilized Derivate"
     category: "reagent"
-    icon: "inv_11_0_alchemy_advancedflask_color2"
     api_skip: true
   241282:
     name: "Wondrous Synergist"
@@ -91,19 +92,21 @@ ingredients:
 consumables:
 
   # === FLASKS ===
-  241325:
+  241324:
     name: "Flask of the Blood Knights"
     category: "flask"
     expansion: "Midnight"
+    icon: "inv_12_profession_alchemy_flask_sindoreipotion_red--"
+    api_skip: true
   241322:
     name: "Flask of the Magisters"
     category: "flask"
     expansion: "Midnight"
-  241324:
+  241326:
     name: "Flask of the Shattered Sun"
     category: "flask"
     expansion: "Midnight"
-    icon: "inv_11_0_alchemy_flask_thalassian04"
+    icon: "inv_12_profession_alchemy_flask_sindoreipotion_white-"
     api_skip: true
   241321:
     name: "Flask of Thalassian Resistance"
@@ -141,12 +144,10 @@ consumables:
     name: "Voidlight Potion Cauldron"
     category: "cauldron"
     expansion: "Midnight"
-  1385153:
+  241319:
     name: "Cauldron of Sin'dorei Flasks"
     category: "cauldron"
     expansion: "Midnight"
-    icon: "inv_11_0_alchemy_cauldron_thalassian"
-    api_skip: true
 
   # === WEAPON OIL ===
   243734:
@@ -195,7 +196,9 @@ consumables:
 # =============================================================================
 recipes:
 
-  241325:  # Flask of the Blood Knights
+  # === FLASKS (craftent x2) ===
+
+  241324:  # Flask of the Blood Knights (+Haste)
     - ingredient_id: 236780
       quantity: 1
     - ingredient_id: 236951
@@ -207,7 +210,7 @@ recipes:
     - ingredient_id: 236770
       quantity: 6
 
-  241322:  # Flask of the Magisters
+  241322:  # Flask of the Magisters (+Mastery)
     - ingredient_id: 236780
       quantity: 1
     - ingredient_id: 240991
@@ -217,7 +220,7 @@ recipes:
     - ingredient_id: 236778
       quantity: 6
 
-  241324:  # Flask of the Shattered Sun
+  241326:  # Flask of the Shattered Sun (+Crit)
     - ingredient_id: 236780
       quantity: 1
     - ingredient_id: 236950
@@ -229,7 +232,7 @@ recipes:
     - ingredient_id: 236776
       quantity: 6
 
-  241321:  # Flask of Thalassian Resistance
+  241321:  # Flask of Thalassian Resistance (+Vers)
     - ingredient_id: 236780
       quantity: 1
     - ingredient_id: 236949
@@ -241,13 +244,15 @@ recipes:
     - ingredient_id: 236774
       quantity: 6
 
+  # === POTIONS LIGHT (craftent x5) ===
+
   241305:  # Silvermoon Health Potion
     - ingredient_id: 240991
       quantity: 5
     - ingredient_id: 236761
       quantity: 6
 
-  241309:  # Light's Potential
+  241309:  # Light's Potential (+Primary)
     - ingredient_id: 236949
       quantity: 1
     - ingredient_id: 240991
@@ -259,7 +264,7 @@ recipes:
     - ingredient_id: 236774
       quantity: 3
 
-  241296:  # Potion of Zealotry
+  241296:  # Potion of Zealotry (proc Holy)
     - ingredient_id: 236949
       quantity: 1
     - ingredient_id: 240991
@@ -268,6 +273,8 @@ recipes:
       quantity: 8
     - ingredient_id: 236774
       quantity: 10
+
+  # === POTIONS VOID (craftent x5) ===
 
   241289:  # Potion of Recklessness
     - ingredient_id: 236950
@@ -291,6 +298,8 @@ recipes:
     - ingredient_id: 236770
       quantity: 3
 
+  # === SYNERGISTE (daily cooldown) ===
+
   241282:  # Wondrous Synergist
     - ingredient_id: 348534
       quantity: 4
@@ -305,6 +314,8 @@ recipes:
     - ingredient_id: 236778
       quantity: 2
 
+  # === CHAUDRONS ===
+
   241284:  # Voidlight Potion Cauldron
     - ingredient_id: 236780
       quantity: 5
@@ -317,7 +328,7 @@ recipes:
     - ingredient_id: 241282
       quantity: 4
 
-  1385153:  # Cauldron of Sin'dorei Flasks
+  241319:  # Cauldron of Sin'dorei Flasks
     - ingredient_id: 236780
       quantity: 5
     - ingredient_id: 348534
@@ -328,6 +339,8 @@ recipes:
       quantity: 20
     - ingredient_id: 241282
       quantity: 4
+
+  # === FESTINS ===
 
   255845:  # Silvermoon Parade
     - ingredient_id: 238366
@@ -370,6 +383,8 @@ recipes:
       quantity: 10
     - ingredient_id: 251285
       quantity: 1
+
+  # === FOOD PERSO ===
 
   242275:  # Royal Roast
     - ingredient_id: 242639
