@@ -33,4 +33,6 @@ class Consumable < ApplicationRecord
       (available / needed_qty).floor
     end.min
   end
+
+
 end

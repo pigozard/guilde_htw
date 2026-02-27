@@ -29,22 +29,28 @@ namespace :blizzard do
     data['ingredients'].each do |blizzard_id, config|
       print "  ID #{blizzard_id}... "
 
+      # api_skip: true → on utilise directement les données du YAML
+      if config['api_skip']
+        ingredient = Ingredient.find_or_initialize_by(blizzard_id: blizzard_id)
+        ingredient.name = config['name']
+        ingredient.category = config['category']
+        ingredient.icon_name = config['icon']
+
+        if ingredient.save
+          puts "✅ #{ingredient.name} (YAML)"
+          imported_ingredients += 1
+        else
+          puts "❌ #{ingredient.errors.full_messages.join(', ')}"
+        end
+        next
+      end
+
       item_data = service.get_item(blizzard_id)
       if item_data
         ingredient = Ingredient.find_or_initialize_by(blizzard_id: blizzard_id)
         ingredient.name = item_data['name']
         ingredient.category = config['category']
-
-        if item_data['media'] && item_data['media']['id']
-          media_data = service.get_item_media(item_data['media']['id'])
-          if media_data && media_data['assets']
-            icon_asset = media_data['assets'].find { |a| a['key'] == 'icon' }
-            if icon_asset && icon_asset['value']
-              icon_name = icon_asset['value'].split('/').last.gsub('.jpg', '')
-              ingredient.icon_name = icon_name
-            end
-          end
-        end
+        ingredient.icon_name = extract_icon(service, item_data)
 
         if ingredient.save
           puts "✅ #{ingredient.name}"
@@ -53,7 +59,13 @@ namespace :blizzard do
           puts "❌ #{ingredient.errors.full_messages.join(', ')}"
         end
       else
-        puts "⚠️ Introuvable"
+        result = import_from_wowhead_fallback(blizzard_id, config, :ingredient)
+        if result
+          puts "✅ #{result.name} (Wowhead)"
+          imported_ingredients += 1
+        else
+          puts "⚠️ Introuvable (API + Wowhead)"
+        end
       end
 
       sleep(0.2)
@@ -65,23 +77,30 @@ namespace :blizzard do
     data['consumables'].each do |blizzard_id, config|
       print "  ID #{blizzard_id}... "
 
+      # api_skip: true → on utilise directement les données du YAML
+      if config['api_skip']
+        consumable = Consumable.find_or_initialize_by(blizzard_id: blizzard_id)
+        consumable.name = config['name']
+        consumable.category = config['category']
+        consumable.expansion = config['expansion']
+        consumable.icon_name = config['icon']
+
+        if consumable.save
+          puts "✅ #{consumable.name} (YAML)"
+          imported_consumables += 1
+        else
+          puts "❌ #{consumable.errors.full_messages.join(', ')}"
+        end
+        next
+      end
+
       item_data = service.get_item(blizzard_id)
       if item_data
         consumable = Consumable.find_or_initialize_by(blizzard_id: blizzard_id)
         consumable.name = item_data['name']
         consumable.category = config['category']
         consumable.expansion = config['expansion']
-
-        if item_data['media'] && item_data['media']['id']
-          media_data = service.get_item_media(item_data['media']['id'])
-          if media_data && media_data['assets']
-            icon_asset = media_data['assets'].find { |a| a['key'] == 'icon' }
-            if icon_asset && icon_asset['value']
-              icon_name = icon_asset['value'].split('/').last.gsub('.jpg', '')
-              consumable.icon_name = icon_name
-            end
-          end
-        end
+        consumable.icon_name = extract_icon(service, item_data)
 
         if consumable.save
           puts "✅ #{consumable.name}"
@@ -90,7 +109,13 @@ namespace :blizzard do
           puts "❌ #{consumable.errors.full_messages.join(', ')}"
         end
       else
-        puts "⚠️ Introuvable"
+        result = import_from_wowhead_fallback(blizzard_id, config, :consumable)
+        if result
+          puts "✅ #{result.name} (Wowhead)"
+          imported_consumables += 1
+        else
+          puts "⚠️ Introuvable (API + Wowhead)"
+        end
       end
 
       sleep(0.2)
@@ -128,6 +153,82 @@ namespace :blizzard do
     puts "  - #{imported_consumables} consumables importés"
     puts "  - #{Recipe.count} recettes totales"
   end
+
+  # ============================================================================
+  # MÉTHODES HELPER - IMPORT CONSUMABLES
+  # ============================================================================
+
+  def extract_icon(service, item_data)
+    return nil unless item_data['media'] && item_data['media']['id']
+
+    media_data = service.get_item_media(item_data['media']['id'])
+    return nil unless media_data && media_data['assets']
+
+    icon_asset = media_data['assets'].find { |a| a['key'] == 'icon' }
+    return nil unless icon_asset && icon_asset['value']
+
+    icon_asset['value'].split('/').last.gsub('.jpg', '')
+  end
+
+  def import_from_wowhead_fallback(blizzard_id, config, type)
+    require 'net/http'
+    require 'json'
+
+    uri = URI("https://nether.wowhead.com/tooltip/item/#{blizzard_id}?dataEnv=1&locale=0")
+
+    begin
+      response = Net::HTTP.get_response(uri)
+
+      if response.is_a?(Net::HTTPSuccess)
+        data = JSON.parse(response.body)
+        wowhead_name = data['name']
+        wowhead_icon = data['icon']
+
+        if wowhead_name.present?
+          if type == :ingredient
+            record = Ingredient.find_or_initialize_by(blizzard_id: blizzard_id)
+            record.name = wowhead_name
+            record.category = config['category']
+            record.icon_name = wowhead_icon
+          elsif type == :consumable
+            record = Consumable.find_or_initialize_by(blizzard_id: blizzard_id)
+            record.name = wowhead_name
+            record.category = config['category']
+            record.expansion = config['expansion']
+            record.icon_name = wowhead_icon
+          end
+
+          return record if record.save
+        end
+      end
+    rescue StandardError => e
+      print "(Wowhead error: #{e.message}) "
+    end
+
+    # Dernier recours : données du YAML
+    if config['name'].present?
+      if type == :ingredient
+        record = Ingredient.find_or_initialize_by(blizzard_id: blizzard_id)
+        record.name = config['name']
+        record.category = config['category']
+        record.icon_name = config['icon']
+      elsif type == :consumable
+        record = Consumable.find_or_initialize_by(blizzard_id: blizzard_id)
+        record.name = config['name']
+        record.category = config['category']
+        record.expansion = config['expansion']
+        record.icon_name = config['icon']
+      end
+
+      return record if record.save
+    end
+
+    nil
+  end
+
+  # ============================================================================
+  # ACHIEVEMENTS
+  # ============================================================================
 
   desc "Importer les achievements depuis l'API Blizzard par extension (fichier YAML)"
   task import_achievements: :environment do
@@ -327,7 +428,6 @@ namespace :blizzard do
     if response.downcase == 'y'
       classic = Expansion.find_by(code: 'classic')
 
-      # Réinitialiser
       Achievement.update_all(
         expansion_id: classic&.id,
         tags: nil,
@@ -363,7 +463,6 @@ namespace :blizzard do
     total_moved = 0
     total_tagged = 0
 
-    # Mapping des catégories vers extensions
     expansion_keywords = {
       'classic' => ['Classic', 'Royaumes de l\'Est', 'Kalimdor'],
       'tbc' => ['Burning Crusade', 'Outreterre', 'Outland'],
@@ -378,7 +477,6 @@ namespace :blizzard do
       'tww' => ['War Within', 'The War Within']
     }
 
-    # Tags spéciaux
     tag_keywords = {
       'pvp' => ['Player vs. Player', 'PvP', 'Arena', 'Arène', 'Battleground', 'Champs de bataille'],
       'professions' => ['Profession', 'Métier', 'Cooking', 'Cuisine', 'Fishing', 'Pêche'],
@@ -394,14 +492,12 @@ namespace :blizzard do
       category_id = category['id']
       category_name = category['name']
 
-      # Récupérer les détails de la catégorie
       category_details = service.get_achievement_category(category_id)
       next unless category_details
       next unless category_details['achievements']
 
       achievement_ids = category_details['achievements'].map { |a| a['id'] }
 
-      # Vérifier si c'est un tag spécial
       tag_assigned = nil
       tag_keywords.each do |tag, keywords|
         if keywords.any? { |keyword| category_name.include?(keyword) }
@@ -411,7 +507,6 @@ namespace :blizzard do
       end
 
       if tag_assigned
-        # C'est une catégorie spéciale
         tagged = Achievement.where(blizzard_id: achievement_ids)
                            .where(tags: nil)
                            .update_all(tags: tag_assigned)
@@ -421,7 +516,6 @@ namespace :blizzard do
           total_tagged += tagged
         end
       else
-        # C'est une catégorie d'extension
         expansion_code = nil
         expansion_keywords.each do |exp_code, keywords|
           if keywords.any? { |keyword| category_name.include?(keyword) }
@@ -448,7 +542,6 @@ namespace :blizzard do
       sleep(0.1)
     end
 
-    # Tours de force
     puts "\n🏆 Marquage des Tours de force..."
     feat_count = Achievement.where("category LIKE ?", "%Feats of Strength%")
                            .or(Achievement.where("category LIKE ?", "%Tours de force%"))
@@ -497,7 +590,7 @@ namespace :blizzard do
   end
 
   # ============================================================================
-  # MÉTHODES HELPER
+  # MÉTHODES HELPER - ACHIEVEMENTS
   # ============================================================================
 
   def determine_expansion_from_category(category_name)
@@ -521,12 +614,17 @@ namespace :blizzard do
 
     Expansion.find_by(code: 'classic')
   end
+
+  # ============================================================================
+  # DIAGNOSTIC
+  # ============================================================================
+
   desc "Diagnostiquer un achievement spécifique pour un personnage"
   task diagnose_achievement: :environment do
     character_name = ENV['CHARACTER'] || 'inbox'
     realm = ENV['REALM'] || 'dalaran'
     region = ENV['REGION'] || 'eu'
-    achievement_id = ENV['ACHIEVEMENT_ID'] || '2046' # Le croisé ardent
+    achievement_id = ENV['ACHIEVEMENT_ID'] || '2046'
 
     puts "🔍 Diagnostic pour #{character_name}-#{realm} (#{region.upcase})"
     puts "🎯 Achievement ID: #{achievement_id}"
@@ -538,7 +636,6 @@ namespace :blizzard do
       exit
     end
 
-    # 1. Vérifier si l'achievement existe en BDD
     ach = Achievement.find_by(blizzard_id: achievement_id)
     if ach
       puts "\n✅ Achievement en BDD:"
@@ -549,7 +646,6 @@ namespace :blizzard do
       puts "\n❌ Achievement NOT found en BDD"
     end
 
-    # 2. Récupérer les achievements du personnage via API
     puts "\n📥 Récupération des achievements du personnage..."
     data = service.get_character_achievements(realm, character_name)
 
@@ -558,7 +654,6 @@ namespace :blizzard do
       exit
     end
 
-    # 3. Extraire tous les IDs
     completed_ids = []
     if data['achievements']
       data['achievements'].each do |achievement_data|
@@ -576,7 +671,6 @@ namespace :blizzard do
 
     puts "\n📊 Total achievements retournés par l'API: #{completed_ids.count}"
 
-    # 4. Vérifier si notre achievement est dedans
     if completed_ids.include?(achievement_id.to_i)
       puts "\n✅ L'achievement #{achievement_id} EST dans les données API"
     else
@@ -584,7 +678,6 @@ namespace :blizzard do
       puts "\n💡 Possible raison: Achievement account-wide pas retourné par l'API character"
     end
 
-    # 5. Vérifier la dernière synchro en BDD
     sync = User.find_by(email: 'ton_email@example.com')&.user_achievement_syncs&.last
     if sync
       puts "\n📋 Dernière synchro en BDD:"
@@ -604,13 +697,16 @@ namespace :blizzard do
     puts "ACHIEVEMENT_ID=12345 CHARACTER=inbox REALM=dalaran REGION=eu rake blizzard:diagnose_achievement"
   end
 
+  # ============================================================================
+  # NETTOYAGE
+  # ============================================================================
+
   desc "Supprimer les achievements en double (garder le plus grand ID Blizzard)"
   task remove_duplicate_achievements: :environment do
     puts "🧹 Nettoyage des achievements en double..."
 
     total_deleted = 0
 
-    # Trouver tous les noms qui apparaissent plusieurs fois
     duplicate_names = Achievement.select(:name)
                                  .group(:name)
                                  .having('count(*) > 1')
@@ -623,7 +719,6 @@ namespace :blizzard do
       achievements = Achievement.where(name: name).order(:blizzard_id)
 
       if achievements.count > 1
-        # Garder celui avec le plus grand blizzard_id
         to_keep = achievements.last
         to_delete = achievements[0..-2]
 
@@ -644,171 +739,162 @@ namespace :blizzard do
   end
 
   desc "Supprimer TOUS les achievements pour réimport propre"
-task delete_all_achievements: :environment do
-  puts "⚠️  ATTENTION : Suppression TOTALE de tous les achievements !"
-  puts "Continuer ? (y/n)"
+  task delete_all_achievements: :environment do
+    puts "⚠️  ATTENTION : Suppression TOTALE de tous les achievements !"
+    puts "Continuer ? (y/n)"
 
-  response = STDIN.gets.chomp
+    response = STDIN.gets.chomp
 
-  if response.downcase == 'y'
-    count = Achievement.count
-    Achievement.destroy_all
-    UserAchievementSync.destroy_all
+    if response.downcase == 'y'
+      count = Achievement.count
+      Achievement.destroy_all
+      UserAchievementSync.destroy_all
 
-    puts "✅ #{count} achievements supprimés"
-    puts "✅ Toutes les synchros utilisateur supprimées"
-    puts "🚀 Prêt pour le réimport propre"
-  else
-    puts "❌ Annulé"
-  end
-end
-desc "Réimport COMPLET avec mapping correct depuis l'API Blizzard"
-task reimport_achievements_clean: :environment do
-  puts "🏆 Réimport PROPRE de tous les achievements..."
-
-  service = BlizzardApiService.new
-  unless service.authenticate
-    puts "❌ Échec authentification"
-    exit
+      puts "✅ #{count} achievements supprimés"
+      puts "✅ Toutes les synchros utilisateur supprimées"
+      puts "🚀 Prêt pour le réimport propre"
+    else
+      puts "❌ Annulé"
+    end
   end
 
-  puts "📥 Récupération des catégories..."
-  categories_data = service.get_achievement_categories
+  desc "Réimport COMPLET avec mapping correct depuis l'API Blizzard"
+  task reimport_achievements_clean: :environment do
+    puts "🏆 Réimport PROPRE de tous les achievements..."
 
-  unless categories_data && categories_data['categories']
-    puts "❌ Erreur API"
-    exit
-  end
-
-  # Mapping COMPLET et PRÉCIS
-  expansion_mapping = {
-    'tww' => ['War Within', 'The War Within'],
-    'df' => ['Dragonflight', 'Dragon Isles', 'Îles aux Dragons'],
-    'sl' => ['Shadowlands', 'Ombreterre', 'Maldraxxus', 'Revendreth', 'Bastion',
-             'Ardenweald', 'Gouffres', 'Sanctums', 'Tourment'],
-    'bfa' => ['Battle for Azeroth', 'Kul Tiras', 'Zandalar', 'Vision', 'N\'Zoth'],
-    'legion' => ['Legion', 'Îles Brisées', 'Broken Isles'],
-    'wod' => ['Warlords of Draenor', 'Draenor', 'Fief', 'Garrison'],
-    'mop' => ['Mists of Pandaria', 'Pandarie', 'Pandaria'],
-    'cata' => ['Cataclysm', 'Cataclysme', 'Vashj\'ir', 'Mont Hyjal', 'Tréfonds',
-               'Uldum', 'Profondeurs'],
-    'wotlk' => ['Lich King', 'Norfendre', 'Northrend', 'Wrath', 'Tournoi d\'Argent'],
-    'tbc' => ['Burning Crusade', 'Outreterre', 'Outland'],
-    'classic' => ['Classic', 'Royaumes de l\'Est', 'Kalimdor']
-  }
-
-  # Tags spéciaux
-  tag_mapping = {
-    'pvp' => ['Player vs. Player', 'PvP', 'Arena', 'Battleground', 'Bataille',
-              'Champs de bataille', 'En extérieur', 'Ashran', 'Alterac'],
-    'professions' => ['Profession', 'Métier', 'Cooking', 'Cuisine', 'Fishing',
-                      'Pêche', 'Archéologie', 'Archaeology', 'Alchemy', 'Forge'],
-    'events' => ['World Event', 'Événement', 'Holiday', 'Fête', 'Foire de Sombrelune',
-                 'Sanssaint', 'Solstice', 'Noblegarden'],
-    'collections' => ['Collection', 'Mount', 'Monture', 'Apparence', 'Héritage',
-                      'Coffre à jouets'],
-    'pets' => ['Pet Battle', 'Mascotte', 'Bataille de mascottes'],
-    'exploration' => ['Exploration', 'Vol dynamique', 'Dragonriding']
-  }
-
-  total_imported = 0
-
-  categories_data['categories'].each_with_index do |category, index|
-    category_id = category['id']
-    category_name = category['name']
-
-    puts "\n[#{index + 1}/#{categories_data['categories'].count}] 📂 #{category_name}"
-
-    # Skip Feats of Strength
-    if category_name.include?('Feats of Strength') || category_name.include?('Tours de force')
-      puts "  ⏭️  Skipped (Feats of Strength)"
-      next
+    service = BlizzardApiService.new
+    unless service.authenticate
+      puts "❌ Échec authentification"
+      exit
     end
 
-    category_details = service.get_achievement_category(category_id)
-    next unless category_details && category_details['achievements']
+    puts "📥 Récupération des catégories..."
+    categories_data = service.get_achievement_categories
 
-    # Déterminer extension OU tag
-    target_expansion = nil
-    target_tag = nil
+    unless categories_data && categories_data['categories']
+      puts "❌ Erreur API"
+      exit
+    end
 
-    # Vérifier d'abord les tags spéciaux
-    tag_mapping.each do |tag, keywords|
-      if keywords.any? { |kw| category_name.include?(kw) }
-        target_tag = tag
-        break
+    expansion_mapping = {
+      'tww' => ['War Within', 'The War Within'],
+      'df' => ['Dragonflight', 'Dragon Isles', 'Îles aux Dragons'],
+      'sl' => ['Shadowlands', 'Ombreterre', 'Maldraxxus', 'Revendreth', 'Bastion',
+               'Ardenweald', 'Gouffres', 'Sanctums', 'Tourment'],
+      'bfa' => ['Battle for Azeroth', 'Kul Tiras', 'Zandalar', 'Vision', 'N\'Zoth'],
+      'legion' => ['Legion', 'Îles Brisées', 'Broken Isles'],
+      'wod' => ['Warlords of Draenor', 'Draenor', 'Fief', 'Garrison'],
+      'mop' => ['Mists of Pandaria', 'Pandarie', 'Pandaria'],
+      'cata' => ['Cataclysm', 'Cataclysme', 'Vashj\'ir', 'Mont Hyjal', 'Tréfonds',
+                 'Uldum', 'Profondeurs'],
+      'wotlk' => ['Lich King', 'Norfendre', 'Northrend', 'Wrath', 'Tournoi d\'Argent'],
+      'tbc' => ['Burning Crusade', 'Outreterre', 'Outland'],
+      'classic' => ['Classic', 'Royaumes de l\'Est', 'Kalimdor']
+    }
+
+    tag_mapping = {
+      'pvp' => ['Player vs. Player', 'PvP', 'Arena', 'Battleground', 'Bataille',
+                'Champs de bataille', 'En extérieur', 'Ashran', 'Alterac'],
+      'professions' => ['Profession', 'Métier', 'Cooking', 'Cuisine', 'Fishing',
+                        'Pêche', 'Archéologie', 'Archaeology', 'Alchemy', 'Forge'],
+      'events' => ['World Event', 'Événement', 'Holiday', 'Fête', 'Foire de Sombrelune',
+                   'Sanssaint', 'Solstice', 'Noblegarden'],
+      'collections' => ['Collection', 'Mount', 'Monture', 'Apparence', 'Héritage',
+                        'Coffre à jouets'],
+      'pets' => ['Pet Battle', 'Mascotte', 'Bataille de mascottes'],
+      'exploration' => ['Exploration', 'Vol dynamique', 'Dragonriding']
+    }
+
+    total_imported = 0
+
+    categories_data['categories'].each_with_index do |category, index|
+      category_id = category['id']
+      category_name = category['name']
+
+      puts "\n[#{index + 1}/#{categories_data['categories'].count}] 📂 #{category_name}"
+
+      if category_name.include?('Feats of Strength') || category_name.include?('Tours de force')
+        puts "  ⏭️  Skipped (Feats of Strength)"
+        next
       end
-    end
 
-    # Si pas de tag, chercher l'extension
-    unless target_tag
-      expansion_mapping.each do |exp_code, keywords|
+      category_details = service.get_achievement_category(category_id)
+      next unless category_details && category_details['achievements']
+
+      target_expansion = nil
+      target_tag = nil
+
+      tag_mapping.each do |tag, keywords|
         if keywords.any? { |kw| category_name.include?(kw) }
-          target_expansion = Expansion.find_by(code: exp_code)
+          target_tag = tag
           break
         end
       end
-    end
 
-    # Par défaut : Classic
-    target_expansion ||= Expansion.find_by(code: 'classic') unless target_tag
-
-    # Importer les achievements
-    category_details['achievements'].each do |ach_data|
-      ach_id = ach_data['id']
-
-      full_ach_data = service.get_achievement(ach_id)
-      next unless full_ach_data
-
-      achievement = Achievement.new(
-        blizzard_id: ach_id,
-        name: full_ach_data['name'],
-        description: full_ach_data['description'] || '',
-        points: full_ach_data['points'] || 0,
-        category: category_name,
-        subcategory: category_details['parent_category'] ? category_details['parent_category']['name'] : nil
-      )
-
-      # Assigner extension ou tag
-      if target_tag
-        achievement.tags = target_tag
-        achievement.expansion = Expansion.find_by(code: 'classic') # Fallback
-      else
-        achievement.expansion = target_expansion
-      end
-
-      # Récupérer icône
-      if full_ach_data['media'] && full_ach_data['media']['id']
-        media_data = service.get_achievement_media(full_ach_data['media']['id'])
-        if media_data && media_data['assets']
-          icon_asset = media_data['assets'].find { |a| a['key'] == 'icon' }
-          if icon_asset && icon_asset['value']
-            icon_name = icon_asset['value'].split('/').last.gsub('.jpg', '')
-            achievement.icon = icon_name
+      unless target_tag
+        expansion_mapping.each do |exp_code, keywords|
+          if keywords.any? { |kw| category_name.include?(kw) }
+            target_expansion = Expansion.find_by(code: exp_code)
+            break
           end
         end
       end
 
-      if achievement.save
-        total_imported += 1
-        print "✓"
-      else
-        print "✗"
+      target_expansion ||= Expansion.find_by(code: 'classic') unless target_tag
+
+      category_details['achievements'].each do |ach_data|
+        ach_id = ach_data['id']
+
+        full_ach_data = service.get_achievement(ach_id)
+        next unless full_ach_data
+
+        achievement = Achievement.new(
+          blizzard_id: ach_id,
+          name: full_ach_data['name'],
+          description: full_ach_data['description'] || '',
+          points: full_ach_data['points'] || 0,
+          category: category_name,
+          subcategory: category_details['parent_category'] ? category_details['parent_category']['name'] : nil
+        )
+
+        if target_tag
+          achievement.tags = target_tag
+          achievement.expansion = Expansion.find_by(code: 'classic')
+        else
+          achievement.expansion = target_expansion
+        end
+
+        if full_ach_data['media'] && full_ach_data['media']['id']
+          media_data = service.get_achievement_media(full_ach_data['media']['id'])
+          if media_data && media_data['assets']
+            icon_asset = media_data['assets'].find { |a| a['key'] == 'icon' }
+            if icon_asset && icon_asset['value']
+              icon_name = icon_asset['value'].split('/').last.gsub('.jpg', '')
+              achievement.icon = icon_name
+            end
+          end
+        end
+
+        if achievement.save
+          total_imported += 1
+          print "✓"
+        else
+          print "✗"
+        end
+
+        sleep(0.1)
       end
 
-      sleep(0.1)
+      puts " (#{category_details['achievements'].count} achievements)"
     end
 
-    puts " (#{category_details['achievements'].count} achievements)"
-  end
+    puts "\n\n✨ Réimport terminé !"
+    puts "📊 #{total_imported} achievements importés"
 
-  puts "\n\n✨ Réimport terminé !"
-  puts "📊 #{total_imported} achievements importés"
-
-  puts "\n📚 Par extension :"
-  Expansion.ordered.each do |exp|
-    count = exp.achievements.where(is_feat_of_strength: false).count
-    puts "  - #{exp.name.ljust(25)} : #{count}" if count > 0
+    puts "\n📚 Par extension :"
+    Expansion.ordered.each do |exp|
+      count = exp.achievements.where(is_feat_of_strength: false).count
+      puts "  - #{exp.name.ljust(25)} : #{count}" if count > 0
+    end
   end
-end
 end
