@@ -14,7 +14,12 @@ tooltip.style.cssText = `
   z-index: 9999;
   box-shadow: 0 4px 16px rgba(0,0,0,0.6);
 `;
-document.body.appendChild(tooltip);
+
+document.addEventListener('turbo:load', () => {
+  if (!document.getElementById('wh-custom-tooltip')) {
+    document.body.appendChild(tooltip);
+  }
+});
 
 document.addEventListener('mouseover', async (e) => {
   const el = e.target.closest('[data-wowhead]');
