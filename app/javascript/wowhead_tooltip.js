@@ -15,11 +15,15 @@ tooltip.style.cssText = `
   box-shadow: 0 4px 16px rgba(0,0,0,0.6);
 `;
 
-document.addEventListener('turbo:load', () => {
+function initTooltip() {
   if (!document.getElementById('wh-custom-tooltip')) {
     document.body.appendChild(tooltip);
   }
-});
+}
+
+document.addEventListener('turbo:load', initTooltip);
+document.addEventListener('turbo:render', initTooltip);
+document.addEventListener('DOMContentLoaded', initTooltip);
 
 document.addEventListener('mouseover', async (e) => {
   const el = e.target.closest('[data-wowhead]');
