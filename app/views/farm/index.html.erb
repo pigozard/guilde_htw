@@ -98,7 +98,10 @@
                   <td>
                     <div class="hw-farm-consumable-cell">
                       <%= image_tag consumable.icon_image_url, alt: consumable.name, class: "hw-farm-consumable-icon" %>
-                      <strong><%= consumable.name %></strong>
+                      <span data-wowhead="item=<%= consumable.blizzard_id %>"
+                            style="cursor: pointer;">
+                        <strong><%= consumable.name %></strong>
+                      </span>
                     </div>
                   </td>
                   <td class="text-center">
@@ -189,7 +192,8 @@
             <div class="hw-consumable-item" data-name="<%= consumable.name.downcase %>">
               <%= form_with url: consumable_selections_path, method: :post, local: true, data: { turbo: false } do |f| %>
                 <%= hidden_field_tag :consumable_id, consumable.id %>
-                <button type="submit" class="hw-consumable-button">
+                <button type="submit" class="hw-consumable-button"
+                  data-wowhead="item=<%= consumable.blizzard_id %>">
                   <%= image_tag consumable.icon_image_url, alt: consumable.name %>
                   <div class="hw-consumable-name"><%= consumable.name %></div>
                 </button>

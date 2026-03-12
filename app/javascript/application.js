@@ -3,6 +3,7 @@ import "@hotwired/turbo-rails"
 import "controllers"
 import "@popperjs/core"
 import "bootstrap"
+import "wowhead_tooltip"
 
 Turbo.setConfirmMethod((message, element) => {
   return new Promise((resolve) => {
