@@ -1,15 +1,20 @@
 <nav class="navbar-midnight">
   <%= link_to "HIGHWAY TO WIPE", root_path, class: "guild-name" %>
-  <ul class="nav-links">
+
+  <button class="nav-toggle" id="navToggle" aria-label="Menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <ul class="nav-links" id="navLinks">
     <% if user_signed_in? %>
       <li><%= link_to "Home", root_path, class: "nav-link" %></li>
       <li><%= link_to "Calendrier", events_path, class: "nav-link" %></li>
       <li><%= link_to "Roster", characters_path, class: "nav-link" %></li>
-
       <li><%= link_to "Farm", farm_path, class: "nav-link" %></li>
-      <%= link_to "Hauts Faits", achievements_path, class: "nav-link" %>
+      <li><%= link_to "Hauts Faits", achievements_path, class: "nav-link" %></li>
       <li><%= link_to "Discord", "https://discord.gg/gpdXBfyuYw", target: "_blank", class: "nav-link" %></li>
-
       <li class="nav-account">
         <div class="dropdown">
           <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
