@@ -6,6 +6,7 @@ class CharactersController < ApplicationController
     @characters = Character.roster
     @role_counts = Character.role_counts
     @flex_count = Character.flex_count
+    @class_counts = Character.class_counts
   end
 
   def new

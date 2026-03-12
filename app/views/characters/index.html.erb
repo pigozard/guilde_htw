@@ -14,6 +14,13 @@
     <%= render "role_counter", role: "flex", count: @flex_count, label: "Flex", icon: "✨" %>
   </div>
 
+<!-- Compteurs de classes -->
+  <div class="hw-class-grid">
+    <% @class_counts.sort_by { |_, count| -count }.each do |class_name, count| %>
+      <%= render "class_counter", class_name: class_name, count: count %>
+    <% end %>
+  </div>
+
   <!-- Bouton CTA -->
   <div class="hw-card-actions">
     <% if user_signed_in? %>

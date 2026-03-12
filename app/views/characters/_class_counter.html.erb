@@ -1,0 +1,9 @@
+<div class="hw-class-counter">
+  <div class="hw-class-counter-icon">
+    <%= image_tag "classes/#{class_name.downcase.gsub(' ', '_')}.png",
+          alt: class_name,
+          class: "hw-class-counter-img #{'is-zero' if count == 0}" %>
+  </div>
+  <div class="hw-class-counter-number <%= 'is-zero' if count == 0 %>"><%= count %></div>
+  <div class="hw-class-counter-label"><%= class_name %></div>
+</div>

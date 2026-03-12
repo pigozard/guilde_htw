@@ -19,4 +19,16 @@ class Character < ApplicationRecord
   def self.flex_count
     permanent.where(specialization_id: nil).count
   end
+
+  def self.class_counts
+  all_classes = WowClass.all.pluck(:name)
+  counts = permanent.joins(:wow_class)
+                    .group("wow_classes.name")
+                    .count
+
+  all_classes.each_with_object({}) do |name, hash|
+    hash[name] = counts[name] || 0
+  end
+  end
+
 end
