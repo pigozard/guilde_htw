@@ -1,5 +1,5 @@
 import { Application } from "@hotwired/stimulus"
-import "wowhead"
+
 
 const application = Application.start()
 
