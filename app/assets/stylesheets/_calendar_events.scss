@@ -1,21 +1,5 @@
 /* ===========================================
    HIGHWAY TO WIPE - Calendar & Events
-   Fichier nettoyé et optimisé
-   =========================================== */
-
-/* ===========================================
-   VARIABLES COULEURS (référence)
-   --bg-dark: #1a1a1a
-   --bg-card: #2d2d2d
-   --bg-card-hover: #3d3d3d
-   --border: #404040
-   --gold: #ffd700
-   --text-light: #f0e6d3
-   --text-muted: #aaa
-   =========================================== */
-
-/* ===========================================
-   CALENDRIER INDEX
    =========================================== */
 
 .calendar-container {
@@ -23,10 +7,6 @@
   border: 1px solid #404040;
   border-radius: 10px;
   padding: 20px;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -39,6 +19,8 @@
   width: 100%;
   border-collapse: separate;
   border-spacing: 4px;
+  min-width: 560px;
+  table-layout: fixed;
 }
 
 .calendar-container thead th {
@@ -51,6 +33,7 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   border-radius: 6px;
+  width: 14.28%;
 }
 
 .calendar-container tbody td {
@@ -90,16 +73,12 @@
   margin-bottom: 6px;
 }
 
-/* Cacher le header par défaut de simple_calendar */
 .calendar-container .simple-calendar .calendar-heading,
 .calendar-container .simple-calendar > h2 {
   display: none !important;
 }
 
-/* ===========================================
-   CALENDAR NAV
-   =========================================== */
-
+/* NAV */
 .calendar-nav {
   display: flex;
   justify-content: space-between;
@@ -163,10 +142,7 @@
   color: #ffd700 !important;
 }
 
-/* ===========================================
-   EVENT PILLS (dans le calendrier)
-   =========================================== */
-
+/* EVENT PILLS */
 .event-pill {
   display: block;
   padding: 4px 8px;
@@ -197,10 +173,7 @@
 .event-social { background: #1b5e20; border-left: 3px solid #81c784; }
 .event-other { background: #37474f; border-left: 3px solid #90a4ae; }
 
-/* ===========================================
-   LÉGENDE
-   =========================================== */
-
+/* LEGENDE */
 .calendar-legend {
   display: flex;
   justify-content: center;
@@ -232,10 +205,7 @@
 .legend-color.event-pvp { background: #1a237e; }
 .legend-color.event-social { background: #1b5e20; }
 
-/* ===========================================
-   PAGE EVENT - Header
-   =========================================== */
-
+/* EVENT DETAIL */
 .event-header {
   background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
   border: 1px solid #404040;
@@ -270,10 +240,6 @@
   margin-bottom: 8px !important;
 }
 
-/* ===========================================
-   EVENT TYPE BADGE
-   =========================================== */
-
 .event-type-badge {
   display: inline-block;
   padding: 10px 20px;
@@ -292,10 +258,7 @@
 .event-type-badge.event-social { background: linear-gradient(135deg, #1b5e20 0%, #388e3c 100%); }
 .event-type-badge.event-other { background: linear-gradient(135deg, #37474f 0%, #546e7a 100%); }
 
-/* ===========================================
-   CARDS HTW
-   =========================================== */
-
+/* CARDS */
 .card-htw {
   background: #2d2d2d !important;
   border: 1px solid #404040 !important;
@@ -324,10 +287,7 @@
   padding: 22px !important;
 }
 
-/* ===========================================
-   COMPOSITION
-   =========================================== */
-
+/* COMPOSITION */
 .composition-grid {
   display: flex;
   justify-content: center;
@@ -368,7 +328,6 @@
   display: block;
 }
 
-/* Icônes de rôle */
 .role-icon-big {
   width: 55px;
   height: 55px;
@@ -383,10 +342,7 @@
   vertical-align: middle;
 }
 
-/* ===========================================
-   PARTICIPANT CARD
-   =========================================== */
-
+/* PARTICIPANTS */
 .participant-card {
   background: linear-gradient(135deg, #3d3d3d 0%, #353535 100%);
   border: 1px solid #404040;
@@ -421,28 +377,18 @@
   border: 1px solid #505050;
 }
 
-/* ===========================================
-   SIGNUP ROW
-   =========================================== */
-
+/* SIGNUP */
 .signup-row {
   background: linear-gradient(135deg, #3d3d3d 0%, #353535 100%);
   border: 1px solid #404040;
   border-radius: 12px;
   padding: 20px;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
   margin-bottom: 15px;
   transition: all 0.3s ease;
 }
 
-.signup-row:hover {
-  border-color: rgba(255, 215, 0, 0.5);
-}
-
-.signup-row:last-child {
-  margin-bottom: 0;
-}
+.signup-row:hover { border-color: rgba(255, 215, 0, 0.5); }
+.signup-row:last-child { margin-bottom: 0; }
 
 .signup-character {
   display: flex;
@@ -465,10 +411,7 @@
   margin-bottom: 3px;
 }
 
-.signup-spec-info {
-  color: #aaa;
-  font-size: 0.9rem;
-}
+.signup-spec-info { color: #aaa; font-size: 0.9rem; }
 
 .signup-actions {
   display: flex;
@@ -484,14 +427,8 @@
   gap: 15px;
 }
 
-/* ===========================================
-   BOUTONS STATUT
-   =========================================== */
-
-.status-buttons {
-  display: flex;
-  gap: 12px;
-}
+/* BOUTONS STATUT */
+.status-buttons { display: flex; gap: 12px; }
 
 .btn-status {
   width: 55px;
@@ -508,9 +445,7 @@
   color: white;
 }
 
-.btn-status:hover {
-  transform: scale(1.08);
-}
+.btn-status:hover { transform: scale(1.08); }
 
 .btn-status-success.active,
 .btn-status-success:hover {
@@ -550,10 +485,7 @@
   background: rgba(220, 53, 69, 0.1) !important;
 }
 
-/* ===========================================
-   PERSO TEMPORAIRE
-   =========================================== */
-
+/* TEMP */
 .temp-badge {
   background: linear-gradient(135deg, rgba(255, 193, 7, 0.3) 0%, rgba(255, 193, 7, 0.15) 100%);
   color: #ffc107;
@@ -609,8 +541,6 @@
 .temp-form {
   margin-top: 20px;
   padding: 20px;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
   background: linear-gradient(135deg, #353535 0%, #2a2a2a 100%);
   border: 1px solid #404040;
   border-radius: 12px;
@@ -639,14 +569,9 @@
   outline: none;
 }
 
-.temp-form-row .btn-status {
-  flex-shrink: 0;
-}
+.temp-form-row .btn-status { flex-shrink: 0; }
 
-/* ===========================================
-   BOUTONS GÉNÉRAUX
-   =========================================== */
-
+/* BOUTONS */
 .btn-gold {
   display: inline-block;
   padding: 12px 30px;
@@ -725,10 +650,7 @@
   color: #fff !important;
 }
 
-/* ===========================================
-   FORMULAIRE EVENT (new/edit)
-   =========================================== */
-
+/* FORMULAIRE */
 .event-form-container {
   background: #2d2d2d;
   border: 1px solid #404040;
@@ -758,13 +680,9 @@
   outline: none;
 }
 
-.event-form .form-control::placeholder {
-  color: #666;
-}
+.event-form .form-control::placeholder { color: #666; }
 
-.event-form input[type="datetime-local"] {
-  color-scheme: dark;
-}
+.event-form input[type="datetime-local"] { color-scheme: dark; }
 
 .alert-error {
   background: rgba(220, 53, 69, 0.15);
@@ -774,15 +692,7 @@
   padding: 15px;
 }
 
-.alert-error ul {
-  list-style: none;
-  padding-left: 0;
-  margin: 0;
-}
-
-/* ===========================================
-   TITRES & TEXTE
-   =========================================== */
+.alert-error ul { list-style: none; padding-left: 0; margin: 0; }
 
 .page-title {
   font-family: 'Cinzel', serif;
@@ -791,13 +701,7 @@
   letter-spacing: 3px;
 }
 
-.text-muted-htw {
-  color: #aaa !important;
-}
-
-/* ===========================================
-   ALERTES
-   =========================================== */
+.text-muted-htw { color: #aaa !important; }
 
 .alert-info-htw {
   background: #2d2d2d;
@@ -807,24 +711,12 @@
   padding: 15px 20px;
 }
 
-.alert-info-htw a {
-  color: #ffd700;
-  font-weight: 600;
-}
+.alert-info-htw a { color: #ffd700; font-weight: 600; }
+.alert-info-htw a:hover { color: #ffe44d; }
 
-.alert-info-htw a:hover {
-  color: #ffe44d;
-}
-
-/* ===========================================
-   RESPONSIVE
-   =========================================== */
-
+/* RESPONSIVE */
 @media (max-width: 768px) {
-  .calendar-container tbody td {
-    height: 80px;
-    padding: 6px;
-  }
+  .calendar-container tbody td { height: 80px; padding: 6px; }
   .day-number { font-size: 0.8rem; }
   .event-pill { font-size: 0.65rem; padding: 3px 6px; }
   .composition-grid { gap: 15px; }
@@ -848,10 +740,6 @@
   .card-htw .card-body { padding: 15px !important; }
   .signup-character .class-icon { width: 35px; height: 35px; }
 }
-
-/* ===========================================
-   FIX - Icônes Roster
-   =========================================== */
 
 .role-card .role-icon-big {
   width: 100px !important;
