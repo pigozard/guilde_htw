@@ -1,24 +1,131 @@
-/* Fix scroll calendrier mobile */
+// Graphical variables
+@import "config/fonts";
+@import "config/colors";
+@import "config/bootstrap_variables";
+
+// External libraries
+@import "bootstrap";
+@import "font-awesome";
+
+// Your CSS partials
+@import "components/index";
+@import "pages/home";
+@import "pages/index";
+@import "components/navbar";
+@import "components/characters";
+@import "components/characters_form";
+@import "components/auth";
+@import "calendar_events";
+
+
 body {
-  overflow-x: hidden;
+  background-color: #1a1a1a;
+  color: #ffffff;
 }
 
-.hw-container {
-  overflow-x: visible !important;
+/* Cards en dark aussi */
+.card {
+  background-color: #2d2d2d;
+  border: 1px solid #404040;
+  color: #ffffff;
 }
 
-@media (max-width: 768px) {
-  .hw-container {
-    padding: 8px;
-  }
+.card:hover {
+  background-color: #3d3d3d;
 }
-/* Fix scroll calendrier mobile */
-@media (max-width: 768px) {
-  body {
-    overflow-x: visible !important;
-  }
 
-  .hw-container {
-    padding: 8px !important;
-  }
+/* Tableau */
+.table {
+  color: #ffffff;
+}
+
+/* Inputs */
+.form-control,
+.form-select {
+  background-color: #2d2d2d;
+  border-color: #404040;
+  color: #ffffff;
+}
+
+.form-control::placeholder {
+  color: #888888;
+}
+
+/* Liens */
+a {
+  color: #6ea8fe;
+}
+
+a:hover {
+  color: #9ec5fe;
+}
+
+.role-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  vertical-align: middle;
+  border-radius: 50%;
+}
+
+.guild-name {
+  text-decoration: none;
+}
+
+.guild-name:hover {
+  text-decoration: none;
+}
+
+/* Modal de confirmation */
+.confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.confirm-modal {
+  background: #2d2d2d;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  max-width: 400px;
+  border: 1px solid #ffc107;
+}
+
+.confirm-message {
+  color: #ffffff;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.confirm-btn {
+  color: white;
+  border: none;
+  padding: 10px 30px;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.confirm-btn-yes {
+  background: #dc3545;
+}
+
+.confirm-btn-yes:hover {
+  background: #c82333;
+}
+
+.confirm-btn-no {
+  background: #6c757d;
+}
+
+.confirm-btn-no:hover {
+  background: #5a6268;
 }
