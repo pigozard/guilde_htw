@@ -1,25 +1,26 @@
 /* ===== CALENDAR RESPONSIVE MOBILE ===== */
 
-.calendar-container {
+.calendar-scroll-wrapper {
   overflow-x: auto;
-  -webkit-overflow-scrolling: touch; /* scroll fluide iOS */
+  -webkit-overflow-scrolling: touch;
 }
 
-/* Le tableau généré par simple_calendar */
-.calendar-container table {
-  min-width: 560px; /* force les 7 colonnes à rester visibles */
+.calendar-scroll-wrapper table {
+  min-width: 600px;
   width: 100%;
   table-layout: fixed;
 }
 
-/* Optionnel : indicateur visuel que ça scroll sur mobile */
+.calendar-scroll-hint {
+  display: none;
+  text-align: center;
+  font-size: 0.7rem;
+  color: #888;
+  margin-top: 4px;
+}
+
 @media (max-width: 640px) {
-  .calendar-container::after {
-    content: "← Faites défiler →";
+  .calendar-scroll-hint {
     display: block;
-    text-align: center;
-    font-size: 0.7rem;
-    color: #888;
-    padding: 4px 0 0;
   }
 }
