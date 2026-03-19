@@ -23,6 +23,8 @@
   border: 1px solid #404040;
   border-radius: 10px;
   padding: 20px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .calendar-container .simple-calendar {
