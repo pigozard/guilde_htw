@@ -125,54 +125,120 @@ class WarcraftLogsService
   end
 
   def guild_death_stats
-    return mock_death_stats unless @access_token
+  return mock_death_stats unless @access_token
 
-    guild_name = "Highway to Wipe"
-    server     = "eitrigg"
-    region     = "EU"
+  start_date = 1.month.ago.to_i * 1000
+  end_date   = Time.now.to_i * 1000
 
-    start_date = 1.month.ago.to_i * 1000
-    end_date   = Time.now.to_i * 1000
+  # Récupère les reports récents de la guilde + Crowstorm
+  guild_query = <<~GRAPHQL
+    {
+      reportData {
+        reports(
+          guildName: "Highway to Wipe",
+          guildServerSlug: "eitrigg",
+          guildServerRegion: "EU",
+          startTime: #{start_date},
+          endTime: #{end_date},
+          limit: 10
+        ) {
+          data {
+            code
+            zone { id }
+          }
+        }
+      }
+    }
+  GRAPHQL
 
-    query = <<~GRAPHQL
-      {
-        reportData {
-          reports(
-            guildName: "#{guild_name}",
-            guildServerSlug: "#{server}",
-            guildServerRegion: "#{region}",
-            startTime: #{start_date},
-            endTime: #{end_date},
-            limit: 20
-          ) {
+  character_query = <<~GRAPHQL
+    {
+      characterData {
+        character(
+          name: "Crowstorm",
+          serverSlug: "eitrigg",
+          serverRegion: "EU"
+        ) {
+          recentReports(limit: 5) {
             data {
               code
-              zone { id name }
-              rankings(playerMetric: deaths)
+              zone { id }
+            }
+          }
+        }
+      }
+    }
+  GRAPHQL
+
+  guild_response     = post_query(guild_query)
+  character_response = post_query(character_query)
+
+  guild_reports     = guild_response&.dig('data', 'reportData', 'reports', 'data') || []
+  character_reports = character_response&.dig('data', 'characterData', 'character', 'recentReports', 'data') || []
+
+  all_reports = (guild_reports + character_reports)
+    .uniq { |r| r['code'] }
+    .select { |r| MIDNIGHT_ZONE_IDS.include?(r.dig('zone', 'id')) }
+
+  return mock_death_stats if all_reports.empty?
+
+  player_deaths  = Hash.new(0)
+  player_classes = {}
+
+  all_reports.first(5).each do |report|
+    code = report['code']
+    next unless code
+
+    death_query = <<~GRAPHQL
+      {
+        reportData {
+          report(code: "#{code}") {
+            masterData {
+              actors(type: "Player") {
+                id
+                name
+                subType
+              }
+            }
+            events(dataType: Deaths, startTime: 0, endTime: 99999999999) {
+              data
             }
           }
         }
       }
     GRAPHQL
 
-    response = self.class.post(
-      '/client',
-      headers: {
-        'Authorization' => "Bearer #{@access_token}",
-        'Content-Type'  => 'application/json'
-      },
-      body: { query: query }.to_json
-    )
+    response = post_query(death_query)
+    next unless response
 
-    if response.success?
-      parse_death_stats(response)
-    else
-      Rails.logger.error "Death Stats Error: #{response.code}"
-      mock_death_stats
+    actors = response.dig('data', 'reportData', 'report', 'masterData', 'actors') || []
+    actors_map = actors.each_with_object({}) do |a, map|
+      map[a['id']] = { name: a['name'], class: a['subType'] }
     end
+
+    events = response.dig('data', 'reportData', 'report', 'events', 'data') || []
+
+    events.each do |event|
+      actor = actors_map[event['targetID']]
+      next unless actor
+
+      name  = actor[:name]
+      klass = actor[:class]
+
+      player_deaths[name]  += 1
+      player_classes[name] ||= klass
+    end
+  end
+
+  return mock_death_stats if player_deaths.empty?
+
+  player_deaths
+    .sort_by { |_, d| -d }
+    .first(10)
+    .map { |name, deaths| { player: name, deaths: deaths, class: player_classes[name] || 'Unknown' } }
   rescue => e
-    Rails.logger.error "Death Stats Exception: #{e.message}"
-    mock_death_stats
+  Rails.logger.error "guild_death_stats error: #{e.message}"
+  mock_death_stats
   end
 
   private
