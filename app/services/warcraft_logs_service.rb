@@ -10,7 +10,7 @@ class WarcraftLogsService
 
   RAID_CONFIGS = {
     "The Voidspire"        => { total: 6, bosses: ["Imperator Averzian", "Vorasius", "Fallen-King Salhadaar", "Vaelgor & Ezzorak", "Lightblinded Vanguard", "Alleria Windrunner"] },
-    "The Dreamrift"        => { total: 1, bosses: ["Chimaerus"] },
+    "The Dreamrift"        => { total: 1, bosses: ["Chimaerus, the Undreamt God"] },
     "March on Quel'Danas"  => { total: 2, bosses: ["Belo'ren", "L'ura"] }
   }.freeze
 
