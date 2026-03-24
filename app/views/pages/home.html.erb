@@ -10,44 +10,72 @@
   <!-- Grille principale : Progression + Prochain Event -->
   <div class="hw-main-grid">
 
-    <!-- PROGRESSION RAID -->
-    <div class="hw-card">
-      <div class="hw-card-header">
-        <span class="hw-card-icon">⚔️</span>
-        <h2 class="hw-card-title"><%= @warcraftlogs_progression[:raid_name] %></h2>
-      </div>
-      <div class="hw-card-body">
+<!-- PROGRESSION MULTI-RAIDS -->
+<div class="hw-card">
+  <div class="hw-card-header">
+    <span class="hw-card-icon">⚔️</span>
+    <h2 class="hw-card-title">Progression Raids</h2>
+    <% if @latest_report_code.present? %>
+      <a href="https://www.warcraftlogs.com/reports/<%= @latest_report_code %>"
+         target="_blank" rel="noopener" class="hw-wcl-btn">
+        📋 Derniers logs →
+      </a>
+    <% else %>
+      <a href="https://www.warcraftlogs.com/guild/eu/eitrigg/highway%20to%20wipe"
+         target="_blank" rel="noopener" class="hw-wcl-btn">
+        📋 Logs WCL →
+      </a>
+    <% end %>
+  </div>
+  <div class="hw-card-body">
+    <% @warcraftlogs_progression.each do |raid_name, prog| %>
+      <div class="hw-prog-main" style="margin-bottom: 20px;">
+
+        <div class="hw-prog-difficulty-name" style="color: #ffd700; margin-bottom: 6px;">
+          <%= raid_name %>
+        </div>
+
         <%
-          # Trouve la plus haute difficulté avec des kills
           highest = nil
-          if @warcraftlogs_progression[:mythic][:killed] > 0
-            highest = { label: "Mythique", killed: @warcraftlogs_progression[:mythic][:killed], total: @warcraftlogs_progression[:mythic][:total], color: "#f44336" }
-          elsif @warcraftlogs_progression[:heroic][:killed] > 0
-            highest = { label: "Héroïque", killed: @warcraftlogs_progression[:heroic][:killed], total: @warcraftlogs_progression[:heroic][:total], color: "#2196f3" }
-          elsif @warcraftlogs_progression[:normal][:killed] > 0
-            highest = { label: "Normal", killed: @warcraftlogs_progression[:normal][:killed], total: @warcraftlogs_progression[:normal][:total], color: "#4caf50" }
+          if prog[:mythic][:killed] > 0
+            highest = { label: "Mythique", killed: prog[:mythic][:killed], total: prog[:mythic][:total], color: "#f44336" }
+          elsif prog[:heroic][:killed] > 0
+            highest = { label: "Héroïque", killed: prog[:heroic][:killed], total: prog[:heroic][:total], color: "#2196f3" }
+          elsif prog[:normal][:killed] > 0
+            highest = { label: "Normal", killed: prog[:normal][:killed], total: prog[:normal][:total], color: "#4caf50" }
           end
         %>
 
         <% if highest %>
-          <div class="hw-prog-main">
-            <div class="hw-prog-difficulty-name" style="color: <%= highest[:color] %>">
-              <%= highest[:label] %>
-            </div>
-            <div class="hw-prog-score">
-              <span class="hw-prog-killed"><%= highest[:killed] %></span>
-              <span class="hw-prog-sep">/</span>
-              <span class="hw-prog-total"><%= highest[:total] %></span>
-            </div>
-            <div class="hw-prog-bar">
-              <div class="hw-prog-fill" style="width: <%= (highest[:killed].to_f / highest[:total] * 100).round %>%; background: <%= highest[:color] %>;"></div>
-            </div>
+          <div class="hw-prog-difficulty-name" style="color: <%= highest[:color] %>">
+            <%= highest[:label] %>
+          </div>
+          <div class="hw-prog-score">
+            <span class="hw-prog-killed"><%= highest[:killed] %></span>
+            <span class="hw-prog-sep">/</span>
+            <span class="hw-prog-total"><%= highest[:total] %></span>
+          </div>
+          <div class="hw-prog-bar">
+            <div class="hw-prog-fill" style="width: <%= (highest[:killed].to_f / highest[:total] * 100).round %>%; background: <%= highest[:color] %>;"></div>
           </div>
         <% else %>
-          <p class="hw-empty">Aucune progression enregistrée</p>
+          <div class="hw-prog-score">
+            <span class="hw-prog-killed">0</span>
+            <span class="hw-prog-sep">/</span>
+            <span class="hw-prog-total"><%= prog[:total] %></span>
+          </div>
+          <div class="hw-prog-bar">
+            <div class="hw-prog-fill" style="width: 0%;"></div>
+          </div>
         <% end %>
+
       </div>
-    </div>
+      <% unless raid_name == @warcraftlogs_progression.keys.last %>
+        <hr style="border-color: rgba(255,215,0,0.15); margin: 16px 0;">
+      <% end %>
+    <% end %>
+  </div>
+</div>
 
     <!-- PROCHAIN EVENT -->
     <% if @next_event.present? %>

@@ -8,25 +8,32 @@ class WarcraftLogsService
     5 => 'Mythique'
   }
 
+  RAID_CONFIGS = {
+    "The Voidspire"        => { total: 6, bosses: ["Imperator Averzian", "Vorasius", "Fallen-King Salhadaar", "Vaelgor & Ezzorak", "Lightblinded Vanguard", "Alleria Windrunner"] },
+    "The Dreamrift"        => { total: 1, bosses: ["Chimaerus"] },
+    "March on Quel'Danas"  => { total: 2, bosses: ["Belo'ren", "L'ura"] }
+  }.freeze
+
+  # Midnight S1 : zone 46 = VS / DR / MQD
+  MIDNIGHT_ZONE_IDS = [46].freeze
+
   def initialize
-    @client_id = ENV['WARCRAFTLOGS_CLIENT_ID']
+    @client_id     = ENV['WARCRAFTLOGS_CLIENT_ID']
     @client_secret = ENV['WARCRAFTLOGS_CLIENT_SECRET']
-    @access_token = get_access_token
+    @access_token  = get_access_token
   end
 
   def guild_data
     return mock_data unless @access_token
 
     guild_name = "Highway to Wipe"
-    server = "eitrigg"
-    region = "EU"
+    server     = "eitrigg"
+    region     = "EU"
 
-    # Période : 6 derniers mois (en millisecondes)
     start_date = 6.months.ago.to_i * 1000
-    end_date = Time.now.to_i * 1000
+    end_date   = Time.now.to_i * 1000
 
-    # Query GraphQL simplifiée pour réduire la complexité
-    query = <<~GRAPHQL
+    guild_query = <<~GRAPHQL
       {
         reportData {
           reports(
@@ -41,10 +48,7 @@ class WarcraftLogsService
               code
               title
               startTime
-              zone {
-                id
-                name
-              }
+              zone { id name }
               fights(killType: Kills) {
                 name
                 difficulty
@@ -56,41 +60,67 @@ class WarcraftLogsService
       }
     GRAPHQL
 
-    Rails.logger.info "🔍 Recherche WCL: #{guild_name} @ #{server}-#{region}"
+    character_query = <<~GRAPHQL
+      {
+        characterData {
+          character(
+            name: "Crowstorm",
+            serverSlug: "#{server}",
+            serverRegion: "#{region}"
+          ) {
+            recentReports(limit: 10) {
+              data {
+                code
+                title
+                startTime
+                zone { id name }
+                fights(killType: Kills) {
+                  name
+                  difficulty
+                  kill
+                }
+              }
+            }
+          }
+        }
+      }
+    GRAPHQL
+
+    Rails.logger.info "🔍 Recherche WCL: #{guild_name} + Crowstorm"
     Rails.logger.info "🔍 Période: #{Time.at(start_date/1000)} → #{Time.at(end_date/1000)}"
 
-    response = self.class.post(
-      '/client',
-      headers: {
-        'Authorization' => "Bearer #{@access_token}",
-        'Content-Type' => 'application/json'
-      },
-      body: { query: query }.to_json
-    )
+    guild_response     = post_query(guild_query)
+    character_response = post_query(character_query)
 
-    Rails.logger.info "=== RESPONSE CODE: #{response.code} ==="
+    guild_reports     = guild_response&.dig('data', 'reportData', 'reports', 'data') || []
+    character_reports = character_response&.dig('data', 'characterData', 'character', 'recentReports', 'data') || []
 
-    if response.success?
-      parsed = response.parsed_response
+    all_reports = (guild_reports + character_reports).uniq { |r| r['code'] }
 
-      # Vérifier les erreurs de l'API
-      if parsed['errors']
-        Rails.logger.error "❌ API Errors: #{parsed['errors']}"
-        Rails.logger.warn "⚠️ Utilisation des données mock (erreur API)"
-        return mock_data
-      end
+    Rails.logger.info "=== #{guild_reports.size} guilde + #{character_reports.size} Crowstorm = #{all_reports.size} total ==="
 
-      Rails.logger.info "✅ Réponse API valide, parsing des données..."
-      parse_complete_data(response)
-    else
-      Rails.logger.error "❌ HTTP Error: #{response.code}"
-      Rails.logger.warn "⚠️ Utilisation des données mock (erreur HTTP)"
-      mock_data
+    all_reports.first(10).each do |r|
+      date = Time.at(r['startTime'] / 1000) rescue 'date inconnue'
+      Rails.logger.info "📊 Zone ID: #{r.dig('zone', 'id')} | #{r.dig('zone', 'name')} | #{r['fights']&.size || 0} kills | #{date}"
     end
+
+    return mock_data if all_reports.empty?
+
+    progression  = calculate_progression(all_reports)
+    recent_kills = extract_recent_kills(all_reports)
+    death_stats  = guild_death_stats
+
+    Rails.logger.info "✅ #{recent_kills.size} kills trouvés"
+
+    {
+      progression:        progression,
+      recent_kills:       recent_kills.first(5),
+      death_stats:        death_stats,
+      latest_report_code: all_reports.first&.dig('code')
+    }
   rescue => e
     Rails.logger.error "❌ Exception: #{e.message}"
     Rails.logger.error e.backtrace.first(5).join("\n")
-    Rails.logger.warn "⚠️ Utilisation des données mock (exception)"
     mock_data
   end
 
@@ -98,14 +128,12 @@ class WarcraftLogsService
     return mock_death_stats unless @access_token
 
     guild_name = "Highway to Wipe"
-    server = "eitrigg"
-    region = "EU"
+    server     = "eitrigg"
+    region     = "EU"
 
-    # Période : dernier mois
     start_date = 1.month.ago.to_i * 1000
-    end_date = Time.now.to_i * 1000
+    end_date   = Time.now.to_i * 1000
 
-    # Query pour récupérer les deaths par joueur
     query = <<~GRAPHQL
       {
         reportData {
@@ -119,10 +147,7 @@ class WarcraftLogsService
           ) {
             data {
               code
-              zone {
-                id
-                name
-              }
+              zone { id name }
               rankings(playerMetric: deaths)
             }
           }
@@ -134,7 +159,7 @@ class WarcraftLogsService
       '/client',
       headers: {
         'Authorization' => "Bearer #{@access_token}",
-        'Content-Type' => 'application/json'
+        'Content-Type'  => 'application/json'
       },
       body: { query: query }.to_json
     )
@@ -152,22 +177,45 @@ class WarcraftLogsService
 
   private
 
+  def post_query(query)
+    response = self.class.post(
+      '/client',
+      headers: {
+        'Authorization' => "Bearer #{@access_token}",
+        'Content-Type'  => 'application/json'
+      },
+      body: { query: query }.to_json
+    )
+
+    unless response.success?
+      Rails.logger.error "❌ WCL HTTP #{response.code}"
+      return nil
+    end
+
+    parsed = response.parsed_response
+    if parsed['errors']
+      Rails.logger.error "❌ WCL GraphQL errors: #{parsed['errors']}"
+      return nil
+    end
+
+    parsed
+  end
+
   def get_access_token
     return nil unless @client_id && @client_secret
 
     response = self.class.post(
       'https://www.warcraftlogs.com/oauth/token',
       body: {
-        grant_type: 'client_credentials',
-        client_id: @client_id,
+        grant_type:    'client_credentials',
+        client_id:     @client_id,
         client_secret: @client_secret
       }
     )
 
     if response.success?
-      token = response['access_token']
       Rails.logger.info "✅ Warcraft Logs: Token obtenu"
-      token
+      response['access_token']
     else
       Rails.logger.error "❌ Warcraft Logs Auth Error: #{response.code}"
       nil
@@ -177,120 +225,33 @@ class WarcraftLogsService
     nil
   end
 
-  def parse_complete_data(response)
-    data = response.parsed_response
-
-    # Debug: structure complète
-    Rails.logger.info "=== STRUCTURE RÉPONSE: #{data.keys} ==="
-
-    reports = data.dig('data', 'reportData', 'reports', 'data') || []
-
-    Rails.logger.info "=== NOMBRE DE REPORTS TROUVÉS: #{reports.size} ==="
-
-    # 🔍 DEBUG - Afficher les Zone IDs
-    if reports.any?
-      reports.first(10).each do |report|
-        date = Time.at(report['startTime'] / 1000) rescue 'date inconnue'
-        zone_id = report.dig('zone', 'id')
-        zone_name = report.dig('zone', 'name')
-        fights_count = report['fights']&.size || 0
-        Rails.logger.info "📊 Zone ID: #{zone_id} | Zone Name: '#{zone_name}' | Fights: #{fights_count} | Date: #{date}"
-      end
-    else
-      Rails.logger.warn "⚠️ Aucun report trouvé - Vérifiez que la guilde a uploadé des logs"
-    end
-
-    Rails.logger.info "================================"
-
-    if reports.empty?
-      Rails.logger.warn "⚠️ Utilisation des données mock"
-      return mock_data
-    end
-
-    # Progression par difficulté
-    progression = calculate_progression(reports)
-
-    # Kills récents
-    recent_kills = extract_recent_kills(reports)
-
-    # Deaths (mock pour l'instant)
-    death_stats = guild_death_stats
-
-    Rails.logger.info "✅ Progression #{progression[:raid_name]}: N#{progression[:normal][:killed]}/#{progression[:normal][:total]} H#{progression[:heroic][:killed]}/#{progression[:heroic][:total]} M#{progression[:mythic][:killed]}/#{progression[:mythic][:total]}"
-    Rails.logger.info "✅ #{recent_kills.size} kills trouvés"
-
-    {
-      progression: progression,
-      recent_kills: recent_kills.first(5),
-      death_stats: death_stats
-    }
-  end
-
   def calculate_progression(reports)
-    # Compter les boss uniques tués par difficulté
-    kills_by_difficulty = {
-      3 => Set.new,  # Normal
-      4 => Set.new,  # Héroïque
-      5 => Set.new   # Mythique
-    }
-
-    # Suivre le dernier raid avec des kills
-    last_raid_name = "Aucun raid"
-    last_raid_date = nil
+    raids_kills = RAID_CONFIGS.transform_values { { 3 => Set.new, 4 => Set.new, 5 => Set.new } }
 
     reports.each do |report|
       zone_id = report.dig('zone', 'id')
-      zone_name = report.dig('zone', 'name')
+      next unless MIDNIGHT_ZONE_IDS.include?(zone_id)
 
-      # Raids TWW: Manaforge Omega (44), Liberation of Undermine (39), Nerub-ar Palace (38)
-      next unless [44, 39, 38].include?(zone_id)
-
-      fights = report['fights'] || []
-      has_kills = false
-
-      fights.each do |fight|
+      (report['fights'] || []).each do |fight|
         next unless fight['kill']
 
-        has_kills = true
+        boss_name  = fight['name']
         difficulty = fight['difficulty']
-        boss_name = fight['name']
+        raid_name  = RAID_CONFIGS.find { |_, v| v[:bosses].include?(boss_name) }&.first
+        next unless raid_name
 
-        kills_by_difficulty[difficulty]&.add(boss_name) if kills_by_difficulty[difficulty]
-      end
-
-      # Mettre à jour le dernier raid si ce report a des kills
-      if has_kills
-        report_date = report['startTime']
-        if last_raid_date.nil? || report_date > last_raid_date
-          last_raid_date = report_date
-          last_raid_name = zone_name
-        end
+        raids_kills[raid_name][difficulty]&.add(boss_name)
       end
     end
 
-    # Déterminer le nombre total de boss selon le raid
-    total_bosses = case last_raid_name
-    when "Manaforge Omega" then 8
-    when "Liberation of Undermine" then 8
-    when "Nerub-ar Palace" then 8
-    else 8
+    RAID_CONFIGS.each_with_object({}) do |(raid_name, config), result|
+      result[raid_name] = {
+        total:  config[:total],
+        normal: { killed: raids_kills[raid_name][3].size, total: config[:total] },
+        heroic: { killed: raids_kills[raid_name][4].size, total: config[:total] },
+        mythic: { killed: raids_kills[raid_name][5].size, total: config[:total] }
+      }
     end
-
-    {
-      normal: {
-        killed: kills_by_difficulty[3].size,
-        total: total_bosses
-      },
-      heroic: {
-        killed: kills_by_difficulty[4].size,
-        total: total_bosses
-      },
-      mythic: {
-        killed: kills_by_difficulty[5].size,
-        total: total_bosses
-      },
-      raid_name: last_raid_name
-    }
   end
 
   def extract_recent_kills(reports)
@@ -298,63 +259,49 @@ class WarcraftLogsService
 
     reports.each do |report|
       zone_id = report.dig('zone', 'id')
-      # Raids TWW: Manaforge Omega (44), Liberation of Undermine (39), Nerub-ar Palace (38)
-      next unless [44, 39, 38].include?(zone_id)
+      next unless MIDNIGHT_ZONE_IDS.include?(zone_id)
 
-      fights = report['fights'] || []
-
-      fights.each do |fight|
+      (report['fights'] || []).each do |fight|
         next unless fight['kill']
 
         kills << {
-          boss: fight['name'],
+          boss:       fight['name'],
           difficulty: DIFFICULTIES[fight['difficulty']] || 'Inconnu',
-          date: Time.at(report['startTime'] / 1000)
+          date:       Time.at(report['startTime'] / 1000)
         }
       end
     end
 
-    # Trier par date (plus récent en premier)
     kills.sort_by { |k| -k[:date].to_i }
   end
 
   def parse_death_stats(response)
-    data = response.parsed_response
+    data    = response.parsed_response
     reports = data.dig('data', 'reportData', 'reports', 'data') || []
 
-    # Agrège les deaths par joueur
-    player_deaths = Hash.new(0)
+    player_deaths  = Hash.new(0)
     player_classes = {}
 
     reports.each do |report|
       zone_id = report.dig('zone', 'id')
-      next unless [44, 39, 38].include?(zone_id) # Raids TWW
+      next unless MIDNIGHT_ZONE_IDS.include?(zone_id)
 
-      rankings = report['rankings'] || []
-
-      rankings.each do |ranking|
-        player_name = ranking['name']
+      (report['rankings'] || []).each do |ranking|
+        name   = ranking['name']
         deaths = ranking['deaths'] || 0
-        player_class = ranking['class']
+        klass  = ranking['class']
 
-        player_deaths[player_name] += deaths
-        player_classes[player_name] ||= player_class
+        player_deaths[name]  += deaths
+        player_classes[name] ||= klass
       end
     end
 
-    # Si aucun death trouvé, retourne un tableau vide
     return [] if player_deaths.empty?
 
-    # Trie par nombre de deaths décroissant
-    sorted_players = player_deaths.sort_by { |_, deaths| -deaths }.first(10)
-
-    sorted_players.map do |player_name, deaths|
-      {
-        player: player_name,
-        deaths: deaths,
-        class: player_classes[player_name] || 'Unknown'
-      }
-    end
+    player_deaths
+      .sort_by { |_, d| -d }
+      .first(10)
+      .map { |name, deaths| { player: name, deaths: deaths, class: player_classes[name] || 'Unknown' } }
   rescue => e
     Rails.logger.error "Parse death stats error: #{e.message}"
     []
@@ -362,11 +309,11 @@ class WarcraftLogsService
 
   def mock_death_stats
     [
-      { player: "Inboxfear", deaths: 42, class: "Paladin" },
-      { player: "Healystic", deaths: 38, class: "Priest" },
+      { player: "Inboxfear",   deaths: 42, class: "Paladin" },
+      { player: "Healystic",   deaths: 38, class: "Priest" },
       { player: "Shadowblade", deaths: 35, class: "Rogue" },
-      { player: "Pyromancer", deaths: 31, class: "Mage" },
-      { player: "Tankmaster", deaths: 28, class: "Warrior" }
+      { player: "Pyromancer",  deaths: 31, class: "Mage" },
+      { player: "Tankmaster",  deaths: 28, class: "Warrior" }
     ]
   end
 
@@ -374,17 +321,17 @@ class WarcraftLogsService
     Rails.logger.warn "⚠️ Utilisation des données mock"
     {
       progression: {
-        normal: { killed: 8, total: 8 },
-        heroic: { killed: 8, total: 8 },
-        mythic: { killed: 3, total: 8 },
-        raid_name: "Manaforge Omega"
+        "The Voidspire"       => { total: 6, normal: { killed: 6, total: 6 }, heroic: { killed: 4, total: 6 }, mythic: { killed: 1, total: 6 } },
+        "The Dreamrift"       => { total: 1, normal: { killed: 1, total: 1 }, heroic: { killed: 1, total: 1 }, mythic: { killed: 0, total: 1 } },
+        "March on Quel'Danas" => { total: 2, normal: { killed: 0, total: 2 }, heroic: { killed: 0, total: 2 }, mythic: { killed: 0, total: 2 } }
       },
       recent_kills: [
-        { boss: "Ulgrax", difficulty: "Mythique", date: 1.day.ago },
-        { boss: "Bloodbound Horror", difficulty: "Mythique", date: 2.days.ago },
-        { boss: "Sikran", difficulty: "Mythique", date: 3.days.ago }
+        { boss: "Alleria Windrunner",    difficulty: "Héroïque", date: 1.day.ago },
+        { boss: "Lightblinded Vanguard", difficulty: "Héroïque", date: 1.day.ago },
+        { boss: "Chimaerus",             difficulty: "Héroïque", date: 2.days.ago }
       ],
-      death_stats: mock_death_stats
+      death_stats: mock_death_stats,
+      latest_report_code: nil
     }
   end
 end

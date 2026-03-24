@@ -130,3 +130,19 @@ a:hover {
   background: #5a6268;
 }
 
+/* Bouton WCL */
+.hw-wcl-btn {
+  margin-left: auto;
+  font-size: 0.72rem;
+  color: var(--hw-text-muted);
+  text-decoration: none;
+  border: 1px solid var(--hw-card-border);
+  border-radius: 0.4rem;
+  padding: 0.2rem 0.55rem;
+  white-space: nowrap;
+  transition: color 0.2s, border-color 0.2s;
+}
+.hw-wcl-btn:hover {
+  color: var(--hw-gold);
+  border-color: var(--hw-gold);
+}

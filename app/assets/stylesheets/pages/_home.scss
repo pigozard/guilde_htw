@@ -312,3 +312,33 @@
     align-items: flex-start;
   }
 }
+/* ====== PROGRESSION MULTI-RAIDS ====== */
+.hw-raid-diff-row {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.25rem;
+}
+
+.hw-raid-bar {
+  flex: 1;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+  display: block;
+}
+
+.hw-raid-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+  display: block;
+}
+
+.hw-raid-diff-tag,
+.hw-raid-score {
+  display: inline-block;
+  flex-shrink: 0;
+}
