@@ -342,3 +342,55 @@
   display: inline-block;
   flex-shrink: 0;
 }
+/* Colonne droite : event + wcl */
+.hw-right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Progression compacte */
+.hw-prog-compact {
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.hw-prog-score-compact {
+  font-size: 32px !important;
+  margin-bottom: 10px !important;
+}
+
+/* Bouton WCL pleine largeur */
+.hw-wcl-full-btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 8px;
+  color: #aaa;
+  text-decoration: none;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.hw-wcl-full-btn:hover {
+  border-color: #ffd700;
+  color: #ffd700;
+  background: rgba(255, 215, 0, 0.05);
+}
+
+@media (max-width: 992px) {
+  .hw-right-column {
+    flex-direction: column;
+  }
+}
+.hw-wcl-full-btn-gold {
+  border-color: rgba(255, 215, 0, 0.6);
+  color: #ffd700;
+  font-weight: 600;
+}
+
+.hw-wcl-full-btn-gold:hover {
+  background: rgba(255, 215, 0, 0.15);
+}

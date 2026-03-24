@@ -32,16 +32,20 @@ class PagesController < ApplicationController
 
   private
 
-  def load_warcraft_logs_from_db
-    wcl_data = GuildStatistic.warcraft_logs_data
+def load_warcraft_logs_from_db
+  wcl_data = GuildStatistic.warcraft_logs_data
 
-    @warcraftlogs_progression = wcl_data['progression'].deep_symbolize_keys
-    @warcraftlogs_recent_kills = wcl_data['recent_kills'].map(&:deep_symbolize_keys)
-    @warcraftlogs_death_stats = wcl_data['death_stats'].map(&:deep_symbolize_keys)
-  rescue => e
-    Rails.logger.error "Failed to load Warcraft Logs from DB: #{e.message}"
-    fallback_warcraftlogs_data
-  end
+  # On NE symbolize PAS les clés de progression (ce sont les noms de raids)
+  progression_raw = wcl_data['progression']
+  @warcraftlogs_progression = progression_raw.transform_values(&:deep_symbolize_keys)
+
+  @warcraftlogs_recent_kills = wcl_data['recent_kills'].map(&:deep_symbolize_keys)
+  @warcraftlogs_death_stats  = wcl_data['death_stats'].map(&:deep_symbolize_keys)
+  @latest_report_code        = wcl_data['latest_report_code']
+rescue => e
+  Rails.logger.error "Failed to load Warcraft Logs from DB: #{e.message}"
+  fallback_warcraftlogs_data
+end
 
   def load_raider_io_from_db
     @raiderio_top_players = GuildStatistic.raider_io_data.map(&:deep_symbolize_keys)
