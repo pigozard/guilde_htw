@@ -9,10 +9,10 @@ class WarcraftLogsService
   }
 
   RAID_CONFIGS = {
-    "The Voidspire"        => { total: 6, bosses: ["Imperator Averzian", "Vorasius", "Fallen-King Salhadaar", "Vaelgor & Ezzorak", "Lightblinded Vanguard", "Alleria Windrunner"] },
-    "The Dreamrift"        => { total: 1, bosses: ["Chimaerus, the Undreamt God"] },
-    "March on Quel'Danas"  => { total: 2, bosses: ["Belo'ren", "L'ura"] }
-  }.freeze
+  "The Voidspire"        => { total: 6, bosses: ["Imperator Averzian", "Vorasius", "Fallen-King Salhadaar", "Vaelgor & Ezzorak", "Lightblinded Vanguard", "Crown of the Cosmos"] },
+  "The Dreamrift"        => { total: 1, bosses: ["Chimaerus, the Undreamt God"] },
+  "March on Quel'Danas"  => { total: 2, bosses: ["Belo'ren", "L'ura"] }
+}.freeze
 
   # Midnight S1 : zone 46 = VS / DR / MQD
   MIDNIGHT_ZONE_IDS = [46].freeze
@@ -303,7 +303,7 @@ class WarcraftLogsService
 
         boss_name  = fight['name']
         difficulty = fight['difficulty']
-        raid_name  = RAID_CONFIGS.find { |_, v| v[:bosses].include?(boss_name) }&.first
+        raid_name = RAID_CONFIGS.find { |_, v| v[:bosses].any? { |b| boss_name.include?(b) } }&.first
         next unless raid_name
 
         raids_kills[raid_name][difficulty]&.add(boss_name)
