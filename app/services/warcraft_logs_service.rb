@@ -324,25 +324,25 @@ class WarcraftLogsService
     kills = []
 
     reports.each do |report|
-    zone_id = report.dig('zone', 'id')
-    next unless MIDNIGHT_ZONE_IDS.include?(zone_id)
+      zone_id = report.dig('zone', 'id')
+      next unless MIDNIGHT_ZONE_IDS.include?(zone_id)
 
-    fights = report['fights'] || []
-    total = fights.size
+      fights = report['fights'] || []
+      
 
-    fights.each_with_index do |fight, index|
-      next unless fight['kill']
+      fights.each_with_index do |fight, index|
+        next unless fight['kill']
 
-      kills << {
-        boss:       fight['name'],
-        difficulty: DIFFICULTIES[fight['difficulty']] || 'Inconnu',
-        date:       Time.at(report['startTime'] / 1000),
-        order:      index  # position dans le report = ordre chronologique
+        kills << {
+          boss:       fight['name'],
+          difficulty: DIFFICULTIES[fight['difficulty']] || 'Inconnu',
+          date:       Time.at(report['startTime'] / 1000),
+          order:      index  # position dans le report = ordre chronologique
       }
+      end
     end
-  end
     # Tri : d'abord par date décroissante, puis par ordre décroissant dans le report
-  kills.sort_by { |k| [-k[:date].to_i, -k[:order]] }.first(5)
+    kills.sort_by { |k| [-k[:date].to_i, -k[:order]] }.first(5)
   end
 
   def parse_death_stats(response)
