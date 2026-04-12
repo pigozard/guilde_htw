@@ -20,6 +20,8 @@ class DiscordNotificationService
     }
 
     response = HTTParty.post(webhook_url, body: payload.to_json, headers: { "Content-Type" => "application/json" })
-    Rails.logger.info("[Discord] Rappel envoyé pour '#{event.title}' — HTTP #{response.code}")
+    Rails.logger.info("[Discord] HTTP #{response.code} — #{response.body}")
+  rescue => e
+    Rails.logger.error("[Discord] Erreur : #{e.message}")
   end
 end
