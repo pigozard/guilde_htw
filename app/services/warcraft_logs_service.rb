@@ -321,28 +321,29 @@ class WarcraftLogsService
   end
 
   def extract_recent_kills(reports)
-    kills = []
+  kills = []
+  known_bosses = RAID_CONFIGS.values.flat_map { |v| v[:bosses] }
 
-    reports.each do |report|
-      zone_id = report.dig('zone', 'id')
-      next unless MIDNIGHT_ZONE_IDS.include?(zone_id)
+  reports.each do |report|
+    zone_id = report.dig('zone', 'id')
+    next unless MIDNIGHT_ZONE_IDS.include?(zone_id)
 
-      fights = report['fights'] || []
+    (report['fights'] || []).each_with_index do |fight, index|
+      next unless fight['kill']
 
+      boss_name = fight['name']
+      next unless known_bosses.any? { |b| boss_name.include?(b) || b.include?(boss_name) }
 
-      fights.each_with_index do |fight, index|
-        next unless fight['kill']
-
-        kills << {
-          boss:       fight['name'],
-          difficulty: DIFFICULTIES[fight['difficulty']] || 'Inconnu',
-          date:       Time.at(report['startTime'] / 1000),
-          order:      index  # position dans le report = ordre chronologique
+      kills << {
+        boss:       boss_name,
+        difficulty: DIFFICULTIES[fight['difficulty']] || 'Inconnu',
+        date:       Time.at(report['startTime'] / 1000),
+        order:      index
       }
-      end
     end
-    # Tri : d'abord par date décroissante, puis par ordre décroissant dans le report
-    kills.sort_by { |k| [-k[:date].to_i, -k[:order]] }.first(5)
+  end
+
+  kills.sort_by { |k| [-k[:date].to_i, -k[:order]] }.first(5)
   end
 
   def parse_death_stats(response)
