@@ -40,6 +40,7 @@ class WarcraftLogsService
             guildName: "#{guild_name}",
             guildServerSlug: "#{server}",
             guildServerRegion: "#{region}",
+            zoneID: 46, 
             startTime: #{start_date},
             endTime: #{end_date},
             limit: 50
@@ -138,6 +139,7 @@ class WarcraftLogsService
           guildName: "Highway to Wipe",
           guildServerSlug: "eitrigg",
           guildServerRegion: "EU",
+          zoneID: 46,
           startTime: #{start_date},
           endTime: #{end_date},
           limit: 10
