@@ -72,10 +72,20 @@ Highway to Wipe centralise tous les outils dont une guilde de raid a besoin : ge
 - Mise en avant des Exploits légendaires (Feats of Strength)
 
 ### Outils
-Page de référencement de ressources communautaires, organisée par catégorie :
-- **Template & Theorycraft** : Icy Veins, Raidbots
-- **BiS & Stuff** : Bloodmallet, QE Live, Archon.gg
-- **Logs & Actus** : Warcraft Logs, Wowhead
+Page de référencement de ressources communautaires accessible depuis la navbar, organisée en 3 catégories avec code couleur :
+
+- **📖 Template & Theorycraft** (bleu)
+  - [Icy Veins](https://www.icy-veins.com/wow/) — guides de classe, talents, stats et rotations
+  - [Raidbots](https://www.raidbots.com/simbot) — simulations personnalisées pour optimiser son stuff et ses talents
+- **💎 BiS & Stuff** (violet)
+  - [Bloodmallet](https://bloodmallet.com/) — classement des trinkets par spé avec simulations automatiques
+  - [QE Live](https://questionablyepic.com/live/) — outil BiS spécialisé healers
+  - [Archon.gg](https://www.archon.gg/wow) — builds et équipements les plus joués par les meilleurs joueurs
+- **📊 Logs & Actus** (rouge)
+  - [Warcraft Logs](https://www.warcraftlogs.com/) — analyse de logs, parses et rankings mondiaux
+  - [Wowhead](https://www.wowhead.com/) — base de données, patch notes et actualité WoW
+
+Accessible sans connexion. Responsive mobile via la grille existante `hw-main-grid`.
 
 ### Profil utilisateur
 - Pseudonyme personnalisable
