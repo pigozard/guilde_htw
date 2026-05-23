@@ -1,5 +1,5 @@
 class PagesController < ApplicationController
-  skip_before_action :authenticate_user!, only: [ :home ]
+  skip_before_action :authenticate_user!, only: [ :home, :outils ]
 
   def home
     # Stats de guilde
@@ -33,6 +33,9 @@ class PagesController < ApplicationController
 
     # RAIDER.IO - Depuis la DB (instantané !)
     load_raider_io_from_db
+  end
+
+  def outils
   end
 
   private

@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   resource :profile, only: [:edit, :update]
 
   root to: "pages#home"
+  get 'outils', to: 'pages#outils'
 
   resources :characters, only: [:index, :new, :create, :destroy]
 
