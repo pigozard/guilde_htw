@@ -5,126 +5,119 @@
 
 <div class="hw-container">
 
-  <!-- Template & Theorycraft -->
-  <h2 style="font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: #ffd700; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,215,0,0.2); text-transform: uppercase; letter-spacing: 1.5px;">
-    📖 Template &amp; Theorycraft
-  </h2>
-  <div class="hw-activity-grid" style="margin-bottom: 40px;">
+  <%
+    categories = [
+      {
+        title: "📖 Template & Theorycraft",
+        color: "#64b5f6",
+        sites: [
+          {
+            icon: "🧊",
+            name: "Icy Veins",
+            tag: "Template",
+            desc: "Guides de classe complets, talents, stats prioritaires et rotations pour chaque spé.",
+            url: "https://www.icy-veins.com/wow/"
+          },
+          {
+            icon: "🤖",
+            name: "Raidbots",
+            tag: "Theorycraft",
+            desc: "Simulations personnalisées pour comparer ton stuff, optimiser tes talents et valider chaque upgrade.",
+            url: "https://www.raidbots.com/simbot"
+          }
+        ]
+      },
+      {
+        title: "💎 BiS & Stuff",
+        color: "#ce93d8",
+        sites: [
+          {
+            icon: "🩸",
+            name: "Bloodmallet",
+            tag: "BiS Trinkets",
+            desc: "Classement des trinkets par spé avec simulations automatiques. Identifie les meilleures options pour ton rôle.",
+            url: "https://bloodmallet.com/"
+          },
+          {
+            icon: "❔",
+            name: "QE Live",
+            tag: "BiS Healers",
+            desc: "Outil BiS spécialisé pour les healers. Compare trinkets, sets et stats avec une précision maximale.",
+            url: "https://questionablyepic.com/live/"
+          },
+          {
+            icon: "🏛️",
+            name: "Archon.gg",
+            tag: "Stuff populaire",
+            desc: "Analyse des builds et équipements les plus joués par les meilleurs joueurs. Tendances par spé en temps réel.",
+            url: "https://www.archon.gg/wow"
+          }
+        ]
+      },
+      {
+        title: "📊 Logs & Actus",
+        color: "#ef9a9a",
+        sites: [
+          {
+            icon: "📋",
+            name: "Warcraft Logs",
+            tag: "Logs de raid",
+            desc: "Analyse tes logs en détail. Parses, rankings mondiaux et comparaisons de performances.",
+            url: "https://www.warcraftlogs.com/"
+          },
+          {
+            icon: "📰",
+            name: "Wowhead",
+            tag: "Patch Notes",
+            desc: "Base de données complète, patch notes, guides de donjons et toute l'actualité de World of Warcraft.",
+            url: "https://www.wowhead.com/"
+          }
+        ]
+      }
+    ]
+  %>
 
-    <a href="https://www.icy-veins.com/wow/" target="_blank" rel="noopener" style="text-decoration: none;">
-      <div class="hw-card" style="height: 100%;">
-        <div class="hw-card-header">
-          <span class="hw-card-icon">🧊</span>
-          <h3 class="hw-card-title">Icy Veins</h3>
-          <span style="margin-left: auto; font-size: 10px; color: #ffd700; background: rgba(255,215,0,0.1); border: 1px solid rgba(255,215,0,0.2); border-radius: 4px; padding: 2px 8px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Template</span>
-        </div>
-        <div class="hw-card-body">
-          <p style="color: #888; font-size: 13px; line-height: 1.55; margin: 0 0 16px 0;">Guides de classe complets, talents, stats prioritaires et rotations pour chaque spé.</p>
-          <span style="font-size: 11px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: 0.8px;">Ouvrir →</span>
-        </div>
+  <% categories.each do |cat| %>
+    <div style="margin-bottom: 48px;">
+
+      <!-- Titre de section -->
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.07);">
+        <div style="width: 4px; height: 20px; background: <%= cat[:color] %>; border-radius: 2px; flex-shrink: 0;"></div>
+        <h2 style="font-family: 'Cinzel', serif; font-size: 14px; font-weight: 700; color: #f0e6d3; margin: 0; text-transform: uppercase; letter-spacing: 1.5px;"><%= cat[:title] %></h2>
       </div>
-    </a>
 
-    <a href="https://www.raidbots.com/simbot" target="_blank" rel="noopener" style="text-decoration: none;">
-      <div class="hw-card" style="height: 100%;">
-        <div class="hw-card-header">
-          <span class="hw-card-icon">🤖</span>
-          <h3 class="hw-card-title">Raidbots</h3>
-          <span style="margin-left: auto; font-size: 10px; color: #ffd700; background: rgba(255,215,0,0.1); border: 1px solid rgba(255,215,0,0.2); border-radius: 4px; padding: 2px 8px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Theorycraft</span>
-        </div>
-        <div class="hw-card-body">
-          <p style="color: #888; font-size: 13px; line-height: 1.55; margin: 0 0 16px 0;">Simulations personnalisées pour comparer ton stuff, optimiser tes talents et valider chaque upgrade.</p>
-          <span style="font-size: 11px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: 0.8px;">Ouvrir →</span>
-        </div>
+      <!-- Grille des cartes -->
+      <div class="hw-main-grid">
+        <% cat[:sites].each do |site| %>
+          <a href="<%= site[:url] %>" target="_blank" rel="noopener" style="text-decoration: none; color: inherit; display: block;">
+            <div class="hw-card" style="height: 100%; border-top: 3px solid <%= cat[:color] %>; display: flex; flex-direction: column;">
+
+              <div class="hw-card-header" style="gap: 16px;">
+                <span style="font-size: 1.8rem; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.04); border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); flex-shrink: 0;">
+                  <%= site[:icon] %>
+                </span>
+                <div>
+                  <div class="hw-card-title" style="margin-bottom: 5px;"><%= site[:name] %></div>
+                  <span style="font-size: 10px; font-weight: 600; color: <%= cat[:color] %>; background: <%= cat[:color] %>1a; border: 1px solid <%= cat[:color] %>33; border-radius: 4px; padding: 2px 8px; text-transform: uppercase; letter-spacing: 0.5px;">
+                    <%= site[:tag] %>
+                  </span>
+                </div>
+              </div>
+
+              <div class="hw-card-body" style="flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                <p style="color: #888; font-size: 13px; line-height: 1.6; margin: 0 0 20px 0;"><%= site[:desc] %></p>
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <span style="font-size: 11px; color: #555; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 700;">Ouvrir</span>
+                  <span style="width: 32px; height: 32px; border-radius: 50%; background: rgba(255,215,0,0.08); border: 1px solid rgba(255,215,0,0.25); color: #ffd700; display: flex; align-items: center; justify-content: center; font-size: 14px;">→</span>
+                </div>
+              </div>
+
+            </div>
+          </a>
+        <% end %>
       </div>
-    </a>
 
-  </div>
-
-  <!-- BiS & Stuff -->
-  <h2 style="font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: #ffd700; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,215,0,0.2); text-transform: uppercase; letter-spacing: 1.5px;">
-    💎 BiS &amp; Stuff
-  </h2>
-  <div class="hw-activity-grid" style="margin-bottom: 40px;">
-
-    <a href="https://bloodmallet.com/" target="_blank" rel="noopener" style="text-decoration: none;">
-      <div class="hw-card" style="height: 100%;">
-        <div class="hw-card-header">
-          <span class="hw-card-icon">🩸</span>
-          <h3 class="hw-card-title">Bloodmallet</h3>
-          <span style="margin-left: auto; font-size: 10px; color: #ffd700; background: rgba(255,215,0,0.1); border: 1px solid rgba(255,215,0,0.2); border-radius: 4px; padding: 2px 8px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">BiS Trinkets</span>
-        </div>
-        <div class="hw-card-body">
-          <p style="color: #888; font-size: 13px; line-height: 1.55; margin: 0 0 16px 0;">Classement des trinkets par spé avec simulations automatiques. Identifie rapidement les meilleures options pour ton rôle.</p>
-          <span style="font-size: 11px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: 0.8px;">Ouvrir →</span>
-        </div>
-      </div>
-    </a>
-
-    <a href="https://questionablyepic.com/live/" target="_blank" rel="noopener" style="text-decoration: none;">
-      <div class="hw-card" style="height: 100%;">
-        <div class="hw-card-header">
-          <span class="hw-card-icon">❓</span>
-          <h3 class="hw-card-title">QE Live</h3>
-          <span style="margin-left: auto; font-size: 10px; color: #ffd700; background: rgba(255,215,0,0.1); border: 1px solid rgba(255,215,0,0.2); border-radius: 4px; padding: 2px 8px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">BiS Trinkets</span>
-        </div>
-        <div class="hw-card-body">
-          <p style="color: #888; font-size: 13px; line-height: 1.55; margin: 0 0 16px 0;">Outil BiS spécialisé pour les healers. Compare trinkets, sets et stats avec une précision maximale.</p>
-          <span style="font-size: 11px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: 0.8px;">Ouvrir →</span>
-        </div>
-      </div>
-    </a>
-
-    <a href="https://www.archon.gg/wow" target="_blank" rel="noopener" style="text-decoration: none;">
-      <div class="hw-card" style="height: 100%;">
-        <div class="hw-card-header">
-          <span class="hw-card-icon">🏛️</span>
-          <h3 class="hw-card-title">Archon.gg</h3>
-          <span style="margin-left: auto; font-size: 10px; color: #ffd700; background: rgba(255,215,0,0.1); border: 1px solid rgba(255,215,0,0.2); border-radius: 4px; padding: 2px 8px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Stuff populaire</span>
-        </div>
-        <div class="hw-card-body">
-          <p style="color: #888; font-size: 13px; line-height: 1.55; margin: 0 0 16px 0;">Analyse des builds et équipements les plus joués par les meilleurs joueurs. Tendances par spé en temps réel.</p>
-          <span style="font-size: 11px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: 0.8px;">Ouvrir →</span>
-        </div>
-      </div>
-    </a>
-
-  </div>
-
-  <!-- Logs & Actus -->
-  <h2 style="font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: #ffd700; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,215,0,0.2); text-transform: uppercase; letter-spacing: 1.5px;">
-    📊 Logs &amp; Actus
-  </h2>
-  <div class="hw-activity-grid" style="margin-bottom: 40px;">
-
-    <a href="https://www.warcraftlogs.com/" target="_blank" rel="noopener" style="text-decoration: none;">
-      <div class="hw-card" style="height: 100%;">
-        <div class="hw-card-header">
-          <span class="hw-card-icon">📋</span>
-          <h3 class="hw-card-title">Warcraft Logs</h3>
-          <span style="margin-left: auto; font-size: 10px; color: #ffd700; background: rgba(255,215,0,0.1); border: 1px solid rgba(255,215,0,0.2); border-radius: 4px; padding: 2px 8px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Logs</span>
-        </div>
-        <div class="hw-card-body">
-          <p style="color: #888; font-size: 13px; line-height: 1.55; margin: 0 0 16px 0;">Analyse tes logs de raid en détail. Parses, rankings mondiaux et comparaisons de performances.</p>
-          <span style="font-size: 11px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: 0.8px;">Ouvrir →</span>
-        </div>
-      </div>
-    </a>
-
-    <a href="https://www.wowhead.com/" target="_blank" rel="noopener" style="text-decoration: none;">
-      <div class="hw-card" style="height: 100%;">
-        <div class="hw-card-header">
-          <span class="hw-card-icon">📰</span>
-          <h3 class="hw-card-title">Wowhead</h3>
-          <span style="margin-left: auto; font-size: 10px; color: #ffd700; background: rgba(255,215,0,0.1); border: 1px solid rgba(255,215,0,0.2); border-radius: 4px; padding: 2px 8px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Patch Notes</span>
-        </div>
-        <div class="hw-card-body">
-          <p style="color: #888; font-size: 13px; line-height: 1.55; margin: 0 0 16px 0;">Base de données complète, patch notes, guides de donjons et toute l'actualité de World of Warcraft.</p>
-          <span style="font-size: 11px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: 0.8px;">Ouvrir →</span>
-        </div>
-      </div>
-    </a>
-
-  </div>
+    </div>
+  <% end %>
 
 </div>
