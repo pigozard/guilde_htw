@@ -110,6 +110,9 @@
               </div>
               <div class="hw-event-participants-compact">
                 <span class="hw-event-part-num"><%= @next_event_participants %></span> inscrit<%= @next_event_participants > 1 ? 's' : '' %>
+                <% if @next_event_my_status %>
+                  <span style="margin-left: 6px; font-size: 1rem;"><%= { "confirmed" => "✅", "tentative" => "❓", "declined" => "❌" }[@next_event_my_status] %></span>
+                <% end %>
               </div>
               <%= link_to event_path(@next_event), class: "hw-event-btn-round" do %>
                 →

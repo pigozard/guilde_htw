@@ -36,6 +36,9 @@
       <% events.each do |event| %>
         <%= link_to event_path(event), class: "event-pill event-#{event.event_type.gsub('+', '-plus')}" do %>
           <%= event.start_time.strftime("%H:%M") %> <%= truncate(event.title, length: 12) %>
+          <% if @my_participation_status&.key?(event.id) %>
+            <span class="event-pill-status"><%= { "confirmed" => "✅", "tentative" => "❓", "declined" => "❌" }[@my_participation_status[event.id]] %></span>
+          <% end %>
         <% end %>
       <% end %>
     <% end %>

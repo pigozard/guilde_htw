@@ -14,6 +14,11 @@ class PagesController < ApplicationController
     # Prochain event
     @next_event = Event.where('start_time >= ?', DateTime.now).order(:start_time).first
     @next_event_participants = @next_event&.event_participations&.count || 0
+    if user_signed_in? && @next_event
+      character_ids = current_user.characters.pluck(:id)
+      participation = EventParticipation.find_by(event: @next_event, character_id: character_ids)
+      @next_event_my_status = participation&.status
+    end
 
     # Events cette semaine
     @events_this_week_count = Event.where(start_time: DateTime.now.beginning_of_week..DateTime.now.end_of_week).count

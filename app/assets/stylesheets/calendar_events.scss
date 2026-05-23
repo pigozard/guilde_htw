@@ -144,7 +144,9 @@
 
 /* EVENT PILLS */
 .event-pill {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 4px 8px;
   margin: 3px 0;
   border-radius: 4px;
@@ -155,6 +157,13 @@
   overflow: hidden;
   text-overflow: ellipsis;
   transition: all 0.2s ease;
+}
+
+.event-pill-status {
+  flex-shrink: 0;
+  margin-left: 4px;
+  font-size: 0.75rem;
+  line-height: 1;
 }
 
 .event-pill::before {

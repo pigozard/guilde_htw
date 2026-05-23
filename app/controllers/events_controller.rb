@@ -6,6 +6,14 @@ class EventsController < ApplicationController
   def index
     @date = params[:start_date] ? Date.parse(params[:start_date]) : Date.today
     @events = Event.where(start_time: @date.beginning_of_month.beginning_of_week..@date.end_of_month.end_of_week)
+    if user_signed_in?
+      event_ids = @events.map(&:id)
+      character_ids = current_user.characters.pluck(:id)
+      participations = EventParticipation.where(event_id: event_ids, character_id: character_ids)
+      @my_participation_status = participations.each_with_object({}) do |p, h|
+        h[p.event_id] ||= p.status
+      end
+    end
   end
 
   def show
