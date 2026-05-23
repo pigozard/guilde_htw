@@ -3,16 +3,19 @@
    ============================================ */
 
 .outils-section {
-  margin-bottom: 40px;
+  margin-bottom: 48px;
 }
 
 .outils-section-title {
   font-family: 'Cinzel', serif;
-  font-size: 18px;
+  font-size: 13px;
+  font-weight: 700;
   color: #ffd700;
-  margin-bottom: 16px;
-  padding-bottom: 8px;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
   border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
 }
 
 .outils-grid {
@@ -21,75 +24,93 @@
   gap: 16px;
 }
 
-.outil-card {
+/* Carte — on force tous les styles contre Bootstrap et a{} global */
+a.outil-card {
   display: flex;
   flex-direction: column;
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 215, 0, 0.2);
-  border-radius: 12px;
-  padding: 20px;
-  text-decoration: none !important;
-  color: inherit;
-  transition: all 0.2s ease;
-  cursor: pointer;
-
-  &:hover {
-    border-color: rgba(255, 215, 0, 0.5);
-    background: rgba(255, 215, 0, 0.04);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 20px rgba(255, 215, 0, 0.08);
-
-    .outil-btn {
-      color: #ffd700;
-    }
-  }
+  border: 1px solid rgba(255, 215, 0, 0.15);
+  border-left: 3px solid rgba(255, 215, 0, 0.35);
+  border-radius: 10px;
+  padding: 22px;
+  text-decoration: none;
+  color: #f0e6d3;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+a.outil-card:hover {
+  background: rgba(255, 215, 0, 0.05);
+  border-color: rgba(255, 215, 0, 0.45);
+  border-left-color: #ffd700;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+  color: #f0e6d3;
+  text-decoration: none;
+}
+
+a.outil-card:hover .outil-btn {
+  color: #ffd700;
+}
+
+/* Header de carte */
 .outil-card-header {
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .outil-icon {
-  font-size: 2rem;
+  font-size: 1.6rem;
   line-height: 1;
   flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 215, 0, 0.07);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 215, 0, 0.15);
 }
 
 .outil-name {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   color: #f0e6d3;
-  margin-bottom: 2px;
+  margin-bottom: 5px;
+  line-height: 1;
 }
 
 .outil-tag {
   display: inline-block;
-  font-size: 11px;
-  color: #888;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 10px;
+  color: #ffd700;
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.2);
   border-radius: 4px;
-  padding: 1px 7px;
+  padding: 2px 8px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
+  font-weight: 600;
 }
 
 .outil-desc {
-  color: #9a9a9a;
+  color: #888;
   font-size: 13px;
-  line-height: 1.5;
-  margin: 0 0 16px 0;
+  line-height: 1.55;
+  margin: 0 0 18px 0;
   flex-grow: 1;
 }
 
 .outil-btn {
+  display: inline-block;
   align-self: flex-start;
-  font-size: 13px;
-  font-weight: 600;
-  color: #aaa;
+  font-size: 11px;
+  font-weight: 700;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
   transition: color 0.2s ease;
 }
 
@@ -97,9 +118,5 @@
 @media (max-width: 768px) {
   .outils-grid {
     grid-template-columns: 1fr;
-  }
-
-  .outils-section-title {
-    font-size: 16px;
   }
 }

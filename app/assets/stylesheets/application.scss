@@ -9,7 +9,6 @@
 
 // Your CSS partials
 @import "components/index";
-@import "pages/home";
 @import "pages/index";
 @import "components/navbar";
 @import "components/characters";
@@ -128,6 +127,126 @@ a:hover {
 
 .confirm-btn-no:hover {
   background: #5a6268;
+}
+
+/* ============================================
+   PAGE OUTILS
+   ============================================ */
+
+.outils-section {
+  margin-bottom: 48px;
+}
+
+.outils-section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffd700;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.outils-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+a.outil-card {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 215, 0, 0.15);
+  border-left: 3px solid rgba(255, 215, 0, 0.35);
+  border-radius: 10px;
+  padding: 22px;
+  text-decoration: none !important;
+  color: #f0e6d3 !important;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+a.outil-card:hover {
+  background: rgba(255, 215, 0, 0.05);
+  border-color: rgba(255, 215, 0, 0.45);
+  border-left-color: #ffd700;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+  color: #f0e6d3 !important;
+  text-decoration: none !important;
+}
+
+a.outil-card:hover .outil-btn {
+  color: #ffd700;
+}
+
+.outil-card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.outil-icon {
+  font-size: 1.6rem;
+  line-height: 1;
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 215, 0, 0.07);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 215, 0, 0.15);
+}
+
+.outil-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #f0e6d3;
+  margin-bottom: 5px;
+  line-height: 1;
+}
+
+.outil-tag {
+  display: inline-block;
+  font-size: 10px;
+  color: #ffd700;
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 4px;
+  padding: 2px 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-weight: 600;
+}
+
+.outil-desc {
+  color: #888;
+  font-size: 13px;
+  line-height: 1.55;
+  margin: 0 0 18px 0;
+  flex-grow: 1;
+}
+
+.outil-btn {
+  display: inline-block;
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: 700;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  transition: color 0.2s ease;
+}
+
+@media (max-width: 768px) {
+  .outils-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Bouton WCL */
