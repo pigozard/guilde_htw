@@ -9,9 +9,9 @@ class WarcraftLogsService
   }
 
   RAID_CONFIGS = {
-  "The Voidspire"        => { total: 6, bosses: ["Imperator Averzian", "Vorasius", "Fallen-King Salhadaar", "Vaelgor & Ezzorak", "Lightblinded Vanguard", "Crown of the Cosmos"] },
-  "The Dreamrift"        => { total: 1, bosses: ["Chimaerus, the Undreamt God"] },
-  "March on Quel'Danas"  => { total: 2, bosses: ["Belo'ren", "Midnight Falls"] }
+  "The Voidspire"        => { total: 6, bosses: ["Imperator Averzian", "Vorasius", "Fallen-King Salhadaar", "Vaelgor", "Ezzorak", "Vaelgor & Ezzorak", "Lightblinded Vanguard", "Crown of the Cosmos", "Alleria Windrunner"] },
+  "The Dreamrift"        => { total: 1, bosses: ["Chimaerus, the Undreamt God", "Chimaerus"] },
+  "March on Quel'Danas"  => { total: 2, bosses: ["Belo'ren", "Belo'ren, Child of Al'ar", "Midnight Falls", "L'ura"] }
 }.freeze
 
   # Midnight S1 : zone 46 = VS / DR / MQD
@@ -107,7 +107,8 @@ class WarcraftLogsService
 
     return mock_data if all_reports.empty?
 
-    progression  = calculate_progression(all_reports)
+    # Progression : uniquement les logs de guilde pour éviter de compter les pug/mythic perso de Crowstorm
+    progression  = calculate_progression(guild_reports.empty? ? all_reports : guild_reports)
     recent_kills = extract_recent_kills(all_reports)
     death_stats  = guild_death_stats
 
@@ -293,6 +294,16 @@ class WarcraftLogsService
     nil
   end
 
+  # Maps WCL aliases to canonical boss slot names (for deduplication in the Set)
+  BOSS_CANONICAL = {
+    "Vaelgor"              => "Vaelgor & Ezzorak",
+    "Ezzorak"              => "Vaelgor & Ezzorak",
+    "Alleria Windrunner"   => "Crown of the Cosmos",
+    "Chimaerus"            => "Chimaerus, the Undreamt God",
+    "Belo'ren, Child of Al'ar" => "Belo'ren",
+    "L'ura"                => "Midnight Falls"
+  }.freeze
+
   def calculate_progression(reports)
     raids_kills = RAID_CONFIGS.transform_values { { 3 => Set.new, 4 => Set.new, 5 => Set.new } }
 
@@ -305,10 +316,11 @@ class WarcraftLogsService
 
         boss_name  = fight['name']
         difficulty = fight['difficulty']
-        raid_name = RAID_CONFIGS.find { |_, v| v[:bosses].any? { |b| boss_name.include?(b) } }&.first
+        raid_name = RAID_CONFIGS.find { |_, v| v[:bosses].any? { |b| boss_name.include?(b) || b.include?(boss_name) } }&.first
         next unless raid_name
 
-        raids_kills[raid_name][difficulty]&.add(boss_name)
+        canonical = BOSS_CANONICAL[boss_name] || boss_name
+        raids_kills[raid_name][difficulty]&.add(canonical)
       end
     end
 
