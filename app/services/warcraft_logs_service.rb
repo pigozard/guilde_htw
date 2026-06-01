@@ -105,11 +105,10 @@ class WarcraftLogsService
       Rails.logger.info "📊 Zone ID: #{r.dig('zone', 'id')} | #{r.dig('zone', 'name')} | #{r['fights']&.size || 0} kills | #{date}"
     end
 
-    return mock_data if all_reports.empty?
+    return mock_data if guild_reports.empty?
 
-    # Progression : uniquement les logs de guilde pour éviter de compter les pug/mythic perso de Crowstorm
-    progression  = calculate_progression(guild_reports.empty? ? all_reports : guild_reports)
-    recent_kills = extract_recent_kills(all_reports)
+    progression  = calculate_progression(guild_reports)
+    recent_kills = extract_recent_kills(guild_reports)
     death_stats  = guild_death_stats
 
     Rails.logger.info "✅ #{recent_kills.size} kills trouvés"
