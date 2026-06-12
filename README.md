@@ -123,10 +123,12 @@ app/
 │   ├── consumable_selections_controller.rb
 │   ├── event_participations_controller.rb  # Inscriptions événements
 │   ├── events_controller.rb            # Calendrier
+│   ├── farm_contributions_controller.rb
 │   ├── farm_controller.rb              # Farm collaboratif
 │   ├── farmer_assignments_controller.rb
 │   ├── pages_controller.rb             # Home + Outils
-│   └── profiles_controller.rb
+│   ├── profiles_controller.rb
+│   └── wow_classes_controller.rb       # Endpoint JSON spés (AJAX)
 │
 ├── models/
 │   ├── user.rb                         # Devise, pseudo, nickname
@@ -153,9 +155,19 @@ app/
 └── views/
     ├── layouts/application.html.erb
     ├── shared/_navbar.html.erb
-    ├── pages/home.html.erb + outils.html.erb
+    ├── pages/
+    │   ├── home.html.erb               # Dashboard (partials: kills, deaths, WCL)
+    │   ├── _recent_kills_section.html.erb
+    │   ├── _death_stats_section.html.erb
+    │   ├── _warcraft_logs_section.html.erb
+    │   └── outils.html.erb
     ├── events/                         # Calendrier, show, forms, partials
     ├── characters/
+    │   ├── index.html.erb              # Roster avec filtres
+    │   ├── new.html.erb
+    │   ├── _character.html.erb
+    │   ├── _class_counter.html.erb
+    │   └── _role_counter.html.erb
     ├── farm/
     └── achievements/
 
@@ -179,6 +191,24 @@ User ──< Character >── WowClass ──< Specialization
  └──< FarmerAssignment >── Ingredient
 
 GuildStatistic  (cache JSON : warcraft_logs, raider_io)
+```
+
+### Routes principales
+
+```
+root                                   → pages#home
+GET  /outils                           → pages#outils
+GET  /achievements                     → achievements#index
+POST /achievements/sync                → achievements#sync
+resources :characters (index/new/create/destroy)
+resources :events do
+  resources :event_participations (create/update/destroy)
+end
+GET  /wow_classes/:id/specializations  → wow_classes#specializations (JSON, AJAX)
+GET  /farm                             → farm#index
+resources :consumable_selections (create/update/destroy)
+resources :farmer_assignments (create/destroy)
+resource  :profile (edit/update)
 ```
 
 ---
