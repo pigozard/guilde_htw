@@ -8,4 +8,8 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.permit(:sign_up, keys: [:pseudo])
     devise_parameter_sanitizer.permit(:account_update, keys: [:pseudo])
   end
+
+  def require_admin!
+    redirect_to root_path, alert: "Accès refusé." unless current_user&.admin?
+  end
 end
