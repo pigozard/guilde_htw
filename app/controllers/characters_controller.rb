@@ -1,6 +1,7 @@
 class CharactersController < ApplicationController
   before_action :authenticate_user!, except: [:index]
   before_action :set_wow_classes, only: [:new, :create]
+  before_action :require_admin!, only: [:clear_roster]
 
   def index
     @characters = Character.roster
@@ -40,6 +41,17 @@ class CharactersController < ApplicationController
     @character = current_user.characters.find(params[:id])
     @character.destroy
     redirect_back fallback_location: characters_path, notice: "Perso supprimé."
+  end
+
+  def clear_roster
+    Character.update_all(in_roster: false)
+    redirect_to characters_path, notice: "Roster vidé. Les joueurs peuvent réactiver leur perso."
+  end
+
+  def reactivate
+    @character = current_user.characters.find(params[:id])
+    @character.update!(in_roster: true)
+    redirect_to characters_path, notice: "#{@character.pseudo} a rejoint le roster !"
   end
 
   private
