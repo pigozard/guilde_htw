@@ -18,6 +18,10 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true
 
   # Méthodes
+  def admin?
+    admin
+  end
+
   def display_name
     nickname.presence || email.split('@').first.capitalize
   end

@@ -1,0 +1,9 @@
+admin_user:
+  email: admin@htw.com
+  encrypted_password: $2a$04$NSHPg9QcE1aokBNF2OhgMuBj3PyjceBpvr4VDk3WieCy8T.XaXdQW
+  admin: true
+
+regular_user:
+  email: user@htw.com
+  encrypted_password: $2a$04$NSHPg9QcE1aokBNF2OhgMuBj3PyjceBpvr4VDk3WieCy8T.XaXdQW
+  admin: false
