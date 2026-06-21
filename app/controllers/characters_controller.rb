@@ -8,6 +8,7 @@ class CharactersController < ApplicationController
     @role_counts = Character.role_counts
     @flex_count = Character.flex_count
     @class_counts = Character.class_counts
+    @inactive_characters = current_user&.characters&.out_of_roster&.includes(:wow_class, :specialization)
   end
 
   def new
@@ -44,7 +45,7 @@ class CharactersController < ApplicationController
   end
 
   def clear_roster
-    Character.update_all(in_roster: false)
+    Character.permanent.update_all(in_roster: false)
     redirect_to characters_path, notice: "Roster vidé. Les joueurs peuvent réactiver leur perso."
   end
 

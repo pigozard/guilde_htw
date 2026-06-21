@@ -14,14 +14,14 @@
   </div>
 
   <!-- Compteurs de classes -->
-  <div class="hw-class-gri"d">
+  <div class="hw-class-grid">
     <% @class_counts.sort_by { |_, count| -count }.each do |class_name, count| %>
       <%= render "class_counter", class_name: class_name, count: count %>
     <% end %>
   </div>
 
   <!-- Boutons CTA -->
-  <div class="hw-card-actions" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+  <div class="hw-card-actions">
     <% if user_signed_in? %>
       <%= link_to "Ajouter mon perso", new_character_path, class: "hw-btn hw-btn-primary hw-btn-lg" %>
     <% else %>
@@ -59,19 +59,19 @@
   <% end %>
 
   <!-- Section persos inactifs (visible uniquement pour l'utilisateur connecté qui en a) -->
-  <% if user_signed_in? && current_user.characters.out_of_roster.any? %>
+  <% if @inactive_characters&.any? %>
     <div class="hw-card" style="margin-top: 32px;">
       <div class="hw-card-header">
         <span class="hw-card-icon">💤</span>
         <h2 class="hw-card-title">Tes persos inactifs</h2>
       </div>
       <div class="hw-card-body">
-        <% current_user.characters.out_of_roster.each do |character| %>
-          <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">
+        <% @inactive_characters.each do |character| %>
+          <div class="hw-inactive-row">
             <div>
               <strong><%= character.pseudo %></strong>
               <% if character.wow_class %>
-                <span style="color: #888; font-size: 13px;"> — <%= character.wow_class.name %>
+                <span class="hw-inactive-meta"> — <%= character.wow_class.name %>
                   <% if character.specialization %><%= character.specialization.name %><% end %>
                 </span>
               <% end %>
