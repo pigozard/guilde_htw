@@ -14,41 +14,76 @@
     <%= render "role_counter", role: "flex", count: @flex_count, label: "Flex", icon: "✨" %>
   </div>
 
-<!-- Compteurs de classes -->
+  <!-- Compteurs de classes -->
   <div class="hw-class-grid">
     <% @class_counts.sort_by { |_, count| -count }.each do |class_name, count| %>
       <%= render "class_counter", class_name: class_name, count: count %>
     <% end %>
   </div>
 
-  <!-- Bouton CTA -->
-  <div class="hw-card-actions">
+  <!-- Boutons CTA -->
+  <div class="hw-card-actions" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
     <% if user_signed_in? %>
       <%= link_to "Ajouter mon perso", new_character_path, class: "hw-btn hw-btn-primary hw-btn-lg" %>
     <% else %>
       <%= link_to "Connecte-toi pour ajouter ton perso", new_user_session_path, class: "hw-btn hw-btn-secondary hw-btn-lg" %>
     <% end %>
+
+    <% if current_user&.admin? %>
+      <%= button_to "🗑 Vider le roster", clear_roster_characters_path,
+            method: :post,
+            data: { turbo_confirm: "Vider tout le roster ? Les persos resteront réactivables par les joueurs." },
+            class: "hw-btn hw-btn-danger hw-btn-lg" %>
+    <% end %>
   </div>
 
- <!-- Liste des persos -->
-<% if @characters.any? %>
-  <div class="hw-table-wrapper">
-    <table class="hw-table">
-      <thead>
-        <tr>
-          <th>Pseudo</th>
-          <th>Classe</th>
-          <th>Spé</th>
-          <th>Rôle</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <%= render @characters %>
-      </tbody>
-    </table>
-  </div>
-<% else %>
-  <p class="hw-empty">Aucun perso inscrit pour le moment</p>
-<% end %>
+  <!-- Liste des persos actifs -->
+  <% if @characters.any? %>
+    <div class="hw-table-wrapper">
+      <table class="hw-table">
+        <thead>
+          <tr>
+            <th>Pseudo</th>
+            <th>Classe</th>
+            <th>Spé</th>
+            <th>Rôle</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <%= render @characters %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <p class="hw-empty">Aucun perso inscrit pour le moment</p>
+  <% end %>
+
+  <!-- Section persos inactifs (visible uniquement pour l'utilisateur connecté qui en a) -->
+  <% if user_signed_in? && current_user.characters.out_of_roster.any? %>
+    <div class="hw-card" style="margin-top: 32px;">
+      <div class="hw-card-header">
+        <span class="hw-card-icon">💤</span>
+        <h2 class="hw-card-title">Tes persos inactifs</h2>
+      </div>
+      <div class="hw-card-body">
+        <% current_user.characters.out_of_roster.each do |character| %>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">
+            <div>
+              <strong><%= character.pseudo %></strong>
+              <% if character.wow_class %>
+                <span style="color: #888; font-size: 13px;"> — <%= character.wow_class.name %>
+                  <% if character.specialization %><%= character.specialization.name %><% end %>
+                </span>
+              <% end %>
+            </div>
+            <%= button_to "Rejoindre le roster", reactivate_character_path(character),
+                  method: :post,
+                  class: "hw-btn hw-btn-secondary hw-btn-sm" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
 </div>
