@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_02_07_145730) do
+ActiveRecord::Schema[7.1].define(version: 2026_06_21_141050) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -58,6 +58,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_07_145730) do
     t.boolean "temporary", default: false
     t.string "realm"
     t.string "region", default: "eu"
+    t.boolean "in_roster", default: true, null: false
     t.index ["specialization_id"], name: "index_characters_on_specialization_id"
     t.index ["user_id"], name: "index_characters_on_user_id"
     t.index ["wow_class_id"], name: "index_characters_on_wow_class_id"
@@ -141,6 +142,14 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_07_145730) do
     t.index ["user_id"], name: "index_farmer_assignments_on_user_id"
   end
 
+  create_table "guild_statistics", id: :serial, force: :cascade do |t|
+    t.string "stat_type", null: false
+    t.json "data"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.index ["stat_type"], name: "index_guild_statistics_on_stat_type", unique: true
+  end
+
   create_table "ingredients", force: :cascade do |t|
     t.string "name"
     t.string "category"
@@ -194,6 +203,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_02_07_145730) do
     t.datetime "updated_at", null: false
     t.string "pseudo"
     t.string "nickname"
+    t.boolean "admin", default: false, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
