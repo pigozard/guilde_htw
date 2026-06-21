@@ -9,26 +9,27 @@ class Character < ApplicationRecord
   validates :pseudo, presence: true
 
   scope :permanent, -> { where(temporary: false) }
-  scope :roster, -> { permanent.includes(:user, :wow_class, :specialization).order(created_at: :desc) }
+  scope :roster, -> { permanent.where(in_roster: true).includes(:user, :wow_class, :specialization).order(created_at: :desc) }
+  scope :out_of_roster, -> { permanent.where(in_roster: false) }
   scope :with_class, -> { joins(:wow_class).where.not(wow_classes: { name: "Flex" }) }
 
   def self.role_counts
-    permanent.joins(:specialization).group("specializations.role").count
+    permanent.where(in_roster: true).joins(:specialization).group("specializations.role").count
   end
 
   def self.flex_count
-    permanent.where(specialization_id: nil).count
+    permanent.where(in_roster: true, specialization_id: nil).count
   end
 
   def self.class_counts
-  all_classes = WowClass.all.pluck(:name)
-  counts = permanent.joins(:wow_class)
-                    .group("wow_classes.name")
-                    .count
+    all_classes = WowClass.all.pluck(:name)
+    counts = permanent.where(in_roster: true).joins(:wow_class)
+                      .group("wow_classes.name")
+                      .count
 
-  all_classes.each_with_object({}) do |name, hash|
-    hash[name] = counts[name] || 0
-  end
+    all_classes.each_with_object({}) do |name, hash|
+      hash[name] = counts[name] || 0
+    end
   end
 
 end

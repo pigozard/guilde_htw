@@ -1,0 +1,17 @@
+active_character:
+  pseudo: Arkhane
+  user: regular_user
+  in_roster: true
+  temporary: false
+
+inactive_character:
+  pseudo: Lyana
+  user: regular_user
+  in_roster: false
+  temporary: false
+
+temp_character:
+  pseudo: TempGuy
+  user: regular_user
+  in_roster: true
+  temporary: true
