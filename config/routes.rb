@@ -5,7 +5,12 @@ Rails.application.routes.draw do
   root to: "pages#home"
   get 'outils', to: 'pages#outils'
 
-  resources :characters, only: [:index, :new, :create, :destroy]
+  resources :characters, only: [:index, :new, :create, :destroy] do
+    post :reactivate, on: :member
+    collection do
+      post :clear_roster
+    end
+  end
 
   resources :events do
     resources :event_participations, only: [:create, :update, :destroy]
