@@ -34,23 +34,11 @@ class GuildStatistic < ApplicationRecord
   def self.default_warcraft_logs_data
     {
       'progression' => {
-        'The Voidspire' => {
-          'total'  => 6,
-          'normal' => { 'killed' => 0, 'total' => 6 },
-          'heroic' => { 'killed' => 0, 'total' => 6 },
-          'mythic' => { 'killed' => 0, 'total' => 6 }
-        },
-        'The Dreamrift' => {
-          'total'  => 1,
-          'normal' => { 'killed' => 0, 'total' => 1 },
-          'heroic' => { 'killed' => 0, 'total' => 1 },
-          'mythic' => { 'killed' => 0, 'total' => 1 }
-        },
-        "March on Quel'Danas" => {
-          'total'  => 2,
-          'normal' => { 'killed' => 0, 'total' => 2 },
-          'heroic' => { 'killed' => 0, 'total' => 2 },
-          'mythic' => { 'killed' => 0, 'total' => 2 }
+        'The Venomous Abyss' => {
+          'total'  => 9,
+          'normal' => { 'killed' => 0, 'total' => 9 },
+          'heroic' => { 'killed' => 0, 'total' => 9 },
+          'mythic' => { 'killed' => 0, 'total' => 9 }
         }
       },
       'recent_kills'       => [],

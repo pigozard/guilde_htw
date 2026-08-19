@@ -320,7 +320,7 @@ Les stats sont stockées en cache dans la table `guild_statistics` pour éviter 
 ### Warcraft Logs (GraphQL)
 - **Authentification** : OAuth2 client credentials
 - **Usages** : progression de raid par difficulté, kills récents, statistiques de morts par joueur, code du dernier rapport
-- **Raids suivis** : The Voidspire (6 boss), The Dreamrift (1 boss), March on Quel'Danas (2 boss)
+- **Raids suivis** : The Venomous Abyss (9 boss)
 - **Cache** : résultats stockés en BDD, rafraîchis par rake task
 
 ### Raider.io

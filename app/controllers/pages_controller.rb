@@ -64,10 +64,12 @@ end
 
   def fallback_warcraftlogs_data
     @warcraftlogs_progression = {
-      normal: { killed: 0, total: 8 },
-      heroic: { killed: 0, total: 8 },
-      mythic: { killed: 0, total: 8 },
-      raid_name: "Manaforge Omega"
+      "The Venomous Abyss" => {
+        total:  9,
+        normal: { killed: 0, total: 9 },
+        heroic: { killed: 0, total: 9 },
+        mythic: { killed: 0, total: 9 }
+      }
     }
     @warcraftlogs_recent_kills = []
     @warcraftlogs_death_stats = []

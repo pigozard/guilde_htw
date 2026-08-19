@@ -9,13 +9,11 @@ class WarcraftLogsService
   }
 
   RAID_CONFIGS = {
-  "The Voidspire"        => { total: 6, bosses: ["Imperator Averzian", "Vorasius", "Fallen-King Salhadaar", "Vaelgor", "Ezzorak", "Vaelgor & Ezzorak", "Lightblinded Vanguard", "Crown of the Cosmos", "Alleria Windrunner"] },
-  "The Dreamrift"        => { total: 1, bosses: ["Chimaerus, the Undreamt God", "Chimaerus"] },
-  "March on Quel'Danas"  => { total: 2, bosses: ["Belo'ren", "Belo'ren, Child of Al'ar", "Midnight Falls", "L'ura"] }
+  "The Venomous Abyss" => { total: 9, bosses: ["Nek'zali the Soulcoiler", "Entombed Sentinels", "Vashnik the Malignant", "The Lost Explorers", "Sszorak", "The Twin Fangs", "The Coiled Altar", "Ula'tek", "Nymrissa Wavecaller"] }
 }.freeze
 
-  # Midnight S1 : zone 46 = VS / DR / MQD
-  MIDNIGHT_ZONE_IDS = [46].freeze
+  # Midnight S2 : zone 53 = The Venomous Abyss
+  MIDNIGHT_ZONE_IDS = [53].freeze
 
   def initialize
     @client_id     = ENV['WARCRAFTLOGS_CLIENT_ID']
@@ -40,7 +38,7 @@ class WarcraftLogsService
             guildName: "#{guild_name}",
             guildServerSlug: "#{server}",
             guildServerRegion: "#{region}",
-            zoneID: 46, 
+            zoneID: 53,
             startTime: #{start_date},
             endTime: #{end_date},
             limit: 50
@@ -139,7 +137,7 @@ class WarcraftLogsService
           guildName: "Highway to Wipe",
           guildServerSlug: "eitrigg",
           guildServerRegion: "EU",
-          zoneID: 46,
+          zoneID: 53,
           startTime: #{start_date},
           endTime: #{end_date},
           limit: 10
@@ -294,14 +292,7 @@ class WarcraftLogsService
   end
 
   # Maps WCL aliases to canonical boss slot names (for deduplication in the Set)
-  BOSS_CANONICAL = {
-    "Vaelgor"              => "Vaelgor & Ezzorak",
-    "Ezzorak"              => "Vaelgor & Ezzorak",
-    "Alleria Windrunner"   => "Crown of the Cosmos",
-    "Chimaerus"            => "Chimaerus, the Undreamt God",
-    "Belo'ren, Child of Al'ar" => "Belo'ren",
-    "L'ura"                => "Midnight Falls"
-  }.freeze
+  BOSS_CANONICAL = {}.freeze
 
   def calculate_progression(reports)
     raids_kills = RAID_CONFIGS.transform_values { { 3 => Set.new, 4 => Set.new, 5 => Set.new } }
@@ -405,14 +396,12 @@ class WarcraftLogsService
     Rails.logger.warn "⚠️ Utilisation des données mock"
     {
       progression: {
-        "The Voidspire"       => { total: 6, normal: { killed: 6, total: 6 }, heroic: { killed: 4, total: 6 }, mythic: { killed: 1, total: 6 } },
-        "The Dreamrift"       => { total: 1, normal: { killed: 1, total: 1 }, heroic: { killed: 1, total: 1 }, mythic: { killed: 0, total: 1 } },
-        "March on Quel'Danas" => { total: 2, normal: { killed: 0, total: 2 }, heroic: { killed: 0, total: 2 }, mythic: { killed: 0, total: 2 } }
+        "The Venomous Abyss" => { total: 9, normal: { killed: 9, total: 9 }, heroic: { killed: 4, total: 9 }, mythic: { killed: 1, total: 9 } }
       },
       recent_kills: [
-        { boss: "Alleria Windrunner",    difficulty: "Héroïque", date: 1.day.ago },
-        { boss: "Lightblinded Vanguard", difficulty: "Héroïque", date: 1.day.ago },
-        { boss: "Chimaerus",             difficulty: "Héroïque", date: 2.days.ago }
+        { boss: "Nymrissa Wavecaller",   difficulty: "Héroïque", date: 1.day.ago },
+        { boss: "Ula'tek",               difficulty: "Héroïque", date: 1.day.ago },
+        { boss: "The Twin Fangs",        difficulty: "Héroïque", date: 2.days.ago }
       ],
       death_stats: mock_death_stats,
       latest_report_code: nil
