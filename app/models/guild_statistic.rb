@@ -35,10 +35,16 @@ class GuildStatistic < ApplicationRecord
     {
       'progression' => {
         'The Venomous Abyss' => {
-          'total'  => 9,
-          'normal' => { 'killed' => 0, 'total' => 9 },
-          'heroic' => { 'killed' => 0, 'total' => 9 },
-          'mythic' => { 'killed' => 0, 'total' => 9 }
+          'total'  => 8,
+          'normal' => { 'killed' => 0, 'total' => 8 },
+          'heroic' => { 'killed' => 0, 'total' => 8 },
+          'mythic' => { 'killed' => 0, 'total' => 8 }
+        },
+        'The Tidebound Grotto' => {
+          'total'  => 1,
+          'normal' => { 'killed' => 0, 'total' => 1 },
+          'heroic' => { 'killed' => 0, 'total' => 1 },
+          'mythic' => { 'killed' => 0, 'total' => 1 }
         }
       },
       'recent_kills'       => [],

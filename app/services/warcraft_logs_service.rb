@@ -9,10 +9,11 @@ class WarcraftLogsService
   }
 
   RAID_CONFIGS = {
-  "The Venomous Abyss" => { total: 9, bosses: ["Nek'zali the Soulcoiler", "Entombed Sentinels", "Vashnik the Malignant", "The Lost Explorers", "Sszorak", "The Twin Fangs", "The Coiled Altar", "Ula'tek", "Nymrissa Wavecaller"] }
+  "The Venomous Abyss"  => { total: 8, bosses: ["Nek'zali the Soulcoiler", "Entombed Sentinels", "Vashnik the Malignant", "The Lost Explorers", "Sszorak", "The Twin Fangs", "The Coiled Altar", "Ula'tek"] },
+  "The Tidebound Grotto" => { total: 1, bosses: ["Nymrissa Wavecaller"] }
 }.freeze
 
-  # Midnight S2 : zone 53 = The Venomous Abyss
+  # Midnight S2 : zone 53 = The Venomous Abyss + The Tidebound Grotto
   MIDNIGHT_ZONE_IDS = [53].freeze
 
   def initialize
@@ -396,7 +397,8 @@ class WarcraftLogsService
     Rails.logger.warn "⚠️ Utilisation des données mock"
     {
       progression: {
-        "The Venomous Abyss" => { total: 9, normal: { killed: 9, total: 9 }, heroic: { killed: 4, total: 9 }, mythic: { killed: 1, total: 9 } }
+        "The Venomous Abyss"   => { total: 8, normal: { killed: 8, total: 8 }, heroic: { killed: 4, total: 8 }, mythic: { killed: 1, total: 8 } },
+        "The Tidebound Grotto" => { total: 1, normal: { killed: 1, total: 1 }, heroic: { killed: 0, total: 1 }, mythic: { killed: 0, total: 1 } }
       },
       recent_kills: [
         { boss: "Nymrissa Wavecaller",   difficulty: "Héroïque", date: 1.day.ago },
