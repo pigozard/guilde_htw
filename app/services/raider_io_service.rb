@@ -66,10 +66,10 @@ class RaiderIoService
       end
     end.compact
 
-    # Trier par score décroissant et garder le top 5
-    top_players = player_scores.sort_by { |p| -p[:score] }.first(5)
+    # Trier par score décroissant et garder le top 10
+    top_players = player_scores.sort_by { |p| -p[:score] }.first(10)
 
-    Rails.logger.info "✅ Raider.io: Top 5 calculé"
+    Rails.logger.info "✅ Raider.io: Top 10 calculé"
     top_players.each_with_index do |player, i|
       Rails.logger.info "  #{i+1}. #{player[:name]} - #{player[:score]}"
     end
@@ -90,7 +90,12 @@ class RaiderIoService
       { name: "Shadowblade", score: 3180, class: "Rogue", spec: "Subtlety" },
       { name: "Pyromancer", score: 3156, class: "Mage", spec: "Fire" },
       { name: "Healystic", score: 3098, class: "Priest", spec: "Holy" },
-      { name: "Moonfury", score: 2987, class: "Druid", spec: "Balance" }
+      { name: "Moonfury", score: 2987, class: "Druid", spec: "Balance" },
+      { name: "Frostbite", score: 2921, class: "Death Knight", spec: "Frost" },
+      { name: "Stormcaller", score: 2856, class: "Shaman", spec: "Elemental" },
+      { name: "Nightwhisper", score: 2790, class: "Rogue", spec: "Assassination" },
+      { name: "Ironhide", score: 2734, class: "Warrior", spec: "Fury" },
+      { name: "Wildheart", score: 2688, class: "Druid", spec: "Feral" }
     ]
   end
 end

@@ -114,7 +114,7 @@ class WarcraftLogsService
 
     {
       progression:        progression,
-      recent_kills:       recent_kills.first(5),
+      recent_kills:       recent_kills.first(10),
       death_stats:        death_stats,
       latest_report_code: all_reports.first&.dig('code')
     }
@@ -357,7 +357,7 @@ class WarcraftLogsService
     end
   end
 
-  kills.sort_by { |k| [-k[:date].to_i, -k[:order]] }.first(5)
+  kills.sort_by { |k| [-k[:date].to_i, -k[:order]] }.first(10)
   end
 
   def parse_death_stats(response)
@@ -398,7 +398,12 @@ class WarcraftLogsService
       { player: "Healystic",   deaths: 38, class: "Priest" },
       { player: "Shadowblade", deaths: 35, class: "Rogue" },
       { player: "Pyromancer",  deaths: 31, class: "Mage" },
-      { player: "Tankmaster",  deaths: 28, class: "Warrior" }
+      { player: "Tankmaster",  deaths: 28, class: "Warrior" },
+      { player: "Moonfury",    deaths: 25, class: "Druid" },
+      { player: "Frostbite",   deaths: 22, class: "Death Knight" },
+      { player: "Stormcaller", deaths: 19, class: "Shaman" },
+      { player: "Nightwhisper", deaths: 16, class: "Rogue" },
+      { player: "Ironhide",    deaths: 12, class: "Warrior" }
     ]
   end
 
@@ -412,7 +417,14 @@ class WarcraftLogsService
       recent_kills: [
         { boss: "Nymrissa Wavecaller",   difficulty: "Héroïque", date: 1.day.ago },
         { boss: "Ula'tek",               difficulty: "Héroïque", date: 1.day.ago },
-        { boss: "The Twin Fangs",        difficulty: "Héroïque", date: 2.days.ago }
+        { boss: "The Twin Fangs",        difficulty: "Héroïque", date: 2.days.ago },
+        { boss: "The Coiled Altar",      difficulty: "Héroïque", date: 2.days.ago },
+        { boss: "Sszorak",               difficulty: "Héroïque", date: 3.days.ago },
+        { boss: "The Lost Explorers",    difficulty: "Héroïque", date: 3.days.ago },
+        { boss: "Vashnik the Malignant", difficulty: "Normal",   date: 4.days.ago },
+        { boss: "Entombed Sentinels",    difficulty: "Normal",   date: 4.days.ago },
+        { boss: "Nek'zali the Soulcoiler", difficulty: "Normal", date: 5.days.ago },
+        { boss: "Nymrissa Wavecaller",   difficulty: "Normal",   date: 6.days.ago }
       ],
       death_stats: mock_death_stats,
       latest_report_code: nil

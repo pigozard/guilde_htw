@@ -157,11 +157,11 @@
     <div class="hw-card">
       <div class="hw-card-header">
         <span class="hw-card-icon">🏆</span>
-        <h3 class="hw-card-title">Kills Récents</h3>
+        <h3 class="hw-card-title">10 Derniers Down</h3>
       </div>
       <div class="hw-card-body hw-card-list">
         <% if @warcraftlogs_recent_kills.any? %>
-          <% @warcraftlogs_recent_kills.first(5).each do |kill| %>
+          <% @warcraftlogs_recent_kills.first(10).each do |kill| %>
             <div class="hw-list-item">
               <div class="hw-list-icon">💀</div>
               <div class="hw-list-content">
@@ -184,7 +184,7 @@
       </div>
       <div class="hw-card-body hw-card-list">
         <% if @raiderio_top_players.any? %>
-          <% @raiderio_top_players.first(5).each_with_index do |player, index| %>
+          <% @raiderio_top_players.first(10).each_with_index do |player, index| %>
             <div class="hw-list-item">
               <div class="hw-list-rank">#<%= index + 1 %></div>
               <div class="hw-list-content">
@@ -208,7 +208,7 @@
       </div>
       <div class="hw-card-body hw-card-list">
         <% if @warcraftlogs_death_stats.any? %>
-          <% @warcraftlogs_death_stats.first(5).each_with_index do |player, index| %>
+          <% @warcraftlogs_death_stats.first(10).each_with_index do |player, index| %>
             <div class="hw-list-item">
               <div class="hw-list-rank">#<%= index + 1 %></div>
               <div class="hw-list-content">
