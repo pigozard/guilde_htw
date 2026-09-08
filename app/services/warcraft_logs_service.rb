@@ -146,6 +146,7 @@ class WarcraftLogsService
           data {
             code
             zone { id }
+            fights(killType: All) { id name }
           }
         }
       }
@@ -164,6 +165,7 @@ class WarcraftLogsService
             data {
               code
               zone { id }
+              fights(killType: All) { id name }
             }
           }
         }
@@ -185,10 +187,17 @@ class WarcraftLogsService
 
   player_deaths  = Hash.new(0)
   player_classes = {}
+  known_bosses   = RAID_CONFIGS.values.flat_map { |v| v[:bosses] }
 
   all_reports.first(5).each do |report|
     code = report['code']
     next unless code
+
+    raid_fight_ids = (report['fights'] || [])
+      .select { |fight| known_bosses.any? { |b| fight['name'].include?(b) || b.include?(fight['name']) } }
+      .map { |fight| fight['id'] }
+
+    next if raid_fight_ids.empty?
 
     death_query = <<~GRAPHQL
       {
@@ -201,7 +210,7 @@ class WarcraftLogsService
                 subType
               }
             }
-            events(dataType: Deaths, startTime: 0, endTime: 99999999999) {
+            events(dataType: Deaths, startTime: 0, endTime: 99999999999, fightIDs: [#{raid_fight_ids.join(',')}]) {
               data
             }
           }
