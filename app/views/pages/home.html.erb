@@ -159,16 +159,19 @@
         <span class="hw-card-icon">🏆</span>
         <h3 class="hw-card-title">10 Derniers Down</h3>
       </div>
-      <div class="hw-card-body hw-card-list">
+      <div class="hw-card-body hw-card-list" data-controller="show-more">
         <% if @warcraftlogs_recent_kills.any? %>
-          <% @warcraftlogs_recent_kills.first(10).each do |kill| %>
-            <div class="hw-list-item">
+          <% @warcraftlogs_recent_kills.first(10).each_with_index do |kill, index| %>
+            <div class="hw-list-item<%= ' hw-hidden' if index >= 5 %>" <%= 'data-show-more-target="item"'.html_safe if index >= 5 %>>
               <div class="hw-list-icon">💀</div>
               <div class="hw-list-content">
                 <div class="hw-list-name"><%= boss_names_fr[kill[:boss]] || kill[:boss] %></div>
                 <div class="hw-list-detail"><%= kill[:difficulty] %> • <%= kill[:date].strftime("%d/%m") %></div>
               </div>
             </div>
+          <% end %>
+          <% if @warcraftlogs_recent_kills.size > 5 %>
+            <button type="button" class="hw-show-more-btn" data-show-more-target="button" data-expanded="false" data-action="click->show-more#toggle">Afficher plus</button>
           <% end %>
         <% else %>
           <p class="hw-empty">Aucun kill récent</p>
@@ -182,10 +185,10 @@
         <span class="hw-card-icon">🔑</span>
         <h3 class="hw-card-title">Top Mythic+</h3>
       </div>
-      <div class="hw-card-body hw-card-list">
+      <div class="hw-card-body hw-card-list" data-controller="show-more">
         <% if @raiderio_top_players.any? %>
           <% @raiderio_top_players.first(10).each_with_index do |player, index| %>
-            <div class="hw-list-item">
+            <div class="hw-list-item<%= ' hw-hidden' if index >= 5 %>" <%= 'data-show-more-target="item"'.html_safe if index >= 5 %>>
               <div class="hw-list-rank">#<%= index + 1 %></div>
               <div class="hw-list-content">
                 <div class="hw-list-name"><%= player[:name] %></div>
@@ -193,6 +196,9 @@
               </div>
               <div class="hw-list-score" style="color: #64b5f6;"><%= player[:score] %></div>
             </div>
+          <% end %>
+          <% if @raiderio_top_players.size > 5 %>
+            <button type="button" class="hw-show-more-btn" data-show-more-target="button" data-expanded="false" data-action="click->show-more#toggle">Afficher plus</button>
           <% end %>
         <% else %>
           <p class="hw-empty">Aucune donnée M+</p>
@@ -206,10 +212,10 @@
         <span class="hw-card-icon">💀</span>
         <h3 class="hw-card-title">Wall of Shame</h3>
       </div>
-      <div class="hw-card-body hw-card-list">
+      <div class="hw-card-body hw-card-list" data-controller="show-more">
         <% if @warcraftlogs_death_stats.any? %>
           <% @warcraftlogs_death_stats.first(10).each_with_index do |player, index| %>
-            <div class="hw-list-item">
+            <div class="hw-list-item<%= ' hw-hidden' if index >= 5 %>" <%= 'data-show-more-target="item"'.html_safe if index >= 5 %>>
               <div class="hw-list-rank">#<%= index + 1 %></div>
               <div class="hw-list-content">
                 <div class="hw-list-name"><%= player[:player] %></div>
@@ -217,6 +223,9 @@
               </div>
               <div class="hw-list-score" style="color: #e57373;"><%= player[:deaths] %> 💀</div>
             </div>
+          <% end %>
+          <% if @warcraftlogs_death_stats.size > 5 %>
+            <button type="button" class="hw-show-more-btn" data-show-more-target="button" data-expanded="false" data-action="click->show-more#toggle">Afficher plus</button>
           <% end %>
         <% else %>
           <p class="hw-empty">Aucune donnée</p>
